@@ -18,9 +18,21 @@ x-init="
     checkScroll();
     window.addEventListener('scroll', () => checkScroll());
 ">
-    <div id="releases" class="min-h-[calc(100dvh-40px)] w-full flex flex-col items-center justify-center">
-        <div class="flex-1 bg-red-800 w-full flex items-center justify-center">
-            Releases
+    <div id="releases" class="h-[calc(100dvh-40px)]">
+        <div id="releases-container" class="w-full h-full flex flex-col items-center justify-center">
+            <div class="flex-1 bg-red-800 w-full flex items-center justify-center">
+                <div class="w-[320px] h-[450px] relative">
+                    <div class="release-card rounded-lg bg-white text-black border w-[320px] h-[450px] absolute bottom-[20px] z-20">
+                        Release 1
+                    </div>
+                    <div class="release-card rounded-lg bg-white text-black border w-[320px] h-[450px] absolute bottom-[10px] z-10">
+                        Release 2
+                    </div>
+                    <div class="release-card rounded-lg bg-white text-black border w-[320px] h-[450px] absolute bottom-0 z-0">
+                        Release 3
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <button id="button" @click="scrollToSection()" class="h-[40px] w-full bg-blue flex items-center justify-center cursor-pointer gap-2">

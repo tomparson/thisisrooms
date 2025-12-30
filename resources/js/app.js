@@ -1,5 +1,24 @@
 import './bootstrap';
 import Web3 from 'web3';
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+window.addEventListener('DOMContentLoaded', () => {
+    gsap.to('.release-card', {
+        yPercent: -110,
+        stagger: 0.5,
+        rotate: 4,
+        scrollTrigger: {
+            trigger: '#releases-container',
+            start: 'top top',
+            scrub: true,
+            pin: true,
+            end: '+=5000px',
+        }
+    });
+});
 
 // Initialize Web3 with MetaMask or other provider
 let web3;

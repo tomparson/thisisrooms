@@ -18,7 +18,7 @@ x-init="
     checkScroll();
     window.addEventListener('scroll', () => checkScroll());
 ">
-    {{--<div id="releases" class="min-h-[calc(100dvh-40px)] w-full flex flex-col items-center justify-center">
+    <div id="releases" class="min-h-[calc(100dvh-40px)] w-full flex flex-col items-center justify-center">
         <div class="flex-1 bg-red-800 w-full flex items-center justify-center">
             Releases
         </div>
@@ -26,7 +26,7 @@ x-init="
     <button id="button" @click="scrollToSection()" class="h-[40px] w-full bg-blue flex items-center justify-center cursor-pointer gap-2">
         <span x-text="scrolledPastReleases ? 'releases' : 'about + links'"></span>
         <i :class="'fa-solid ' + (scrolledPastReleases ? 'fa-arrow-up' : 'fa-arrow-down')"></i>
-    </button>--}}
+    </button>
     <div id="about-and-links" class="min-h-dvh w-full flex items-center justify-center">
         <div class="py-[50px] px-10">
             <div class="mb-12 flex flex-col justify-center gap-4">

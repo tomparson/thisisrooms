@@ -23,5 +23,5 @@ Let You Win with [Hunter Wiley](https://hunterwiley.bandcamp.com/)
 
 Listen on
 [Apple Music](https://music.apple.com/gb/album/let-you-win/1748726320?i=1748726321)
-[Bandcamp](https://musicbyapropos.bandcamp.com/track/let-you-win)
+[Bandcamp](https://this-is-rooms.bandcamp.com/track/let-you-win)
 [YouTube](https://www.youtube.com/watch?v=KmmAL_5lOew)

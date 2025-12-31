@@ -68,11 +68,11 @@ x-init="
                 <!--apple music-->
                 <div class="opacity-80 hover:opacity-100 transition">
                     <div class="flex gap-3 mb-2">
-                        <a href="https://music.apple.com/us/artist/apropos/1728293658" target="_blank" class="opacity-80 hover:opacity-100 transition flex items-center justify-center">
+                        <a href="https://music.apple.com/gb/artist/rooms/1856841999" target="_blank" class="opacity-80 hover:opacity-100 transition flex items-center justify-center">
                             <i class="fa-brands fa-itunes-note text-white text-3xl"></i>
                         </a>
                     </div>
-                    <div><a href="https://music.apple.com/us/artist/apropos/1728293658" target="_blank">stream EPs, singles and collabs</a></div>
+                    <div><a href="https://music.apple.com/gb/artist/rooms/1856841999" target="_blank">stream EPs, singles and collabs</a></div>
                 </div>
                 <!-- instagram / tiktok -->
                 <div class="opacity-80 hover:opacity-100 transition">

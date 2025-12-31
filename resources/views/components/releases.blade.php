@@ -14,8 +14,8 @@
             <img src="/images/releases/algo-cover.jpg" alt="algo cover art" class="w-full rounded-2xl">
         </div>
         <div class="flex-1 flex flex-col gap-2 items-center justify-center w-full">
-            <strong>single out now</strong>
-            <span class="block bg-[#ffffff] text-[#513fa6] px-3 py-1 rounded">listen now</span>
+            <strong>new single by rooms out now</strong>
+            <span class="block bg-[#ffffff] text-[#513fa6] px-3 py-1 rounded">view release</span>
         </div>
     </a>
     <a href="/posts/collabs" class="release-card rounded-2xl border-6 border-[#3687b1] bg-[#38b4f5] text-[#212121] p-8 text-center w-[320px] h-[450px] absolute bottom-[20px] flex flex-col gap-4 items-center justify-center z-20 rotate-2">
@@ -33,7 +33,7 @@
         </div>
         <div class="flex-1 flex flex-col gap-2 items-center justify-center w-full">
             <strong>constructs EP</strong>
-            <span class="block bg-[#ffffff] text-[#282828] px-3 py-1 rounded">listen now</span>
+            <span class="block bg-[#ffffff] text-[#282828] px-3 py-1 rounded">view release</span>
         </div>
     </a>
     <a href="/posts/fledgling-release" class="release-card overflow-hidden border-6 border-[#f3d74e] bg-[#f3d74e] text-[#0b110e] rounded-2xl w-[320px] h-[450px] absolute bottom-0 z-0 rotate-1 flex flex-col">
@@ -43,7 +43,7 @@
         <div class="flex-1 flex flex-col gap-2 items-center justify-center w-full">
             <span class="text-sm">debut release</span>
             <strong>fledgling EP</strong>
-            <span class="block bg-[#0b110e] text-[#f3d74e] px-3 py-1 rounded">listen now</span>
+            <span class="block bg-[#0b110e] text-[#f3d74e] px-3 py-1 rounded">view release</span>
         </div>
     </a>
 </div>

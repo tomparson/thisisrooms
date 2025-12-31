@@ -17,6 +17,13 @@ Listen on
 [Deezer](https://link.deezer.com/s/322aIgZlMvxtvuKsQKg5S)
 [YouTube](https://www.youtube.com/watch?v=lAi7d1AUi6w)
 
+![In Retrospect](/images/releases/in-retrospect-cover.jpg)
+
+In Retrospect with [Fluck](https://soundcloud.com/p-p-mcmullan)
+
+Listen on
+[Soundcloud](https://soundcloud.com/thisisrooms/in-retrospect-fluck-x-apropos-re-edit)
+
 ![Let You Win](/images/releases/let-you-win-cover.jpg?v=3)
 
 Let You Win with [Hunter Wiley](https://hunterwiley.bandcamp.com/)

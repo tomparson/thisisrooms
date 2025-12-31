@@ -18,7 +18,7 @@
             <span class="block bg-[#ffffff] text-[#513fa6] px-3 py-1 rounded">view release</span>
         </div>
     </a>
-    <a href="/posts/collabs" class="release-card rounded-2xl border-6 border-[#38b4f5] bg-[#38b4f5] text-[#212121] text-center w-[320px] h-[450px] absolute bottom-[20px] flex flex-col gap-2 items-center justify-center z-20 rotate-2">
+    <a href="/posts/collabs" class="release-card rounded-2xl border-6 border-[#fae6e6] bg-[#fae6e6] text-[#6a4444] text-center w-[320px] h-[450px] absolute bottom-[20px] flex flex-col gap-2 items-center justify-center z-20 rotate-2">
         <strong class="flex-1 flex items-center text-2xl">collabs</strong>
         <img src="/images/releases/spring-cover.jpg" alt="Don't Give Me Rain cover art" class="w-full h-[70px] object-cover rounded-xl">
         <img src="/images/releases/funk-fatale-cover.jpg" alt="Funk Fatale cover art" class="w-full h-[70px] object-cover rounded-xl">

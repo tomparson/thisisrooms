@@ -23,6 +23,7 @@ class Post extends Component
         }
         $content = file_get_contents($path);
         $html = Str::markdown($content);
+        $html = str_replace('&lt;', '<', $html);
         preg_match('/<h1>(.*?)<\/h1>/s', $html, $matches);
         $title = $matches[1] . ' · rooms';
         return view('livewire.post', [

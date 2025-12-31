@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@plugin "@tailwindcss/typography";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -14,9 +15,7 @@ html {
     scroll-behavior: smooth;
 }
 
-/* Fonts?
-
-Fredoka
-JetBrains+Mono
-Bebas+Neue
-*/
+/* Call to action button */
+.prose > p:last-child > a:only-child {
+    @apply inline-block bg-[#212121] text-[#ffffff] font-bold no-underline px-5 py-2 rounded;
+}

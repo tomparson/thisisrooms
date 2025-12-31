@@ -1,46 +1,51 @@
 <div x-data="{
-    scrolledPastReleases: false,
+    releases: document.getElementById('releases'),
+    button: document.getElementById('button'),
+    buttonText: 'releases',
+    buttonIcon: 'fa-arrow-down',
     checkScroll() {
-        const cardsEl = document.getElementById('releases');
-        if (!cardsEl) return;
-        const cardsBottom = cardsEl.offsetTop + cardsEl.offsetHeight;
-        this.scrolledPastReleases = window.scrollY > (cardsBottom - 200);
+        if(!this.scrolledPastReleases()) {
+            this.button.style.position = 'fixed';
+            this.button.style.top = 'auto';
+            this.button.style.bottom = '0';
+            this.buttonText = 'about + links';
+            this.buttonIcon = 'fa-arrow-down';
+        } else {
+            this.button.style.position = 'absolute';
+            this.button.style.top = 'calc(100dvh-40px+2000px)';
+            this.button.style.bottom = 'auto';
+            this.buttonText = 'releases';
+            this.buttonIcon = 'fa-arrow-up';
+        }
+    },
+    scrolledPastReleases() {
+        return window.scrollY > 2000;
     },
     scrollToSection() {
-        if (this.scrolledPastReleases) {
-            document.getElementById('releases')?.scrollIntoView({ behavior: 'smooth' });
+        if (this.scrolledPastReleases()) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
-            document.getElementById('button')?.scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('about-and-links')?.scrollIntoView({ behavior: 'smooth' });
         }
     }
-}" 
+}"
 x-init="
     checkScroll();
     window.addEventListener('scroll', () => checkScroll());
 ">
     <div id="releases" class="h-[calc(100dvh-40px)]">
         <div id="releases-container" class="w-full h-full flex flex-col items-center justify-center">
-            <div class="flex-1 bg-red-800 w-full flex items-center justify-center">
-                <div class="w-[320px] h-[450px] relative">
-                    <div class="release-card rounded-lg bg-white text-black border w-[320px] h-[450px] absolute bottom-[20px] z-20">
-                        Release 1
-                    </div>
-                    <div class="release-card rounded-lg bg-white text-black border w-[320px] h-[450px] absolute bottom-[10px] z-10">
-                        Release 2
-                    </div>
-                    <div class="release-card rounded-lg bg-white text-black border w-[320px] h-[450px] absolute bottom-0 z-0">
-                        Release 3
-                    </div>
-                </div>
+            <div class="flex-1 w-full flex items-center justify-center">
+                @include('components.releases')
             </div>
         </div>
     </div>
-    <button id="button" @click="scrollToSection()" class="h-[40px] w-full bg-blue flex items-center justify-center cursor-pointer gap-2">
-        <span x-text="scrolledPastReleases ? 'releases' : 'about + links'"></span>
-        <i :class="'fa-solid ' + (scrolledPastReleases ? 'fa-arrow-up' : 'fa-arrow-down')"></i>
+    <button id="button" @click="scrollToSection()" class="bg-neutral-800 h-[40px] w-full bg-blue flex items-center justify-center cursor-pointer gap-2">
+        <span x-text="buttonText"></span>
+        <i :class="'fa-solid ' + buttonIcon"></i>
     </button>
     <div id="about-and-links" class="min-h-dvh w-full flex items-center justify-center">
-        <div class="py-[50px] px-10">
+        <div class="mt-[40px] py-[50px] px-10">
             <div class="mb-12 flex flex-col justify-center gap-4">
                 <div>
                     <img src="/images/avatar.jpg" alt="artist photo for rooms" class="rounded-full h-[80px] w-[80px]" />

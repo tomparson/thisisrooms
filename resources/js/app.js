@@ -6,18 +6,38 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 window.addEventListener('DOMContentLoaded', () => {
-    gsap.to('.release-card', {
-        yPercent: -110,
-        stagger: 0.5,
-        rotate: 4,
-        scrollTrigger: {
-            trigger: '#releases-container',
-            start: 'top top',
-            scrub: true,
-            pin: true,
-            end: '+=5000px',
-        }
+    if(document.querySelectorAll('.release-card').length > 0) {
+        gsap.to('.release-card:not(:last-child)', {
+            yPercent: -130,
+            stagger: 0.5,
+            boxShadow: '0 15px 0 rgba(0,0,0,0.35)',
+            scrollTrigger: {
+                trigger: '#releases',
+                start: 'top top',
+                scrub: true,
+                pin: true,
+                end: '+=2000px',
+            }
+        });
+    }
+});
+
+// External links
+document.querySelectorAll("main a[href^=http]:not([href*='//thisisrooms.com']), main a[href^='//']:not([href*='//thisisrooms.com']), main a[target='_blank']").forEach(function(element) {
+    // Open link in new tab always, regardless of target attribute
+    element.addEventListener('click', function(event) {
+        event.preventDefault();
+        window.open(element.href);
     });
+});
+
+// Add UTM to URL after page load
+document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(() => {
+        let url = new URL(window.location.href);
+        url.searchParams.set("utm_source", "manualshare");
+        window.history.replaceState(null, "", url);
+    }, 1000);
 });
 
 // Initialize Web3 with MetaMask or other provider

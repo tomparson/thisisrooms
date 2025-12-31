@@ -1,12 +1,17 @@
-<div class="min-h-dvh w-full">
-    <div class="py-[100px] px-10">
-        <div class="prose max-w-[650px] mx-auto">
-            <a href="/" class="opacity-50 hover:opacity-100 hover:translate-x-[-5px] transition flex items-center gap-2 mb-10">
+<main class="min-h-dvh w-full">
+    <div class="py-[30px] md:py-[100px] px-4">
+        <div class="max-w-[650px] mx-auto">
+            <a href="/" class="opacity-50 hover:opacity-100 hover:translate-x-[-5px] transition flex items-center gap-2 mb-[30px]">
                 <i class="fa-solid fa-arrow-left"></i>
-                <span>back home</span>
+                <span>back to releases + about</span>
             </a>
-            {!! $content !!}
+            <div class="prose prose-invert max-w-none">
+                {!! $content !!}
             </div>
+            <a href="/" class="opacity-50 hover:opacity-100 hover:translate-x-[-5px] transition flex items-center gap-2 mt-[100px]">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>back to releases + about</span>
+            </a>
         </div>
     </div>
-</div>
+</main>

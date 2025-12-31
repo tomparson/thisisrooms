@@ -118,7 +118,7 @@ x-init="
                     <div class="flex gap-3 mb-2">
                         <span class="opacity-80 hover:opacity-100 transition flex items-center justify-center">
                             <div>
-                                <svg width="30" height="36" viewBox="0 0 38 37" class="fill-white" xmlns="http://www.w3.org/2000/svg">
+                                <svg width="30" height="30" viewBox="0 0 38 37" class="fill-white" xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M37.2227 18.8093C37.2227 28.7828 28.8573 36.8093 18.6113 36.8093C8.36552 36.8093 0 28.7828 0 18.8093C0 8.83586 8.36552 0.809265 18.6113 0.809265C28.8573 0.809265 37.2227 8.83586 37.2227 18.8093ZM8.93886 18.4469C8.93886 23.6819 12.0028 27.8904 17.2115 27.8904C22.42 27.8904 23.7476 23.6819 24.0541 21.5262V27.4798H28.2848V18.0363H18.6412V19.884H23.2371C22.7264 22.1421 21.5009 24.4003 18.6412 24.4003C15.4753 24.4003 13.4326 21.629 13.4326 18.2416C13.4326 14.8542 15.4753 12.0827 18.6412 12.0827C21.6029 12.0827 22.8286 14.2383 22.9306 15.6753H27.7307C27.6286 13.1092 25.3818 8.59268 18.7432 8.59268C12.3091 8.59268 8.93886 13.0065 8.93886 18.4469Z"/>
                                 </svg>
                             </div>
@@ -133,7 +133,7 @@ x-init="
                             <i class="fa-solid fa-inbox text-white text-3xl flex justify-center"></i>
                         </span>
                     </div>
-                    <div>new releases and upcoming live shows</div>
+                    <div>new releases, process insight and other updates</div>
                 </a>
             </div>
         </div>

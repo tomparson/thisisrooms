@@ -46,6 +46,6 @@ Buy on
 
 Watch the music video:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/b67nnx_i9WM?si=FZKAkSsnEZtYtkuy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="100%" src="https://www.youtube.com/embed/b67nnx_i9WM?si=FZKAkSsnEZtYtkuy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 [Listen now](https://this-is-rooms.bandcamp.com/album/fledgling)

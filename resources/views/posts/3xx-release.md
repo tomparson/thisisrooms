@@ -8,7 +8,7 @@ Even though I spent over 120 hours on it, and even though it’s a full album le
 
 ### Permission to create
 
-It was my music teacher, Alex, who first told me about Fred Again’s practice of quantity over quality when it comes to the initial stages of songwriting.
+It was my music teacher, Alex, who first told me about [Fred Again](https://www.fredagain.com)’s practice of quantity over quality when it comes to the initial stages of songwriting.
 
 For a long time, I thought of creativity as a skill to be mastered. That once I’d reached pro levels of creativity I’d be able to sit down at the piano / guitar / computer / easel, crack my knuckles, and produce a compelling piece of art every time.
 
@@ -22,7 +22,7 @@ So rather than spending a couple of hours making 3-4 ideas, he’d instead make 
 
 More ideas meant more chance of creating something great.
 
-Since then, I’ve found that this quantity approach to creativity is far more prevalent than I expected. Many artists share this practice: create a lot, then pick out the pieces that speak to them the most. (Examples)
+Since then, I’ve found that this quantity approach to creativity is far more prevalent than I expected. Many artists share this practice: create a lot, then pick out the pieces that speak to them the most.
 
 ### Sorting through all the ideas
 
@@ -130,4 +130,18 @@ I also learned that you never know who you’re going to inspire with your contr
 
 Finally, I learned that relinquishing control is good for me. I like things a certain way and I’m a bit of a control freak when it comes to my work and my art. I’ve usually got an image of a perfect end result in mind, which leads me to believe the best way to get there is to apply skill, intention and focus. But, thinking back to the origins of the album, they didn’t come from skill, intention or focus. They came from play. Making things for the fun of it. The intention and focus came later, but the beginning was all about giving up control and just having fun exploring. Learning how to edit, refine and find intentionality among a pile of artefacts.
 
-[Listen now](#)
+### Listen
+
+Listen for free on
+[YouTube](https://www.youtube.com/watch?v=bjRKSbfkOqs)
+[Bandcamp](https://this-is-rooms.bandcamp.com/album/3xx)
+
+Stream on
+[Bandcamp](https://this-is-rooms.bandcamp.com/album/3xx)
+[Apple Music](#)
+[Deezer](#)
+
+Buy on
+[Bandcamp](https://this-is-rooms.bandcamp.com/album/3xx)
+
+[Listen now](https://www.youtube.com/watch?v=bjRKSbfkOqs)

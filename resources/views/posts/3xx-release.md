@@ -11,7 +11,7 @@ Listen for free now on
 
 Streaming on Apple Music & Deezer on 09/01/2025
 
-Live listening party on Bandcamp 09/01/2025 18:00 GMT / 13:00 EST [Sign up to be notified](https://d899755c77f311efa25d7de4d9011016.eo.page/8ggkh)
+Live listening party on Bandcamp 09/01/2025 18:00 GMT / 13:00 EST [Get notified](https://d899755c77f311efa25d7de4d9011016.eo.page/8ggkh)
 
 <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2240306024&color=%23ff70bc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/thisisrooms" title="rooms" target="_blank" style="color: #cccccc; text-decoration: none;">rooms</a> · <a href="https://soundcloud.com/thisisrooms/3xx-full-album" title="#3xx full album" target="_blank" style="color: #cccccc; text-decoration: none;">#3xx full album</a></div>
 

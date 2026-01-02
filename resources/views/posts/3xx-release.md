@@ -21,7 +21,7 @@ Even though I spent over 120 hours on it, and even though it’s a full album le
 
 ### Permission to create
 
-It was my music teacher, Alex, who first told me about [Fred Again](https://www.fredagain.com)’s practice of quantity over quality when it comes to the early stages of songwriting.
+It was my music teacher, [Alex](https://www.alexoldroydmusic.com), who first told me about [Fred Again](https://www.fredagain.com)’s practice of quantity over quality when it comes to the early stages of songwriting.
 
 ![Fred Again](/images/posts/fredagain.jpg)
 

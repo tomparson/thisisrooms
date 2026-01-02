@@ -212,6 +212,6 @@ Listen for free now on
 
 Streaming on Apple Music & Deezer on 09/01/2025
 
-Live listening party on Bandcamp 09/01/2025 18:00 GMT / 13:00 EST
+Live listening party on Bandcamp 09/01/2025 18:00 GMT / 13:00 EST [Get notified](https://d899755c77f311efa25d7de4d9011016.eo.page/8ggkh)
 
 [Listen now](https://www.youtube.com/watch?v=bjRKSbfkOqs)

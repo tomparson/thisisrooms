@@ -5,9 +5,9 @@ use Illuminate\Support\Str;
 
 Route::get('/', \App\Livewire\Home::class);
 
-Route::get('/follow-me', function () {
-    return view('follow-me');
-})->name('follow-me');
+Route::get('/follow', function () {
+    return view('follow');
+})->name('follow');
 
 Route::get('/3xx', \App\Livewire\Threexx::class)->name('3xx');
 

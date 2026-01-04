@@ -34,7 +34,11 @@
     </head>
     <body>
 
-        {{ $slot }}
+        @isset($slot)
+            {{ $slot }}
+        @else
+            @yield('content')
+        @endisset
 
         @livewireScripts()
 

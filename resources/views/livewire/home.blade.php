@@ -135,6 +135,15 @@ x-init="
                     </div>
                     <div>new releases, process insight and other updates</div>
                 </a>
+                <!-- substack -->
+                <a href="https://substack.com/@metomparson" target="_blank" class="opacity-80 hover:opacity-100 transition">
+                    <div class="flex gap-3 mb-2">
+                        <span class="opacity-80 hover:opacity-100 transition flex items-center justify-center">
+                            <svg width="30" height="30" viewBox="0 0 448 511.471"><path fill="#ffffff" d="M0 0h448v62.804H0V0zm0 229.083h448v282.388L223.954 385.808 0 511.471V229.083zm0-114.542h448v62.804H0v-62.804z"/></svg>
+                        </span>
+                    </div>
+                    <div>thoughts on the creative process</div>
+                </a>
             </div>
         </div>
     </div>

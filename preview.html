@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color:#0E100D;color:white;">
+<head>
+    <title>rooms</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Official website for UK-based electronic music artist, rooms.">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        html { background-color: #0E100D; color: white; scroll-behavior: smooth; }
+        body { background-color: #0E100D; font-family: ui-sans-serif, system-ui, sans-serif; }
+        .release-card { transition: transform 0.2s; }
+        .release-card:hover { transform: scale(1.03) rotate(0deg) !important; }
+    </style>
+</head>
+<body>
+
+<div>
+    <!-- Releases section (full viewport height minus button) -->
+    <div id="releases" style="height:calc(100dvh - 40px);">
+        <div class="w-full h-full flex flex-col items-center justify-center">
+            <div class="flex-1 w-full flex items-center justify-center">
+                <!-- Release cards stack -->
+                <div style="width:320px;height:450px;position:relative;top:20px;">
+
+                    <!-- 3xx – latest (top of stack) -->
+                    <a href="#" class="release-card overflow-hidden rounded-2xl flex flex-col" style="border:6px solid #FF70BC;background:#FF70BC;color:#212121;width:320px;height:450px;position:absolute;bottom:40px;z-index:40;rotate:1deg;">
+                        <div style="aspect-ratio:1/1;width:100%;">
+                            <img src="public/images/releases/3xx-cover.jpg" alt="3xx cover art" style="width:100%;border-radius:1rem;">
+                        </div>
+                        <div class="flex-1 flex flex-col gap-2 items-center justify-center w-full">
+                            <span style="font-size:0.875rem;">latest release</span>
+                            <strong>debut album out now</strong>
+                            <span style="display:inline-block;background:#212121;color:#FF70BC;padding:4px 12px;border-radius:4px;">view release</span>
+                        </div>
+                    </a>
+
+                    <!-- algo -->
+                    <a href="#" class="release-card rounded-2xl flex flex-col" style="border:6px solid #513fa6;background:#513fa6;color:#ffffff;width:320px;height:450px;position:absolute;bottom:30px;z-index:30;rotate:-1deg;">
+                        <div style="aspect-ratio:1/1;width:100%;">
+                            <img src="public/images/releases/algo-cover.jpg" alt="algo cover art" style="width:100%;border-radius:1rem;">
+                        </div>
+                        <div class="flex-1 flex flex-col gap-2 items-center justify-center w-full">
+                            <strong>new single by rooms out now</strong>
+                            <span style="display:inline-block;background:#ffffff;color:#513fa6;padding:4px 12px;border-radius:4px;">view release</span>
+                        </div>
+                    </a>
+
+                    <!-- collabs -->
+                    <a href="#" class="release-card rounded-2xl flex flex-col gap-2 items-center justify-center" style="border:6px solid #fae6e6;background:#fae6e6;color:#6a4444;text-align:center;width:320px;height:450px;position:absolute;bottom:20px;z-index:20;rotate:2deg;">
+                        <strong class="flex-1 flex items-center text-2xl">collabs</strong>
+                        <img src="public/images/releases/spring-cover.jpg" alt="Don't Give Me Rain cover art" style="width:100%;height:70px;object-fit:cover;border-radius:0.75rem;">
+                        <img src="public/images/releases/funk-fatale-cover.jpg" alt="Funk Fatale cover art" style="width:100%;height:70px;object-fit:cover;border-radius:0.75rem;">
+                        <img src="public/images/releases/in-retrospect-cover.jpg" alt="In Retrospect cover art" style="width:100%;height:70px;object-fit:cover;border-radius:0.75rem;">
+                        <img src="public/images/releases/let-you-win-cover.jpg" alt="Let You Win cover art" style="width:100%;height:70px;object-fit:cover;border-radius:0.75rem;">
+                        <div class="flex-1 flex items-center justify-center">
+                            <span style="display:inline-block;background:#6a4444;color:#fae6e6;padding:4px 12px;border-radius:4px;">view collabs</span>
+                        </div>
+                    </a>
+
+                    <!-- constructs -->
+                    <a href="#" class="release-card rounded-2xl flex flex-col" style="border:6px solid #282828;background:#282828;color:#ffffff;width:320px;height:450px;position:absolute;bottom:10px;z-index:10;rotate:-2deg;">
+                        <div style="aspect-ratio:1/1;width:100%;">
+                            <img src="public/images/releases/constructs-cover.jpg" alt="constructs cover art" style="width:100%;border-radius:1rem;">
+                        </div>
+                        <div class="flex-1 flex flex-col gap-2 items-center justify-center w-full">
+                            <strong>constructs EP</strong>
+                            <span style="display:inline-block;background:#ffffff;color:#282828;padding:4px 12px;border-radius:4px;">view release</span>
+                        </div>
+                    </a>
+
+                    <!-- fledgling (bottom of stack) -->
+                    <a href="#" class="release-card overflow-hidden rounded-2xl flex flex-col" style="border:6px solid #f3d74e;background:#f3d74e;color:#0b110e;width:320px;height:450px;position:absolute;bottom:0;z-index:0;rotate:1deg;">
+                        <div style="aspect-ratio:1/1;width:100%;">
+                            <img src="public/images/releases/fledgling-cover.jpg" alt="fledgling cover art" style="width:100%;border-radius:1rem;">
+                        </div>
+                        <div class="flex-1 flex flex-col gap-2 items-center justify-center w-full">
+                            <span style="font-size:0.875rem;">debut release</span>
+                            <strong>fledgling EP</strong>
+                            <span style="display:inline-block;background:#0b110e;color:#f3d74e;padding:4px 12px;border-radius:4px;">view release</span>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sticky nav button -->
+    <div id="nav-button" onclick="scrollToSection()" style="background:#262626;height:40px;width:100%;display:flex;align-items:center;justify-content:center;cursor:pointer;gap:8px;position:fixed;bottom:0;left:0;z-index:100;">
+        <span id="btn-text">about + links</span>
+        <i id="btn-icon" class="fa-solid fa-arrow-down"></i>
+    </div>
+
+    <!-- About & links section -->
+    <div id="about-and-links" style="min-height:100dvh;width:100%;display:flex;align-items:center;justify-content:center;">
+        <div style="margin-top:40px;padding:50px 40px;">
+            <!-- Bio -->
+            <div style="margin-bottom:3rem;display:flex;flex-direction:column;justify-content:center;gap:1rem;">
+                <div>
+                    <img src="public/images/avatar.jpg" alt="artist photo for rooms" style="border-radius:9999px;height:80px;width:80px;">
+                </div>
+                <div>
+                    <p style="margin-bottom:0.5rem;"><span style="opacity:0.9;">hi i'm </span><strong>rooms</strong><span style="opacity:0.9;"> (formerly apropos), a UK based electronic music artist</span></p>
+                    <p><span style="opacity:0.9;">thanks for checking out my website :)</span></p>
+                </div>
+            </div>
+
+            <!-- Links grid -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2.5rem;max-width:650px;">
+
+                <!-- Bandcamp -->
+                <a href="https://this-is-rooms.bandcamp.com" target="_blank" style="opacity:0.8;text-decoration:none;color:white;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">
+                    <div style="display:flex;gap:12px;margin-bottom:8px;">
+                        <i class="fa-brands fa-bandcamp" style="font-size:1.875rem;"></i>
+                    </div>
+                    <div>buy full releases and bonus content</div>
+                </a>
+
+                <!-- Apple Music -->
+                <a href="https://music.apple.com/gb/artist/rooms/1856841999" target="_blank" style="opacity:0.8;text-decoration:none;color:white;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">
+                    <div style="display:flex;gap:12px;margin-bottom:8px;">
+                        <i class="fa-brands fa-itunes-note" style="font-size:1.875rem;"></i>
+                    </div>
+                    <div>stream EPs, singles and collabs</div>
+                </a>
+
+                <!-- Instagram / TikTok -->
+                <div style="opacity:0.8;color:white;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">
+                    <div style="display:flex;gap:12px;margin-bottom:8px;">
+                        <a href="https://www.instagram.com/thisisrooms__/" target="_blank" style="color:white;opacity:0.8;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">
+                            <i class="fa-brands fa-instagram" style="font-size:1.875rem;"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@thisisrooms__" target="_blank" style="color:white;opacity:0.8;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">
+                            <i class="fa-brands fa-tiktok" style="font-size:1.5rem;"></i>
+                        </a>
+                    </div>
+                    <div><a href="https://www.instagram.com/thisisrooms__/" target="_blank" style="color:white;text-decoration:none;">snippets, previews and promos</a></div>
+                </div>
+
+                <!-- SoundCloud -->
+                <a href="https://soundcloud.com/thisisrooms/popular-tracks" target="_blank" style="opacity:0.8;text-decoration:none;color:white;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">
+                    <div style="display:flex;gap:12px;margin-bottom:4px;">
+                        <i class="fa-brands fa-soundcloud" style="font-size:2.25rem;"></i>
+                    </div>
+                    <div>ideas, demos and unreleased tracks</div>
+                </a>
+
+                <!-- YouTube -->
+                <a href="https://www.youtube.com/@this_is_rooms" target="_blank" style="opacity:0.8;text-decoration:none;color:white;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">
+                    <div style="display:flex;gap:12px;margin-bottom:8px;">
+                        <i class="fa-brands fa-youtube" style="font-size:1.875rem;"></i>
+                    </div>
+                    <div>music videos and past show recordings</div>
+                </a>
+
+                <!-- Twitch -->
+                <a href="https://www.twitch.tv/thisisrooms" target="_blank" style="opacity:0.8;text-decoration:none;color:white;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">
+                    <div style="display:flex;gap:12px;margin-bottom:8px;">
+                        <i class="fa-brands fa-twitch" style="font-size:1.875rem;"></i>
+                    </div>
+                    <div>live shows, improv jams and other streams</div>
+                </a>
+
+                <!-- Gumroad -->
+                <a href="https://thisisrooms.gumroad.com" target="_blank" style="opacity:0.8;text-decoration:none;color:white;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">
+                    <div style="display:flex;gap:12px;margin-bottom:8px;">
+                        <svg width="30" height="30" viewBox="0 0 38 37" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M37.2227 18.8093C37.2227 28.7828 28.8573 36.8093 18.6113 36.8093C8.36552 36.8093 0 28.7828 0 18.8093C0 8.83586 8.36552 0.809265 18.6113 0.809265C28.8573 0.809265 37.2227 8.83586 37.2227 18.8093ZM8.93886 18.4469C8.93886 23.6819 12.0028 27.8904 17.2115 27.8904C22.42 27.8904 23.7476 23.6819 24.0541 21.5262V27.4798H28.2848V18.0363H18.6412V19.884H23.2371C22.7264 22.1421 21.5009 24.4003 18.6412 24.4003C15.4753 24.4003 13.4326 21.629 13.4326 18.2416C13.4326 14.8542 15.4753 12.0827 18.6412 12.0827C21.6029 12.0827 22.8286 14.2383 22.9306 15.6753H27.7307C27.6286 13.1092 25.3818 8.59268 18.7432 8.59268C12.3091 8.59268 8.93886 13.0065 8.93886 18.4469Z"/>
+                        </svg>
+                    </div>
+                    <div>ableton racks, m4l devices and samples</div>
+                </a>
+
+                <!-- Mailing list -->
+                <a href="https://d899755c77f311efa25d7de4d9011016.eo.page/8ggkh" target="_blank" style="opacity:0.8;text-decoration:none;color:white;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">
+                    <div style="display:flex;gap:12px;margin-bottom:8px;">
+                        <i class="fa-solid fa-inbox" style="font-size:1.875rem;"></i>
+                    </div>
+                    <div>new releases, process insight and other updates</div>
+                </a>
+
+                <!-- Substack -->
+                <a href="https://substack.com/@metomparson" target="_blank" style="opacity:0.8;text-decoration:none;color:white;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">
+                    <div style="display:flex;gap:12px;margin-bottom:8px;">
+                        <svg width="30" height="30" viewBox="0 0 448 511.471"><path fill="#ffffff" d="M0 0h448v62.804H0V0zm0 229.083h448v282.388L223.954 385.808 0 511.471V229.083zm0-114.542h448v62.804H0v-62.804z"/></svg>
+                    </div>
+                    <div>thoughts on the creative process</div>
+                </a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function scrolledPastReleases() {
+        return window.scrollY > 2000;
+    }
+
+    function updateButton() {
+        const btn = document.getElementById('nav-button');
+        const text = document.getElementById('btn-text');
+        const icon = document.getElementById('btn-icon');
+        if (scrolledPastReleases()) {
+            text.textContent = 'releases';
+            icon.className = 'fa-solid fa-arrow-up';
+        } else {
+            text.textContent = 'about + links';
+            icon.className = 'fa-solid fa-arrow-down';
+        }
+    }
+
+    function scrollToSection() {
+        if (scrolledPastReleases()) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            document.getElementById('about-and-links').scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    window.addEventListener('scroll', updateButton);
+    updateButton();
+</script>
+</body>
+</html>

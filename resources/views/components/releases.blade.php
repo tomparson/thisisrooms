@@ -1,10 +1,19 @@
 <div class="w-[320px] h-[450px] relative top-[20px]">
+    <a href="/posts/freedom-release" class="release-card overflow-hidden rounded-2xl border-6 border-[#a8d5ba] bg-[#a8d5ba] text-[#1a3328] w-[320px] h-[450px] absolute bottom-[50px] z-50 -rotate-1 flex flex-col">
+        <div class="aspect-square w-full">
+            <img src="/images/releases/freedom-cover.png" alt="freedom cover art" class="w-full rounded-2xl">
+        </div>
+        <div class="flex-1 flex flex-col gap-2 items-center justify-center w-full">
+            <span class="text-sm">latest release</span>
+            <strong>freedom — new single out now</strong>
+            <span class="block bg-[#1a3328] text-[#a8d5ba] px-3 py-1 rounded">view release</span>
+        </div>
+    </a>
     <a href="/posts/3xx-release" class="release-card overflow-hidden rounded-2xl border-6 border-[#FF70BC] bg-[#FF70BC] text-[#212121] w-[320px] h-[450px] absolute bottom-[40px] z-40 rotate-1 flex flex-col">
         <div class="aspect-square w-full">
             <img src="/images/releases/3xx-cover.jpg" alt="3xx cover art" class="w-full rounded-2xl">
         </div>
         <div class="flex-1 flex flex-col gap-2 items-center justify-center w-full">
-            <span class="text-sm">latest release</span>
             <strong>debut album out now</strong>
             <span class="block bg-[#212121] text-[#FF70BC] px-3 py-1 rounded">view release</span>
         </div>

@@ -84,7 +84,7 @@ x-init="
                             <i class="fa-brands fa-tiktok text-white text-2xl flex justify-center"></i>
                         </a>
                     </div>
-                    <div><a href="https://www.instagram.com/thisisrooms__/" target="_blank">snippets, previews and promos</a></div>
+                    <div><a href="https://www.instagram.com/thisisrooms__/" target="_blank">behind the scenes and latest</a></div>
                 </div>
                 <!-- soundcloud -->
                 <a href="https://soundcloud.com/thisisrooms/popular-tracks" target="_blank" class="opacity-80 hover:opacity-100 transition">

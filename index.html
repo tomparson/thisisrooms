@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-[#0E100D] text-white">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Official website for UK-based electronic music artist, rooms. Buy or stream releases, hear unreleased demos and follow social profiles.">
+    <title>rooms</title>
+
+    <link rel="icon" type="image/png" href="images/favicon-48x48.png" sizes="48x48" />
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
+    <link rel="shortcut icon" href="images/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
+    <meta property="og:image" content="images/avatar.jpg">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Instrument Sans', 'ui-sans-serif', 'system-ui', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'],
+                    },
+                    borderWidth: { '6': '6px' },
+                },
+            },
+        };
+    </script>
+    <style type="text/tailwindcss">
+        html { scroll-behavior: smooth; }
+        .prose > p:last-child > a:only-child {
+            @apply inline-block bg-[#212121] text-[#ffffff] font-bold no-underline px-5 py-2 rounded;
+        }
+        .newsletter-form > div > div > div:last-child { display: none !important; }
+        .newsletter-form .form-container { margin-left: 0 !important; }
+        .newsletter-form .emailoctopus-success-message { text-align: left !important; }
+        .newsletter-form .emailoctopus-form-row { margin-top: 0.5rem !important; }
+    </style>
+</head>
+<body>
+    <div>
+        <div id="releases">
+            <div id="releases-container" class="w-full h-full flex flex-col items-center justify-center">
+                <div class="flex-1 w-full flex items-center justify-center">
+                    <div class="flex flex-wrap items-center justify-center p-[30px] gap-[30px]">
+                        <a href="posts/freedom-release/" class="release-card overflow-hidden rounded-2xl border-6 border-[#FEDDB4] bg-[#FEDDB4] text-[#308695] w-[320px] h-[450px] -rotate-1 flex flex-col">
+                            <div class="aspect-square w-full">
+                                <img src="images/releases/freedom-cover.png" alt="freedom cover art" class="w-full rounded-2xl">
+                            </div>
+                            <div class="flex-1 flex flex-col gap-2 items-center justify-center w-full">
+                                <span class="text-sm">latest release</span>
+                                <strong>single 'freedom' out now</strong>
+                                <span class="block bg-[#308695] text-[#FEDDB4] px-3 py-1 rounded">view release</span>
+                            </div>
+                        </a>
+                        <a href="posts/3xx-release/" class="release-card overflow-hidden rounded-2xl border-6 border-[#FF70BC] bg-[#FF70BC] text-[#212121] w-[320px] h-[450px] rotate-1 flex flex-col">
+                            <div class="aspect-square w-full">
+                                <img src="images/releases/3xx-cover.jpg" alt="3xx cover art" class="w-full rounded-2xl">
+                            </div>
+                            <div class="flex-1 flex flex-col gap-2 items-center justify-center w-full">
+                                <strong>debut album out now</strong>
+                                <span class="block bg-[#212121] text-[#FF70BC] px-3 py-1 rounded">view release</span>
+                            </div>
+                        </a>
+                        <a href="posts/algo-release/" class="release-card rounded-2xl w-[320px] h-[450px] border-6 border-[#513fa6] bg-[#513fa6] text-[#ffffff] -rotate-1 flex flex-col">
+                            <div class="aspect-square w-full">
+                                <img src="images/releases/algo-cover.jpg" alt="algo cover art" class="w-full rounded-2xl">
+                            </div>
+                            <div class="flex-1 flex flex-col gap-2 items-center justify-center w-full">
+                                <strong>new single by rooms out now</strong>
+                                <span class="block bg-[#ffffff] text-[#513fa6] px-3 py-1 rounded">view release</span>
+                            </div>
+                        </a>
+                        <a href="posts/collabs/" class="release-card rounded-2xl border-6 border-[#fae6e6] bg-[#fae6e6] text-[#6a4444] text-center w-[320px] h-[450px] flex flex-col gap-2 items-center justify-center z-20 rotate-2">
+                            <strong class="flex-1 flex items-center text-2xl">collabs</strong>
+                            <img src="images/releases/spring-cover.jpg" alt="Don't Give Me Rain cover art" class="w-full h-[70px] object-cover rounded-xl">
+                            <img src="images/releases/funk-fatale-cover.jpg" alt="Funk Fatale cover art" class="w-full h-[70px] object-cover rounded-xl">
+                            <img src="images/releases/in-retrospect-cover.jpg" alt="In Retrospect cover art" class="w-full h-[70px] object-cover rounded-xl">
+                            <img src="images/releases/let-you-win-cover.jpg" alt="Let You Win cover art" class="w-full h-[70px] object-cover rounded-xl">
+                            <div class="flex-1 flex items-center justify-center">
+                                <span class="block bg-[#6a4444] text-[#fae6e6] px-3 py-1 rounded">view collabs</span>
+                            </div>
+                        </a>
+                        <a href="posts/constructs-release/" class="release-card rounded-2xl w-[320px] h-[450px] border-6 border-[#282828] bg-[#282828] text-[#ffffff] -rotate-2 flex flex-col">
+                            <div class="aspect-square w-full">
+                                <img src="images/releases/constructs-cover.jpg" alt="constructs cover art" class="w-full rounded-2xl">
+                            </div>
+                            <div class="flex-1 flex flex-col gap-2 items-center justify-center w-full">
+                                <strong>constructs EP</strong>
+                                <span class="block bg-[#ffffff] text-[#282828] px-3 py-1 rounded">view release</span>
+                            </div>
+                        </a>
+                        <a href="posts/fledgling-release/" class="release-card overflow-hidden border-6 border-[#f3d74e] bg-[#f3d74e] text-[#0b110e] rounded-2xl w-[320px] h-[450px] rotate-1 flex flex-col">
+                            <div class="aspect-square w-full">
+                                <img src="images/releases/fledgling-cover.jpg" alt="fledgling cover art" class="w-full rounded-2xl">
+                            </div>
+                            <div class="flex-1 flex flex-col gap-2 items-center justify-center w-full">
+                                <span class="text-sm">debut release</span>
+                                <strong>fledgling EP</strong>
+                                <span class="block bg-[#0b110e] text-[#f3d74e] px-3 py-1 rounded">view release</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Slot keeps a 40px gap in the flow so the button never causes layout shift
+             as it switches between fixed-bottom, static and fixed-top. -->
+        <div id="button-slot" class="relative h-[40px]">
+            <button id="scroll-button" class="left-0 z-50 bg-neutral-800 h-[40px] w-full flex items-center justify-center cursor-pointer gap-2">
+                <span id="scroll-button-text">about + links</span>
+                <i id="scroll-button-icon" class="fa-solid fa-arrow-down"></i>
+            </button>
+        </div>
+        <div id="about-and-links" class="min-h-dvh w-full flex items-center justify-center">
+            <div class="mt-[40px] py-[50px] px-10">
+                <div class="mb-12 flex flex-col justify-center gap-4">
+                    <div>
+                        <img src="images/avatar.jpg" alt="artist photo for rooms" class="rounded-full h-[80px] w-[80px]" />
+                    </div>
+                    <div class="flex-1">
+                        <p class="mb-2"><span class="opacity-90">hi i'm </span><strong class="font-bold">rooms</strong><span class="opacity-90">, a UK based electronic music artist</span></p>
+                        <p><span class="opacity-90">thanks for checking out my website :)</span></p>
+                    </div>
+                </div>
+                <div class="grid xs:grid-cols-2 sm:grid-cols-3 gap-10 max-w-[650px]">
+                    <!-- bandcamp -->
+                    <a href="https://this-is-rooms.bandcamp.com" target="_blank" class="opacity-80 hover:opacity-100 transition">
+                        <div class="flex gap-3 mb-2">
+                            <span class="opacity-80 hover:opacity-100 transition flex items-center justify-center">
+                                <i class="fa-brands fa-bandcamp text-white text-3xl"></i>
+                            </span>
+                        </div>
+                        <div>buy full releases and bonus content</div>
+                    </a>
+                    <!--apple music-->
+                    <div class="opacity-80 hover:opacity-100 transition">
+                        <div class="flex gap-3 mb-2">
+                            <a href="https://music.apple.com/gb/artist/rooms/1856841999" target="_blank" class="opacity-80 hover:opacity-100 transition flex items-center justify-center">
+                                <i class="fa-brands fa-itunes-note text-white text-3xl"></i>
+                            </a>
+                        </div>
+                        <div><a href="https://music.apple.com/gb/artist/rooms/1856841999" target="_blank">stream EPs, singles and collabs</a></div>
+                    </div>
+                    <!-- instagram / tiktok -->
+                    <div class="opacity-80 hover:opacity-100 transition">
+                        <div class="flex gap-3 mb-2">
+                            <a href="https://www.instagram.com/thisisrooms__/" target="_blank" class="opacity-80 hover:opacity-100 transition flex items-center justify-center">
+                                <i class="fa-brands fa-instagram text-white text-3xl flex justify-center"></i>
+                            </a>
+                            <a href="https://www.tiktok.com/@thisisrooms__" target="_blank" class="opacity-80 hover:opacity-100 transition flex items-center justify-center">
+                                <i class="fa-brands fa-tiktok text-white text-2xl flex justify-center"></i>
+                            </a>
+                        </div>
+                        <div><a href="https://www.instagram.com/thisisrooms__/" target="_blank">snippets, previews and promos</a></div>
+                    </div>
+                    <!-- soundcloud -->
+                    <a href="https://soundcloud.com/thisisrooms/popular-tracks" target="_blank" class="opacity-80 hover:opacity-100 transition">
+                        <div class="flex gap-3 mb-1">
+                            <span class="opacity-80 hover:opacity-100 transition flex items-center justify-center">
+                                <i class="fa-brands fa-soundcloud text-white text-4xl flex"></i>
+                            </span>
+                        </div>
+                        <div>ideas, demos and unreleased tracks</div>
+                    </a>
+                    <!-- youtube -->
+                    <a href="https://www.youtube.com/@this_is_rooms" target="_blank" class="opacity-80 hover:opacity-100 transition">
+                        <div class="flex gap-3 mb-2">
+                            <span class="opacity-80 hover:opacity-100 transition flex items-center justify-center">
+                                <i class="fa-brands fa-youtube text-white text-3xl"></i>
+                            </span>
+                        </div>
+                        <div>music videos and past show recordings</div>
+                    </a>
+                    <!-- twitch -->
+                    <a href="https://www.twitch.tv/thisisrooms" target="_blank" class="opacity-80 hover:opacity-100 transition">
+                        <div class="flex gap-3 mb-2">
+                            <span class="opacity-80 hover:opacity-100 transition flex items-center justify-center">
+                                <i class="fa-brands fa-twitch text-white text-3xl"></i>
+                            </span>
+                        </div>
+                        <div>live shows, improv jams and other streams</div>
+                    </a>
+                    <!-- gumroad -->
+                    <a href="https://thisisrooms.gumroad.com" target="_blank" class="opacity-80 hover:opacity-100 transition">
+                        <div class="flex gap-3 mb-2">
+                            <span class="opacity-80 hover:opacity-100 transition flex items-center justify-center">
+                                <div>
+                                    <svg width="30" height="30" viewBox="0 0 38 37" class="fill-white" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M37.2227 18.8093C37.2227 28.7828 28.8573 36.8093 18.6113 36.8093C8.36552 36.8093 0 28.7828 0 18.8093C0 8.83586 8.36552 0.809265 18.6113 0.809265C28.8573 0.809265 37.2227 8.83586 37.2227 18.8093ZM8.93886 18.4469C8.93886 23.6819 12.0028 27.8904 17.2115 27.8904C22.42 27.8904 23.7476 23.6819 24.0541 21.5262V27.4798H28.2848V18.0363H18.6412V19.884H23.2371C22.7264 22.1421 21.5009 24.4003 18.6412 24.4003C15.4753 24.4003 13.4326 21.629 13.4326 18.2416C13.4326 14.8542 15.4753 12.0827 18.6412 12.0827C21.6029 12.0827 22.8286 14.2383 22.9306 15.6753H27.7307C27.6286 13.1092 25.3818 8.59268 18.7432 8.59268C12.3091 8.59268 8.93886 13.0065 8.93886 18.4469Z"/>
+                                    </svg>
+                                </div>
+                            </span>
+                        </div>
+                        <div>ableton racks, m4l devices and samples</div>
+                    </a>
+                    <!-- mailing list -->
+                    <a href="https://d899755c77f311efa25d7de4d9011016.eo.page/8ggkh" target="_blank" class="opacity-80 hover:opacity-100 transition">
+                        <div class="flex gap-3 mb-2">
+                            <span class="opacity-80 hover:opacity-100 transition flex items-center justify-center">
+                                <i class="fa-solid fa-inbox text-white text-3xl flex justify-center"></i>
+                            </span>
+                        </div>
+                        <div>new releases, process insight and other updates</div>
+                    </a>
+                    <!-- substack -->
+                    <a href="https://substack.com/@metomparson" target="_blank" class="opacity-80 hover:opacity-100 transition">
+                        <div class="flex gap-3 mb-2">
+                            <span class="opacity-80 hover:opacity-100 transition flex items-center justify-center">
+                                <svg width="30" height="30" viewBox="0 0 448 511.471"><path fill="#ffffff" d="M0 0h448v62.804H0V0zm0 229.083h448v282.388L223.954 385.808 0 511.471V229.083zm0-114.542h448v62.804H0v-62.804z"/></svg>
+                            </span>
+                        </div>
+                        <div>thoughts on the creative process</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const BTN_H = 40;
+            const slot = document.getElementById('button-slot');
+            const button = document.getElementById('scroll-button');
+            const label = document.getElementById('scroll-button-text');
+            const icon = document.getElementById('scroll-button-icon');
+            const about = document.getElementById('about-and-links');
+
+            // Phases, based on where the (flow-reserved) slot sits in the viewport:
+            //  - 'bottom': slot is below the fold  -> button pinned to viewport bottom,
+            //              pointing down toward the about section.
+            //  - 'flow':   slot is on screen       -> button rides along in normal flow,
+            //              sitting between releases and about.
+            //  - 'top':    slot has passed the top -> button pinned to viewport top,
+            //              pointing up toward releases.
+            function currentPhase() {
+                const top = slot.getBoundingClientRect().top;
+                if (top > window.innerHeight - BTN_H) return 'bottom';
+                if (top < 0) return 'top';
+                return 'flow';
+            }
+
+            let phase;
+            function updateButton() {
+                const next = currentPhase();
+                if (next === phase) return;
+                phase = next;
+
+                if (phase === 'bottom') {
+                    button.style.position = 'fixed';
+                    button.style.top = 'auto';
+                    button.style.bottom = '0';
+                } else if (phase === 'top') {
+                    button.style.position = 'fixed';
+                    button.style.top = '0';
+                    button.style.bottom = 'auto';
+                } else {
+                    // Sits inside the slot in normal flow.
+                    button.style.position = 'absolute';
+                    button.style.top = '0';
+                    button.style.bottom = 'auto';
+                }
+
+                if (phase === 'top') {
+                    label.textContent = 'releases';
+                    icon.className = 'fa-solid fa-arrow-up';
+                } else {
+                    label.textContent = 'about + links';
+                    icon.className = 'fa-solid fa-arrow-down';
+                }
+            }
+
+            button.addEventListener('click', function () {
+                if (phase === 'top') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    about.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+
+            window.addEventListener('scroll', updateButton, { passive: true });
+            window.addEventListener('resize', function () { phase = null; updateButton(); });
+            updateButton();
+        })();
+    </script>
+</body>
+</html>

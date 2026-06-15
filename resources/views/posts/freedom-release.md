@@ -7,3 +7,5 @@ Listen for free now on
 
 Streaming on
 [Apple Music](https://music.apple.com/gb/album/freedom/6776955015?i=6776955017) and most other streaming platforms.
+
+Thanks for listening!

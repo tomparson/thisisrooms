@@ -166,7 +166,10 @@
         document.querySelectorAll('[data-rooms-play]').forEach(function (button) {
             const icon = button.querySelector('i');
             const label = button.querySelector('[data-rooms-play-label]');
-            if (icon) icon.className = pagePlaying ? 'fa-solid fa-pause' : 'fa-solid fa-play';
+            if (icon) {
+                icon.classList.toggle('fa-play', !pagePlaying);
+                icon.classList.toggle('fa-pause', !!pagePlaying);
+            }
             if (label) {
                 if (!label.dataset.playText) label.dataset.playText = label.textContent;
                 label.textContent = pagePlaying ? 'Pause' : label.dataset.playText;

@@ -8,7 +8,8 @@
  *    the page's track. Its icon (an <i>) and [data-rooms-play-label] text follow
  *    the play state. When a track ends, the next track down the homepage's
  *    release cards (a.release-card, newest first) plays, skipping posts with
- *    no audio.
+ *    no audio and wrapping round to the top after the last one. In a track's
+ *    last minute the player shows what's up next.
  *
  * 2. In-place navigation. Clicks on internal links fetch the next page and swap
  *    the <body> contents instead of doing a full page load, so the player (and
@@ -67,6 +68,14 @@
             color: inherit; text-decoration: none;
         }
         #rooms-player a.rp-title:hover { text-decoration: underline; }
+        #rooms-player .rp-meta-right { display: flex; gap: 10px; min-width: 0; }
+        #rooms-player .rp-next {
+            min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+            color: rgba(255, 255, 255, .5);
+        }
+        #rooms-player .rp-next[hidden] { display: none; }
+        #rooms-player .rp-next a { color: #fff; text-decoration: none; }
+        #rooms-player .rp-next a:hover { text-decoration: underline; }
         #rooms-player .rp-time { flex: none; opacity: .5; font-variant-numeric: tabular-nums; }
         #rooms-player .rp-right { flex: none; display: flex; align-items: center; gap: 6px; }
         #rooms-player .rp-seek { display: block; }
@@ -112,7 +121,10 @@
             <div class="rp-middle">
                 <div class="rp-meta">
                     <a class="rp-title"></a>
-                    <span class="rp-time"><span class="rp-current">0:00</span> / <span class="rp-duration">--:--</span></span>
+                    <span class="rp-meta-right">
+                        <span class="rp-next" hidden>up next: <a></a></span>
+                        <span class="rp-time"><span class="rp-current">0:00</span> / <span class="rp-duration">--:--</span></span>
+                    </span>
                 </div>
                 <input type="range" class="rp-seek" min="0" max="1000" step="1" value="0" aria-label="seek">
             </div>
@@ -133,6 +145,8 @@
     const seek = player.querySelector('.rp-seek');
     const volume = player.querySelector('.rp-volume');
     const titleLink = player.querySelector('.rp-title');
+    const upNext = player.querySelector('.rp-next');
+    const upNextLink = upNext.querySelector('a');
     const currentLabel = player.querySelector('.rp-current');
     const durationLabel = player.querySelector('.rp-duration');
 
@@ -158,6 +172,25 @@
         currentLabel.textContent = formatTime(audio.currentTime);
         seek.value = isFinite(duration) && duration > 0 ? (audio.currentTime / duration) * 1000 : 0;
         setFill(seek);
+        renderUpNext();
+    }
+
+    function inLastMinute() {
+        return track && isFinite(audio.duration) && audio.duration - audio.currentTime <= 60;
+    }
+
+    function renderUpNext() {
+        if (!inLastMinute()) {
+            upNext.hidden = true;
+            return;
+        }
+        const forPage = track.page;
+        getNextTrack(forPage).then(function (next) {
+            if (!next || !track || track.page !== forPage || !inLastMinute()) return;
+            upNextLink.textContent = next.title || '';
+            upNextLink.href = next.page;
+            upNext.hidden = false;
+        });
     }
 
     function renderPlayState() {
@@ -270,25 +303,54 @@
         return releaseOrder;
     }
 
+    // Each post's track (or null), fetched at most once per visit.
+    const pageTracks = new Map();
+    function getTrackForPage(page) {
+        if (!pageTracks.has(page)) {
+            pageTracks.set(page, fetchDocument(page).then(function (doc) {
+                return trackFromDocument(doc, page);
+            }).catch(function () {
+                pageTracks.delete(page);
+                return null;
+            }));
+        }
+        return pageTracks.get(page);
+    }
+
+    // The next post after `page` in homepage order that has a track, wrapping
+    // round to the top; null when no other post has one.
+    const nextTracks = new Map();
+    function getNextTrack(page) {
+        if (!nextTracks.has(page)) {
+            nextTracks.set(page, (async function () {
+                const order = await getReleaseOrder();
+                const start = order.indexOf(page);
+                for (let k = 1; k <= order.length; k++) {
+                    const candidate = order[(start + k) % order.length];
+                    if (candidate === page) continue;
+                    const next = await getTrackForPage(candidate);
+                    if (next) return next;
+                }
+                return null;
+            })().catch(function () {
+                nextTracks.delete(page);
+                return null;
+            }));
+        }
+        return nextTracks.get(page);
+    }
+
     let advancing = false;
     async function playNext() {
         if (!track || advancing) return;
         advancing = true;
         try {
-            const order = await getReleaseOrder();
             const from = track.page;
-            for (let i = order.indexOf(from) + 1; i > 0 && i < order.length; i++) {
-                const next = trackFromDocument(await fetchDocument(order[i]), order[i]);
-                // Give up if something else started playing meanwhile.
-                if (!track || track.page !== from || !audio.paused) return;
-                if (next) {
-                    load(next);
-                    audio.play().catch(function () {});
-                    return;
-                }
-            }
-        } catch (e) {
-            // No next track; the player just stays on the finished one.
+            const next = await getNextTrack(from);
+            // Give up if something else started playing meanwhile.
+            if (!next || !track || track.page !== from || !audio.paused) return;
+            load(next);
+            audio.play().catch(function () {});
         } finally {
             advancing = false;
         }

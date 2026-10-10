@@ -301,13 +301,21 @@
         return new URL(url).href.split('#')[0].replace(/index\.html$/, '');
     }
 
+    // The post's cover art (square, unlike some link-preview images), for the
+    // lock screen / media controls.
+    function artworkFromDocument(doc, pageUrl) {
+        const cover = doc.querySelector('img[data-lightbox]');
+        if (cover) return new URL(cover.getAttribute('src'), pageUrl).href;
+        return (doc.querySelector('meta[property="og:image"]') || {}).content;
+    }
+
     function trackFromDocument(doc, pageUrl) {
         const meta = doc.querySelector('meta[name="rooms:audio"]');
         return meta && {
             src: new URL(meta.getAttribute('content'), pageUrl).href,
             title: (doc.querySelector('meta[name="rooms:audio-title"]') || {}).content,
             page: pageKey(pageUrl),
-            artwork: (doc.querySelector('meta[property="og:image"]') || {}).content,
+            artwork: artworkFromDocument(doc, pageUrl),
         };
     }
 

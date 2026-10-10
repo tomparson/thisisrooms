@@ -15,7 +15,7 @@
  *    filling the window; clicking anywhere (or Escape) closes it.
  *
  * 3. Dot grids. Each .dot-grid element is filled with evenly spaced dots.
- *    Post pages' [data-next-post] link is pointed at the next post in homepage
+ *    Post pages' [data-next-post] links are pointed at the next post in homepage
  *    order (looping round) and revealed.
  *
  * 4. In-place navigation. Clicks on internal links fetch the next page and swap
@@ -343,18 +343,20 @@
         });
     }
 
-    // Points the post's 'next' link at the following post in homepage order,
+    // Points the post's 'next' links at the following post in homepage order,
     // looping from the last back to the first. Pages not on the homepage keep
-    // it hidden.
+    // them hidden.
     function linkNextPost() {
-        const link = document.querySelector('[data-next-post]');
-        if (!link) return;
+        const links = document.querySelectorAll('[data-next-post]');
+        if (!links.length) return;
         const page = pageKey(location.href);
         getReleaseOrder().then(function (order) {
             const index = order.indexOf(page);
             if (index < 0 || order.length < 2 || pageKey(location.href) !== page) return;
-            link.href = order[(index + 1) % order.length];
-            link.hidden = false;
+            links.forEach(function (link) {
+                link.href = order[(index + 1) % order.length];
+                link.hidden = false;
+            });
         }).catch(function () {});
     }
 

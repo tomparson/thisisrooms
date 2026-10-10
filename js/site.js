@@ -3,8 +3,6 @@
  *
  * 1. Floating audio player. Pages opt in with
  *      <meta name="rooms:audio" content="path/to/track.mp3">
- *    (a Google Drive share link works too; the file must be shared with
- *    "anyone with the link")
  *      <meta name="rooms:audio-title" content="track name">
  *
  * 2. In-place navigation. Clicks on internal links fetch the next page and swap
@@ -207,18 +205,11 @@
         audio.load();
     }
 
-    // Drive share links point at a viewer page; this turns them into the file itself.
-    function audioUrl(value) {
-        const drive = value.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?.*id=)([\w-]+)/);
-        if (drive) return 'https://drive.usercontent.google.com/download?id=' + drive[1] + '&export=download&confirm=t';
-        return new URL(value, location.href).href;
-    }
-
     // Called on first load and after every navigation with the page now showing.
     function syncWithPage() {
         const meta = document.querySelector('meta[name="rooms:audio"]');
         const pageTrack = meta && {
-            src: audioUrl(meta.content),
+            src: new URL(meta.content, location.href).href,
             title: (document.querySelector('meta[name="rooms:audio-title"]') || {}).content,
             page: location.href.split('#')[0],
             artwork: (document.querySelector('meta[property="og:image"]') || {}).content,

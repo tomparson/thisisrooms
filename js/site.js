@@ -15,6 +15,8 @@
  *    filling the window; clicking anywhere (or Escape) closes it.
  *
  * 3. Dot grids. Each .dot-grid element is filled with evenly spaced dots.
+ *    Post pages' [data-next-post] link is pointed at the next post in homepage
+ *    order (looping round) and revealed.
  *
  * 4. In-place navigation. Clicks on internal links fetch the next page and swap
  *    the <body> contents instead of doing a full page load, so the player (and
@@ -341,9 +343,25 @@
         });
     }
 
+    // Points the post's 'next' link at the following post in homepage order,
+    // looping from the last back to the first. Pages not on the homepage keep
+    // it hidden.
+    function linkNextPost() {
+        const link = document.querySelector('[data-next-post]');
+        if (!link) return;
+        const page = pageKey(location.href);
+        getReleaseOrder().then(function (order) {
+            const index = order.indexOf(page);
+            if (index < 0 || order.length < 2 || pageKey(location.href) !== page) return;
+            link.href = order[(index + 1) % order.length];
+            link.hidden = false;
+        }).catch(function () {});
+    }
+
     // Called on first load and after every navigation with the page now showing.
     function syncWithPage() {
         fillDotGrids();
+        linkNextPost();
         const pageTrack = findPageTrack();
         const started = track && (!audio.paused || audio.currentTime > 0);
 

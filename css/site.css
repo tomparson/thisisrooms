@@ -145,3 +145,7 @@ body { padding-bottom: var(--player-h, 0px); }
 .lyrics { font-size: 0.9rem; line-height: 1.625; color: #fff; }
 .lyrics > p { margin-bottom: 1.5rem; }
 .lyrics > p:last-of-type { margin-bottom: 0; }
+
+/* ---- Post 'next' link: hidden until js/site.js knows where it goes ---- */
+
+a[data-next-post][hidden] { display: none; }

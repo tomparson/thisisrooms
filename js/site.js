@@ -523,15 +523,25 @@
 
     audio.addEventListener('ended', playNext);
 
-    if ('mediaSession' in navigator) {
-        navigator.mediaSession.setActionHandler('play', function () { audio.play().catch(function () {}); });
-        navigator.mediaSession.setActionHandler('pause', function () { audio.pause(); });
-        navigator.mediaSession.setActionHandler('nexttrack', function () {
+    // Lock-screen / media-key controls. iOS drops handlers set before the page
+    // becomes "now playing" (and again when its session restarts), falling back
+    // to skip-10s buttons, so they're re-registered whenever that may happen.
+    function setMediaAction(action, handler) {
+        try {
+            navigator.mediaSession.setActionHandler(action, handler);
+        } catch (e) {}
+    }
+
+    function registerMediaActions() {
+        if (!('mediaSession' in navigator)) return;
+        setMediaAction('play', function () { audio.play().catch(function () {}); });
+        setMediaAction('pause', function () { audio.pause(); });
+        setMediaAction('nexttrack', function () {
             audio.pause();
             playAdjacent(1);
         });
         // Like most players: restart the track unless it has only just begun.
-        navigator.mediaSession.setActionHandler('previoustrack', function () {
+        setMediaAction('previoustrack', function () {
             if (audio.currentTime > 3) {
                 audio.currentTime = 0;
                 return;
@@ -540,15 +550,19 @@
             playAdjacent(-1);
         });
         // iOS shows skip-10s buttons instead of previous/next while these are handled.
-        ['seekbackward', 'seekforward'].forEach(function (action) {
-            try {
-                navigator.mediaSession.setActionHandler(action, null);
-            } catch (e) {}
-        });
-        try {
-            navigator.mediaSession.setActionHandler('seekto', function (details) { audio.currentTime = details.seekTime; });
-        } catch (e) {}
+        setMediaAction('seekbackward', null);
+        setMediaAction('seekforward', null);
+        setMediaAction('seekto', function (details) { audio.currentTime = details.seekTime; });
     }
+
+    registerMediaActions();
+    ['play', 'playing', 'loadedmetadata'].forEach(function (type) {
+        audio.addEventListener(type, registerMediaActions);
+    });
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') registerMediaActions();
+    });
+    window.addEventListener('pageshow', registerMediaActions);
 
     window.addEventListener('resize', syncHeight);
     renderVolume();

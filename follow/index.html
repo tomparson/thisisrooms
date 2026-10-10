@@ -20,6 +20,8 @@
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <script>
         tailwind.config = {
+            // Hover styles only apply on devices with a real pointer (not after a tap on mobile).
+            future: { hoverOnlyWhenSupported: true },
             theme: {
                 extend: {
                     fontFamily: {
@@ -42,8 +44,8 @@
         .newsletter-form .emailoctopus-success-message { text-align: left !important; }
         .newsletter-form .emailoctopus-form-row { margin-top: 0.5rem !important; }
     </style>
-    <link href="../css/site.css?v=12" rel="stylesheet">
-    <script src="../js/site.js?v=12" defer></script>
+    <link href="../css/site.css?v=13" rel="stylesheet">
+    <script src="../js/site.js?v=13" defer></script>
 </head>
 <body>
     <main class="min-h-dvh w-full">

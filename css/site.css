@@ -44,11 +44,9 @@ body { padding-bottom: var(--player-h, 0px); }
     transition: background-color .15s, opacity .15s;
 }
 #rooms-player .rp-play { background: #fff; color: #0E100D; }
-#rooms-player .rp-play:hover { opacity: .85; }
 #rooms-player .rp-play i { font-size: 15px; }
 #rooms-player .rp-play .fa-play { margin-left: 2px; }
 #rooms-player .rp-mute { opacity: .7; }
-#rooms-player .rp-mute:hover { opacity: 1; background: rgba(255, 255, 255, .08); }
 #rooms-player .rp-middle { flex: 1; min-width: 0; }
 #rooms-player .rp-meta {
     display: flex; align-items: center; gap: 12px;
@@ -64,14 +62,12 @@ body { padding-bottom: var(--player-h, 0px); }
     overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
     color: inherit; text-decoration: none;
 }
-#rooms-player a.rp-title:hover { text-decoration: underline; }
 #rooms-player .rp-next {
     min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
     color: var(--grey-muted);
 }
 #rooms-player .rp-next[hidden] { display: none; }
 #rooms-player .rp-next a { color: #fff; text-decoration: none; }
-#rooms-player .rp-next a:hover { text-decoration: underline; }
 #rooms-player .rp-time { flex: none; color: var(--grey-muted); font-variant-numeric: tabular-nums; }
 #rooms-player .rp-right { flex: none; display: flex; align-items: center; gap: 6px; }
 #rooms-player .rp-seek { display: block; }
@@ -80,6 +76,14 @@ body { padding-bottom: var(--player-h, 0px); }
 @media (min-width: 640px) {
     #rooms-player .rp-meta-left { flex-direction: row; justify-content: space-between; gap: 12px; }
     #rooms-player .rp-volume { display: block; }
+}
+
+/* Hover styles only for devices with a real pointer, so they don't stick after a tap. */
+@media (hover: hover) and (pointer: fine) {
+    #rooms-player .rp-play:hover { opacity: .85; }
+    #rooms-player .rp-mute:hover { opacity: 1; background: rgba(255, 255, 255, .08); }
+    #rooms-player a.rp-title:hover { text-decoration: underline; }
+    #rooms-player .rp-next a:hover { text-decoration: underline; }
 }
 
 #rooms-player input[type=range] {

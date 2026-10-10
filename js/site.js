@@ -134,6 +134,14 @@
             padding: 24px; background: rgba(14, 16, 13, .95); cursor: zoom-out;
         }
         #rooms-lightbox[hidden] { display: none; }
+
+        .dot-grid { position: relative; min-width: 0; }
+        .dot-grid-dots {
+            position: absolute; inset: 0; overflow: hidden;
+            display: flex; flex-wrap: wrap; justify-content: space-between; align-content: flex-start;
+            gap: 4px;
+        }
+        .dot-grid-dots > i { width: 4px; height: 4px; border-radius: 9999px; background: #333333; }
         #rooms-lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
     `;
     document.head.appendChild(style);
@@ -408,8 +416,18 @@
         }
     }
 
+    // Fills .dot-grid elements with more dots than they need; the dots sit in
+    // an absolutely positioned layer that clips the excess, so they never
+    // affect the grid's size.
+    function fillDotGrids() {
+        document.querySelectorAll('.dot-grid:empty').forEach(function (grid) {
+            grid.innerHTML = '<div class="dot-grid-dots">' + '<i></i>'.repeat(1500) + '</div>';
+        });
+    }
+
     // Called on first load and after every navigation with the page now showing.
     function syncWithPage() {
+        fillDotGrids();
         const pageTrack = findPageTrack();
         const started = track && (!audio.paused || audio.currentTime > 0);
 

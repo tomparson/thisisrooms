@@ -46,7 +46,7 @@
         .newsletter-form .emailoctopus-success-message { text-align: left !important; }
         .newsletter-form .emailoctopus-form-row { margin-top: 0.5rem !important; }
     </style>
-    <script src="../../js/site.js?v=7" defer></script>
+    <script src="../../js/site.js?v=8" defer></script>
 </head>
 <body>
     <main class="min-h-dvh w-full">
@@ -60,7 +60,11 @@
 <h1 class="text-[1.75rem] sm:text-[2.25em] text-pretty">algo out now</h1>
 <p class="-mt-[19px] md:-mt-6 mb-5 text-sm opacity-50"><time datetime="2026-01-01">1 January 2026</time></p>
 <div class="not-prose mb-8 grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto] md:gap-x-6">
-<img src="../../images/releases/algo-cover.jpg" alt="algo cover art" data-lightbox class="w-[calc(100%-124px)] mx-auto rounded-lg mb-2 md:mx-0 md:mb-0 md:col-start-2 md:row-start-1 md:row-span-3 md:w-auto md:h-[198px]" />
+<div class="flex gap-1 mb-2 md:mb-0 md:col-start-2 md:row-start-1 md:row-span-3">
+<div class="dot-grid flex-1 md:hidden" aria-hidden="true"></div>
+<img src="../../images/releases/algo-cover.jpg" alt="algo cover art" data-lightbox class="self-start w-[calc(100%-124px)] rounded-lg md:w-auto md:h-[198px]" />
+<div class="dot-grid flex-1 md:hidden" aria-hidden="true"></div>
+</div>
     <button type="button" data-rooms-play class="md:col-start-1 flex items-center gap-4 rounded-lg border border-white bg-white text-[#0E100D] font-bold h-[62px] px-4 py-4 text-left hover:opacity-90 transition">
         <span class="w-8 flex-none flex justify-center"><i class="fa-solid fa-play text-xl"></i></span>
         <span data-rooms-play-label>Play</span>

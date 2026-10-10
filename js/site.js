@@ -6,7 +6,9 @@
  *      <meta name="rooms:audio-title" content="track name">
  *    and can add a button with a data-rooms-play attribute that plays (or pauses)
  *    the page's track. Its icon (an <i>) and [data-rooms-play-label] text follow
- *    the play state.
+ *    the play state. When a track ends, the next track down the homepage's
+ *    release cards (a.release-card, newest first) plays, skipping posts with
+ *    no audio.
  *
  * 2. In-place navigation. Clicks on internal links fetch the next page and swap
  *    the <body> contents instead of doing a full page load, so the player (and
@@ -19,6 +21,9 @@
 (function () {
     if (window.roomsSite) return;
     window.roomsSite = true;
+
+    // This file lives in /js/, so the site root is one level up.
+    const siteRoot = new URL('../', document.currentScript.src).href;
 
     // ---------------------------------------------------------------------
     // Player
@@ -224,14 +229,69 @@
         audio.load();
     }
 
-    function findPageTrack() {
-        const meta = document.querySelector('meta[name="rooms:audio"]');
+    function pageKey(url) {
+        return new URL(url).href.split('#')[0].replace(/index\.html$/, '');
+    }
+
+    function trackFromDocument(doc, pageUrl) {
+        const meta = doc.querySelector('meta[name="rooms:audio"]');
         return meta && {
-            src: new URL(meta.content, location.href).href,
-            title: (document.querySelector('meta[name="rooms:audio-title"]') || {}).content,
-            page: location.href.split('#')[0],
-            artwork: (document.querySelector('meta[property="og:image"]') || {}).content,
+            src: new URL(meta.getAttribute('content'), pageUrl).href,
+            title: (doc.querySelector('meta[name="rooms:audio-title"]') || {}).content,
+            page: pageKey(pageUrl),
+            artwork: (doc.querySelector('meta[property="og:image"]') || {}).content,
         };
+    }
+
+    function findPageTrack() {
+        return trackFromDocument(document, location.href);
+    }
+
+    async function fetchDocument(url) {
+        const response = await fetch(url, { headers: { Accept: 'text/html' } });
+        const type = response.headers.get('content-type') || '';
+        if (!response.ok || type.indexOf('text/html') === -1) throw new Error('not a page');
+        return new DOMParser().parseFromString(await response.text(), 'text/html');
+    }
+
+    // Post pages in homepage order, fetched once per visit.
+    let releaseOrder;
+    function getReleaseOrder() {
+        if (!releaseOrder) {
+            releaseOrder = fetchDocument(siteRoot).then(function (home) {
+                return Array.from(home.querySelectorAll('a.release-card')).map(function (card) {
+                    return pageKey(new URL(card.getAttribute('href'), siteRoot));
+                });
+            }).catch(function (error) {
+                releaseOrder = null;
+                throw error;
+            });
+        }
+        return releaseOrder;
+    }
+
+    let advancing = false;
+    async function playNext() {
+        if (!track || advancing) return;
+        advancing = true;
+        try {
+            const order = await getReleaseOrder();
+            const from = track.page;
+            for (let i = order.indexOf(from) + 1; i > 0 && i < order.length; i++) {
+                const next = trackFromDocument(await fetchDocument(order[i]), order[i]);
+                // Give up if something else started playing meanwhile.
+                if (!track || track.page !== from || !audio.paused) return;
+                if (next) {
+                    load(next);
+                    audio.play().catch(function () {});
+                    return;
+                }
+            }
+        } catch (e) {
+            // No next track; the player just stays on the finished one.
+        } finally {
+            advancing = false;
+        }
     }
 
     // Called on first load and after every navigation with the page now showing.
@@ -306,10 +366,15 @@
         audio.addEventListener(type, renderPlayState);
     });
     audio.addEventListener('volumechange', renderVolume);
+    audio.addEventListener('ended', playNext);
 
     if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', function () { audio.play().catch(function () {}); });
         navigator.mediaSession.setActionHandler('pause', function () { audio.pause(); });
+        navigator.mediaSession.setActionHandler('nexttrack', function () {
+            audio.pause();
+            playNext();
+        });
         try {
             navigator.mediaSession.setActionHandler('seekto', function (details) { audio.currentTime = details.seekTime; });
         } catch (e) {}
@@ -385,10 +450,7 @@
         const id = ++navigationId;
         let next;
         try {
-            const response = await fetch(url.href, { headers: { Accept: 'text/html' } });
-            const type = response.headers.get('content-type') || '';
-            if (!response.ok || type.indexOf('text/html') === -1) throw new Error('not a page');
-            next = new DOMParser().parseFromString(await response.text(), 'text/html');
+            next = await fetchDocument(url.href);
         } catch (e) {
             location.href = url.href;
             return;

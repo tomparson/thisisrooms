@@ -361,36 +361,44 @@
         return pageTracks.get(page);
     }
 
-    // The next post after `page` in homepage order that has a track, wrapping
-    // round to the top; null when no other post has one.
-    const nextTracks = new Map();
-    function getNextTrack(page) {
-        if (!nextTracks.has(page)) {
-            nextTracks.set(page, (async function () {
+    // The nearest post after (step 1) or before (step -1) `page` in homepage
+    // order that has a track, wrapping round; null when no other post has one.
+    const adjacentTracks = new Map();
+    function getAdjacentTrack(page, step) {
+        const key = step + ' ' + page;
+        if (!adjacentTracks.has(key)) {
+            adjacentTracks.set(key, (async function () {
                 const order = await getReleaseOrder();
+                const n = order.length;
                 const start = order.indexOf(page);
-                for (let k = 1; k <= order.length; k++) {
-                    const candidate = order[(start + k) % order.length];
+                for (let k = 1; k <= n; k++) {
+                    const candidate = start < 0 && step < 0
+                        ? order[n - k]
+                        : order[(((start + step * k) % n) + n) % n];
                     if (candidate === page) continue;
-                    const next = await getTrackForPage(candidate);
-                    if (next) return next;
+                    const found = await getTrackForPage(candidate);
+                    if (found) return found;
                 }
                 return null;
             })().catch(function () {
-                nextTracks.delete(page);
+                adjacentTracks.delete(key);
                 return null;
             }));
         }
-        return nextTracks.get(page);
+        return adjacentTracks.get(key);
+    }
+
+    function getNextTrack(page) {
+        return getAdjacentTrack(page, 1);
     }
 
     let advancing = false;
-    async function playNext() {
+    async function playAdjacent(step) {
         if (!track || advancing) return;
         advancing = true;
         try {
             const from = track.page;
-            const next = await getNextTrack(from);
+            const next = await getAdjacentTrack(from, step);
             // Give up if something else started playing meanwhile.
             if (!next || !track || track.page !== from || !audio.paused) return;
             load(next);
@@ -472,6 +480,10 @@
         audio.addEventListener(type, renderPlayState);
     });
     audio.addEventListener('volumechange', renderVolume);
+    function playNext() {
+        playAdjacent(1);
+    }
+
     audio.addEventListener('ended', playNext);
 
     if ('mediaSession' in navigator) {
@@ -479,7 +491,22 @@
         navigator.mediaSession.setActionHandler('pause', function () { audio.pause(); });
         navigator.mediaSession.setActionHandler('nexttrack', function () {
             audio.pause();
-            playNext();
+            playAdjacent(1);
+        });
+        // Like most players: restart the track unless it has only just begun.
+        navigator.mediaSession.setActionHandler('previoustrack', function () {
+            if (audio.currentTime > 3) {
+                audio.currentTime = 0;
+                return;
+            }
+            audio.pause();
+            playAdjacent(-1);
+        });
+        // iOS shows skip-10s buttons instead of previous/next while these are handled.
+        ['seekbackward', 'seekforward'].forEach(function (action) {
+            try {
+                navigator.mediaSession.setActionHandler(action, null);
+            } catch (e) {}
         });
         try {
             navigator.mediaSession.setActionHandler('seekto', function (details) { audio.currentTime = details.seekTime; });

@@ -169,7 +169,7 @@
             if (icon) icon.className = pagePlaying ? 'fa-solid fa-pause' : 'fa-solid fa-play';
             if (label) {
                 if (!label.dataset.playText) label.dataset.playText = label.textContent;
-                label.textContent = pagePlaying ? 'pause' : label.dataset.playText;
+                label.textContent = pagePlaying ? 'Pause' : label.dataset.playText;
             }
         });
     }

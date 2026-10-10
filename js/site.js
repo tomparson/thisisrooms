@@ -4,6 +4,9 @@
  * 1. Floating audio player. Pages opt in with
  *      <meta name="rooms:audio" content="path/to/track.mp3">
  *      <meta name="rooms:audio-title" content="track name">
+ *    and can add a button with a data-rooms-play attribute that plays (or pauses)
+ *    the page's track. Its icon (an <i>) and [data-rooms-play-label] text follow
+ *    the play state.
  *
  * 2. In-place navigation. Clicks on internal links fetch the next page and swap
  *    the <body> contents instead of doing a full page load, so the player (and
@@ -156,6 +159,19 @@
         const playing = !audio.paused;
         playIcon.className = playing ? 'fa-solid fa-pause' : 'fa-solid fa-play';
         playButton.setAttribute('aria-label', playing ? 'pause' : 'play');
+
+        // In-page play buttons only show 'pause' while it's their page's track playing.
+        const pageTrack = findPageTrack();
+        const pagePlaying = playing && pageTrack && track && track.src === pageTrack.src;
+        document.querySelectorAll('[data-rooms-play]').forEach(function (button) {
+            const icon = button.querySelector('i');
+            const label = button.querySelector('[data-rooms-play-label]');
+            if (icon) icon.className = pagePlaying ? 'fa-solid fa-pause' : 'fa-solid fa-play';
+            if (label) {
+                if (!label.dataset.playText) label.dataset.playText = label.textContent;
+                label.textContent = pagePlaying ? 'pause' : label.dataset.playText;
+            }
+        });
     }
 
     function renderVolume() {
@@ -205,15 +221,19 @@
         audio.load();
     }
 
-    // Called on first load and after every navigation with the page now showing.
-    function syncWithPage() {
+    function findPageTrack() {
         const meta = document.querySelector('meta[name="rooms:audio"]');
-        const pageTrack = meta && {
+        return meta && {
             src: new URL(meta.content, location.href).href,
             title: (document.querySelector('meta[name="rooms:audio-title"]') || {}).content,
             page: location.href.split('#')[0],
             artwork: (document.querySelector('meta[property="og:image"]') || {}).content,
         };
+    }
+
+    // Called on first load and after every navigation with the page now showing.
+    function syncWithPage() {
+        const pageTrack = findPageTrack();
         const started = track && (!audio.paused || audio.currentTime > 0);
 
         if (pageTrack) {
@@ -226,9 +246,23 @@
             if (track) unload();
             show(false);
         }
+        renderPlayState();
     }
 
     playButton.addEventListener('click', function () {
+        if (audio.paused) {
+            audio.play().catch(function () {});
+        } else {
+            audio.pause();
+        }
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest('[data-rooms-play]')) return;
+        const pageTrack = findPageTrack();
+        if (!pageTrack) return;
+        if (!track || track.src !== pageTrack.src) load(pageTrack);
+        show(true);
         if (audio.paused) {
             audio.play().catch(function () {});
         } else {

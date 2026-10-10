@@ -14,15 +14,17 @@
  * 2. Artwork lightbox. On desktop, clicking an <img data-lightbox> shows it
  *    filling the window; clicking anywhere (or Escape) closes it.
  *
- * 3. In-place navigation. Clicks on internal links fetch the next page and swap
+ * 3. Dot grids. Each .dot-grid element is filled with evenly spaced dots.
+ *
+ * 4. In-place navigation. Clicks on internal links fetch the next page and swap
  *    the <body> contents instead of doing a full page load, so the player (and
  *    whatever it is playing) survives navigation. Page scripts are re-run after
  *    each swap; a page script that adds window/document listeners should remove
  *    them when the 'rooms:navigate' event fires on document. 'rooms:pageshow'
  *    fires once the new page has had a frame to lay out (the in-place stand-in
- *    for window 'load'). Pages load this file as js/site.js?v=N; bump N on every
- *    page when this file changes, so open tabs do a full load (once) when they
- *    reach a page referencing a newer N.
+ *    for window 'load'). Pages load this file and css/site.css with the same
+ *    ?v=N; bump N on every page when either changes, so open tabs do a full load
+ *    (once) when they reach a page referencing a newer N.
  */
 (function () {
     if (window.roomsSite) return;
@@ -39,111 +41,6 @@
     // ---------------------------------------------------------------------
     // Player
     // ---------------------------------------------------------------------
-
-    const style = document.createElement('style');
-    style.textContent = `
-        body { padding-bottom: var(--player-h, 0px); }
-        #rooms-player {
-            position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
-            background: rgba(23, 23, 23, 0.96);
-            -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            color: #fff;
-            padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-        }
-        #rooms-player[hidden] { display: none; }
-        #rooms-player .rp-inner {
-            max-width: 900px; margin: 0 auto;
-            display: flex; align-items: center; gap: 14px;
-        }
-        #rooms-player button {
-            flex: none; width: 40px; height: 40px; border-radius: 9999px;
-            display: flex; align-items: center; justify-content: center;
-            padding: 0; border: 0; cursor: pointer; color: inherit; background: transparent;
-            transition: background-color .15s, opacity .15s;
-        }
-        #rooms-player .rp-play { background: #fff; color: #0E100D; }
-        #rooms-player .rp-play:hover { opacity: .85; }
-        #rooms-player .rp-play i { font-size: 15px; }
-        #rooms-player .rp-play .fa-play { margin-left: 2px; }
-        #rooms-player .rp-mute { opacity: .7; }
-        #rooms-player .rp-mute:hover { opacity: 1; background: rgba(255, 255, 255, .08); }
-        #rooms-player .rp-middle { flex: 1; min-width: 0; }
-        #rooms-player .rp-meta {
-            display: flex; align-items: center; gap: 12px;
-            font-size: 13px; line-height: 1.2; margin-bottom: 6px;
-        }
-        #rooms-player .rp-meta-left {
-            flex: 1; min-width: 0;
-            display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
-        }
-        @media (min-width: 640px) {
-            #rooms-player .rp-meta-left { flex-direction: row; justify-content: space-between; gap: 12px; }
-        }
-        #rooms-player .rp-meta-left > * { max-width: 100%; }
-        #rooms-player .rp-title {
-            overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-            color: inherit; text-decoration: none;
-        }
-        #rooms-player a.rp-title:hover { text-decoration: underline; }
-        #rooms-player .rp-next {
-            min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-            color: rgba(255, 255, 255, .5);
-        }
-        #rooms-player .rp-next[hidden] { display: none; }
-        #rooms-player .rp-next a { color: #fff; text-decoration: none; }
-        #rooms-player .rp-next a:hover { text-decoration: underline; }
-        #rooms-player .rp-time { flex: none; opacity: .5; font-variant-numeric: tabular-nums; }
-        #rooms-player .rp-right { flex: none; display: flex; align-items: center; gap: 6px; }
-        #rooms-player .rp-seek { display: block; }
-        #rooms-player .rp-volume { display: none; width: 80px; }
-        @media (min-width: 640px) {
-            #rooms-player .rp-volume { display: block; }
-        }
-
-        #rooms-player input[type=range] {
-            -webkit-appearance: none; appearance: none;
-            width: 100%; height: 16px; margin: 0; background: transparent; cursor: pointer;
-            --fill: 0%;
-        }
-        #rooms-player input[type=range]:disabled { cursor: default; }
-        #rooms-player input[type=range]::-webkit-slider-runnable-track {
-            height: 4px; border-radius: 9999px;
-            background: linear-gradient(to right, #fff var(--fill), rgba(255, 255, 255, .2) var(--fill));
-        }
-        #rooms-player input[type=range]::-moz-range-track {
-            height: 4px; border-radius: 9999px;
-            background: linear-gradient(to right, #fff var(--fill), rgba(255, 255, 255, .2) var(--fill));
-        }
-        #rooms-player input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; appearance: none;
-            width: 12px; height: 12px; margin-top: -4px; border: 0; border-radius: 9999px;
-            background: #fff;
-        }
-        #rooms-player input[type=range]::-moz-range-thumb {
-            width: 12px; height: 12px; border: 0; border-radius: 9999px; background: #fff;
-        }
-        #rooms-player input[type=range]:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-
-        @media (min-width: 768px) {
-            img[data-lightbox] { cursor: zoom-in; }
-        }
-        #rooms-lightbox {
-            position: fixed; inset: 0; z-index: 70;
-            display: flex; align-items: center; justify-content: center;
-            padding: 24px; background: rgba(14, 16, 13, .95); cursor: zoom-out;
-        }
-        #rooms-lightbox[hidden] { display: none; }
-
-        .dot-grid { position: relative; min-width: 0; }
-        .dot-grid-dots {
-            position: absolute; inset: 0; overflow: hidden;
-            display: grid; justify-content: space-between; align-content: space-between;
-        }
-        .dot-grid-dots > i { width: 4px; height: 4px; border-radius: 9999px; background: #333333; }
-        #rooms-lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
-    `;
-    document.head.appendChild(style);
 
     const player = document.createElement('div');
     player.id = 'rooms-player';
@@ -517,11 +414,7 @@
         audio.addEventListener(type, renderPlayState);
     });
     audio.addEventListener('volumechange', renderVolume);
-    function playNext() {
-        playAdjacent(1);
-    }
-
-    audio.addEventListener('ended', playNext);
+    audio.addEventListener('ended', function () { playAdjacent(1); });
 
     // Lock-screen / media-key controls. iOS drops handlers set before the page
     // becomes "now playing" (and again when its session restarts), falling back

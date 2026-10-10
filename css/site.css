@@ -7,7 +7,7 @@
 
 :root {
     /* Greys */
-    --grey-muted: #888888;  /* secondary text: dates, back links, player times, lyrics */
+    --grey-muted: #888888;  /* secondary text: dates, back links, player times */
     --grey-dot: #333333;    /* dot grids */
 
     /* Spacing */
@@ -127,8 +127,9 @@ body { padding-bottom: var(--player-h, 0px); }
     display: grid; justify-content: space-between; align-content: space-between;
 }
 .dot-grid-dots > i { width: 4px; height: 4px; border-radius: 9999px; background: var(--grey-dot); }
-/* A full-width band of 15 rows (15 dots + 14 gaps of 4px). */
+/* Full-width bands of dots: 15 rows (15 dots + 14 gaps of 4px), or 10. */
 .dot-strip { height: 116px; }
+.dot-strip-short { height: 76px; }
 
 /* ---- Typewriter text: lyrics, and the homepage smiley ---- */
 
@@ -137,5 +138,5 @@ body { padding-bottom: var(--player-h, 0px); }
     /* Courier New is hairline-thin on iOS; a faint outline evens it out. */
     -webkit-text-stroke: 0.3px currentColor;
 }
-.lyrics { font-size: 0.9rem; line-height: 1.625; color: var(--grey-muted); }
+.lyrics { font-size: 0.9rem; line-height: 1.625; color: #fff; }
 .lyrics > p { margin-bottom: 1.5rem; }

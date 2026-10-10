@@ -40,6 +40,7 @@
         .newsletter-form .emailoctopus-success-message { text-align: left !important; }
         .newsletter-form .emailoctopus-form-row { margin-top: 0.5rem !important; }
     </style>
+    <script src="js/site.js" defer></script>
 </head>
 <body>
     <div>
@@ -300,6 +301,18 @@
             const icon = document.getElementById('scroll-button-icon');
             const about = document.getElementById('about-and-links');
 
+            // This page can be swapped out without a reload (js/site.js), so global
+            // listeners are dropped when that happens.
+            const listeners = new AbortController();
+            const signal = listeners.signal;
+            document.addEventListener('rooms:navigate', function () { listeners.abort(); }, { once: true });
+
+            // The floating audio player (js/site.js) takes the bottom of the viewport
+            // when it's showing, so the bar pins above it.
+            function playerHeight() {
+                return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--player-h')) || 0;
+            }
+
             // The bar wraps onto two lines on narrow screens, so its height is measured and
             // published as --bar-h for the slot to reserve. Always measured with the intro
             // visible, so the slot keeps the same height in every phase (no scroll jumps).
@@ -322,7 +335,7 @@
             //              pointing up toward releases.
             function currentPhase() {
                 const top = slot.getBoundingClientRect().top;
-                if (top > window.innerHeight - button.offsetHeight) return 'bottom';
+                if (top > window.innerHeight - playerHeight() - button.offsetHeight) return 'bottom';
                 if (top < 0) return 'top';
                 return 'flow';
             }
@@ -336,7 +349,7 @@
                 if (phase === 'bottom') {
                     button.style.position = 'fixed';
                     button.style.top = 'auto';
-                    button.style.bottom = '0';
+                    button.style.bottom = 'var(--player-h, 0px)';
                 } else if (phase === 'top') {
                     button.style.position = 'fixed';
                     button.style.top = '0';
@@ -369,11 +382,20 @@
                 }
             });
 
-            window.addEventListener('scroll', updateButton, { passive: true });
-            window.addEventListener('resize', function () { syncHeight(); phase = null; updateButton(); });
-            window.addEventListener('load', function () { syncHeight(); phase = null; updateButton(); });
+            function refresh() {
+                if (signal.aborted) return;
+                syncHeight();
+                phase = null;
+                updateButton();
+            }
+
+            window.addEventListener('scroll', updateButton, { passive: true, signal: signal });
+            window.addEventListener('resize', refresh, { signal: signal });
+            window.addEventListener('load', refresh, { signal: signal });
+            document.addEventListener('rooms:player-resize', refresh, { signal: signal });
+            document.addEventListener('rooms:pageshow', refresh, { signal: signal });
             if (document.fonts && document.fonts.ready) {
-                document.fonts.ready.then(function () { syncHeight(); phase = null; updateButton(); });
+                document.fonts.ready.then(refresh);
             }
             syncHeight();
             updateButton();

@@ -11,7 +11,10 @@
  *    no audio and wrapping round to the top after the last one. In a track's
  *    last minute the player shows what's up next.
  *
- * 2. In-place navigation. Clicks on internal links fetch the next page and swap
+ * 2. Artwork lightbox. On desktop, clicking an <img data-lightbox> shows it
+ *    filling the window; clicking anywhere (or Escape) closes it.
+ *
+ * 3. In-place navigation. Clicks on internal links fetch the next page and swap
  *    the <body> contents instead of doing a full page load, so the player (and
  *    whatever it is playing) survives navigation. Page scripts are re-run after
  *    each swap; a page script that adds window/document listeners should remove
@@ -116,6 +119,17 @@
             width: 12px; height: 12px; border: 0; border-radius: 9999px; background: #fff;
         }
         #rooms-player input[type=range]:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+        @media (min-width: 768px) {
+            img[data-lightbox] { cursor: zoom-in; }
+        }
+        #rooms-lightbox {
+            position: fixed; inset: 0; z-index: 70;
+            display: flex; align-items: center; justify-content: center;
+            padding: 24px; background: rgba(14, 16, 13, .95); cursor: zoom-out;
+        }
+        #rooms-lightbox[hidden] { display: none; }
+        #rooms-lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
     `;
     document.head.appendChild(style);
 
@@ -462,6 +476,35 @@
     renderVolume();
 
     // ---------------------------------------------------------------------
+    // Artwork lightbox
+    // ---------------------------------------------------------------------
+
+    const lightbox = document.createElement('div');
+    lightbox.id = 'rooms-lightbox';
+    lightbox.hidden = true;
+    const lightboxImage = document.createElement('img');
+    lightboxImage.alt = '';
+    lightbox.appendChild(lightboxImage);
+
+    function closeLightbox() {
+        lightbox.hidden = true;
+        lightboxImage.removeAttribute('src');
+    }
+
+    document.addEventListener('click', function (event) {
+        const image = event.target.closest('img[data-lightbox]');
+        if (!image || !window.matchMedia('(min-width: 768px)').matches) return;
+        lightboxImage.src = image.currentSrc || image.src;
+        lightboxImage.alt = image.alt;
+        lightbox.hidden = false;
+    });
+    lightbox.addEventListener('click', closeLightbox);
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !lightbox.hidden) closeLightbox();
+    });
+    document.addEventListener('rooms:navigate', closeLightbox);
+
+    // ---------------------------------------------------------------------
     // In-place navigation
     // ---------------------------------------------------------------------
 
@@ -504,7 +547,7 @@
     function swapBody(next) {
         document.dispatchEvent(new CustomEvent('rooms:navigate'));
         Array.from(document.body.childNodes).forEach(function (node) {
-            if (node !== player) node.remove();
+            if (node !== player && node !== lightbox) node.remove();
         });
         for (const attr of Array.from(document.body.attributes)) document.body.removeAttribute(attr.name);
         for (const attr of next.body.attributes) document.body.setAttribute(attr.name, attr.value);
@@ -593,6 +636,7 @@
 
     function init() {
         document.body.appendChild(player);
+        document.body.appendChild(lightbox);
         syncWithPage();
     }
 

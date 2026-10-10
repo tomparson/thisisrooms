@@ -17,14 +17,16 @@
  *    each swap; a page script that adds window/document listeners should remove
  *    them when the 'rooms:navigate' event fires on document. 'rooms:pageshow'
  *    fires once the new page has had a frame to lay out (the in-place stand-in
- *    for window 'load').
+ *    for window 'load'). Pages load this file as js/site.js?v=N; bump N on every
+ *    page when this file changes, so open tabs do a full load to pick it up.
  */
 (function () {
     if (window.roomsSite) return;
     window.roomsSite = true;
 
     // This file lives in /js/, so the site root is one level up.
-    const siteRoot = new URL('../', document.currentScript.src).href;
+    const scriptSrc = document.currentScript.src;
+    const siteRoot = new URL('../', scriptSrc).href;
 
     // ---------------------------------------------------------------------
     // Player
@@ -60,15 +62,22 @@
         #rooms-player .rp-mute:hover { opacity: 1; background: rgba(255, 255, 255, .08); }
         #rooms-player .rp-middle { flex: 1; min-width: 0; }
         #rooms-player .rp-meta {
-            display: flex; justify-content: space-between; gap: 12px;
+            display: flex; align-items: flex-start; gap: 12px;
             font-size: 13px; line-height: 1.2; margin-bottom: 6px;
         }
+        #rooms-player .rp-meta-left {
+            flex: 1; min-width: 0;
+            display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+        }
+        @media (min-width: 640px) {
+            #rooms-player .rp-meta-left { flex-direction: row; justify-content: space-between; gap: 12px; }
+        }
+        #rooms-player .rp-meta-left > * { max-width: 100%; }
         #rooms-player .rp-title {
             overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
             color: inherit; text-decoration: none;
         }
         #rooms-player a.rp-title:hover { text-decoration: underline; }
-        #rooms-player .rp-meta-right { display: flex; gap: 10px; min-width: 0; }
         #rooms-player .rp-next {
             min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
             color: rgba(255, 255, 255, .5);
@@ -120,11 +129,11 @@
             <button type="button" class="rp-play" aria-label="play"><i class="fa-solid fa-play"></i></button>
             <div class="rp-middle">
                 <div class="rp-meta">
-                    <a class="rp-title"></a>
-                    <span class="rp-meta-right">
+                    <div class="rp-meta-left">
+                        <a class="rp-title"></a>
                         <span class="rp-next" hidden>up next: <a></a></span>
-                        <span class="rp-time"><span class="rp-current">0:00</span> / <span class="rp-duration">--:--</span></span>
-                    </span>
+                    </div>
+                    <span class="rp-time"><span class="rp-current">0:00</span> / <span class="rp-duration">--:--</span></span>
                 </div>
                 <input type="range" class="rp-seek" min="0" max="1000" step="1" value="0" aria-label="seek">
             </div>
@@ -181,7 +190,7 @@
 
     function renderUpNext() {
         if (!inLastMinute()) {
-            upNext.hidden = true;
+            showUpNext(false);
             return;
         }
         const forPage = track.page;
@@ -189,8 +198,15 @@
             if (!next || !track || track.page !== forPage || !inLastMinute()) return;
             upNextLink.textContent = next.title || '';
             upNextLink.href = next.page;
-            upNext.hidden = false;
+            showUpNext(true);
         });
+    }
+
+    // On mobile the label takes its own line, which changes the player's height.
+    function showUpNext(visible) {
+        if (upNext.hidden === !visible) return;
+        upNext.hidden = !visible;
+        syncHeight();
     }
 
     function renderPlayState() {
@@ -518,6 +534,13 @@
             return;
         }
         if (id !== navigationId) return;
+
+        // A newer deploy of this script needs a real page load to take effect.
+        const nextScript = next.querySelector('script[src*="js/site.js"]');
+        if (nextScript && new URL(nextScript.getAttribute('src'), url).href !== scriptSrc) {
+            location.href = url.href;
+            return;
+        }
 
         if (options.push) {
             rememberScroll();

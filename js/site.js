@@ -21,7 +21,8 @@
  *    them when the 'rooms:navigate' event fires on document. 'rooms:pageshow'
  *    fires once the new page has had a frame to lay out (the in-place stand-in
  *    for window 'load'). Pages load this file as js/site.js?v=N; bump N on every
- *    page when this file changes, so open tabs do a full load to pick it up.
+ *    page when this file changes, so open tabs do a full load (once) when they
+ *    reach a page referencing a newer N.
  */
 (function () {
     if (window.roomsSite) return;
@@ -30,6 +31,10 @@
     // This file lives in /js/, so the site root is one level up.
     const scriptSrc = document.currentScript.src;
     const siteRoot = new URL('../', scriptSrc).href;
+
+    function scriptVersion(url) {
+        return Number(url.searchParams.get('v')) || 0;
+    }
 
     // ---------------------------------------------------------------------
     // Player
@@ -311,7 +316,8 @@
     }
 
     async function fetchDocument(url) {
-        const response = await fetch(url, { headers: { Accept: 'text/html' } });
+        // 'no-cache' revalidates with the server rather than reusing a stale copy.
+        const response = await fetch(url, { headers: { Accept: 'text/html' }, cache: 'no-cache' });
         const type = response.headers.get('content-type') || '';
         if (!response.ok || type.indexOf('text/html') === -1) throw new Error('not a page');
         return new DOMParser().parseFromString(await response.text(), 'text/html');
@@ -579,8 +585,9 @@
         if (id !== navigationId) return;
 
         // A newer deploy of this script needs a real page load to take effect.
+        // Pages referencing an older version (e.g. a stale copy) are swapped in as normal.
         const nextScript = next.querySelector('script[src*="js/site.js"]');
-        if (nextScript && new URL(nextScript.getAttribute('src'), url).href !== scriptSrc) {
+        if (nextScript && scriptVersion(new URL(nextScript.getAttribute('src'), url)) > scriptVersion(new URL(scriptSrc))) {
             location.href = url.href;
             return;
         }

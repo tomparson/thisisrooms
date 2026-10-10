@@ -3,6 +3,23 @@
  * css/site.css?v=N with the same N as js/site.js; bump both together.
  */
 
+/* ---- Design tokens (also exposed to Tailwind in each page's config) ---- */
+
+:root {
+    /* Greys */
+    --grey-muted: #888888;  /* secondary text: dates, back links, player times, lyrics */
+    --grey-dot: #333333;    /* dot grids */
+
+    /* Spacing */
+    --gutter: 1rem;               /* page padding on mobile */
+    --space-section: 2rem;        /* between page sections: buttons, post text, lyrics, newsletter */
+    --space-dots: 0.5rem;         /* between dot grids and the artwork/cards beside them */
+    --space-header: 6px;          /* above and below post titles */
+}
+@media (min-width: 768px) {
+    :root { --space-header: 8px; }
+}
+
 /* ---- Floating audio player (js/site.js) ---- */
 
 body { padding-bottom: var(--player-h, 0px); }
@@ -50,12 +67,12 @@ body { padding-bottom: var(--player-h, 0px); }
 #rooms-player a.rp-title:hover { text-decoration: underline; }
 #rooms-player .rp-next {
     min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-    color: rgba(255, 255, 255, .5);
+    color: var(--grey-muted);
 }
 #rooms-player .rp-next[hidden] { display: none; }
 #rooms-player .rp-next a { color: #fff; text-decoration: none; }
 #rooms-player .rp-next a:hover { text-decoration: underline; }
-#rooms-player .rp-time { flex: none; opacity: .5; font-variant-numeric: tabular-nums; }
+#rooms-player .rp-time { flex: none; color: var(--grey-muted); font-variant-numeric: tabular-nums; }
 #rooms-player .rp-right { flex: none; display: flex; align-items: center; gap: 6px; }
 #rooms-player .rp-seek { display: block; }
 #rooms-player .rp-volume { display: none; width: 80px; }
@@ -109,7 +126,7 @@ body { padding-bottom: var(--player-h, 0px); }
     position: absolute; inset: 0; overflow: hidden;
     display: grid; justify-content: space-between; align-content: space-between;
 }
-.dot-grid-dots > i { width: 4px; height: 4px; border-radius: 9999px; background: #333333; }
+.dot-grid-dots > i { width: 4px; height: 4px; border-radius: 9999px; background: var(--grey-dot); }
 /* A full-width band of 15 rows (15 dots + 14 gaps of 4px). */
 .dot-strip { height: 116px; }
 
@@ -120,5 +137,5 @@ body { padding-bottom: var(--player-h, 0px); }
     /* Courier New is hairline-thin on iOS; a faint outline evens it out. */
     -webkit-text-stroke: 0.3px currentColor;
 }
-.lyrics { font-size: 0.9rem; line-height: 1.625; }
-.lyrics > p { margin-bottom: 1.5rem; opacity: .9; }
+.lyrics { font-size: 0.9rem; line-height: 1.625; color: var(--grey-muted); }
+.lyrics > p { margin-bottom: 1.5rem; }

@@ -29,6 +29,8 @@
                         sans: ['Instrument Sans', 'ui-sans-serif', 'system-ui', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'],
                     },
                     borderWidth: { '6': '6px' },
+                    colors: { muted: 'var(--grey-muted)', dot: 'var(--grey-dot)' },
+                    spacing: { gutter: 'var(--gutter)', section: 'var(--space-section)', dots: 'var(--space-dots)', header: 'var(--space-header)' },
                 },
             },
         };
@@ -44,22 +46,22 @@
         .newsletter-form .emailoctopus-success-message { text-align: left !important; }
         .newsletter-form .emailoctopus-form-row { margin-top: 0.5rem !important; }
     </style>
-    <link href="../../css/site.css?v=10" rel="stylesheet">
-    <script src="../../js/site.js?v=10" defer></script>
+    <link href="../../css/site.css?v=11" rel="stylesheet">
+    <script src="../../js/site.js?v=11" defer></script>
 </head>
 <body>
     <main class="min-h-dvh w-full">
         <div class="pt-4 pb-[30px] md:pt-10 md:pb-[100px] px-4">
             <div class="max-w-[650px] mx-auto">
-                <a href="../../" class="opacity-50 hover:opacity-100 hover:translate-x-[-5px] transition flex items-center gap-2 mb-1.5 md:mb-2 text-sm">
+                <a href="../../" class="text-muted hover:text-white hover:translate-x-[-5px] transition flex items-center gap-2 mb-header text-sm">
                     <i class="fa-solid fa-arrow-left"></i>
                     <span>more releases + about rooms</span>
                 </a>
                 <div class="prose prose-invert max-w-none">
-<h1 class="text-[1.75rem] sm:text-[2.25em] text-pretty">don't give me rain</h1>
-<p class="-mt-[19px] md:-mt-6 mb-5 text-sm opacity-50"><time datetime="2025-01-21">21 January 2025</time></p>
-<div class="not-prose mb-8 grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto]">
-<div class="flex gap-2 mb-2 md:mb-0 md:col-start-2 md:row-start-1 md:row-span-3">
+<h1 class="text-[1.75rem] sm:text-[2.25em] text-pretty mb-header">don't give me rain</h1>
+<p class="mt-0 mb-5 text-sm text-muted"><time datetime="2025-01-21">21 January 2025</time></p>
+<div class="not-prose mb-section grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto]">
+<div class="flex gap-dots mb-2 md:mb-0 md:col-start-2 md:row-start-1 md:row-span-3">
 <div class="dot-grid flex-1 md:hidden" aria-hidden="true"></div>
 <img src="../../images/releases/spring-cover.jpg?v=3" alt="Don't Give Me Rain cover art" data-lightbox class="self-start w-[calc(100%-124px)] rounded-lg md:w-auto md:h-[192px]" />
 <div class="dot-grid flex-1 md:hidden" aria-hidden="true"></div>
@@ -84,13 +86,13 @@
 <iframe style="border: 0; width: 100%; height: 120px;" src="https://bandcamp.com/EmbeddedPlayer/album=2430876272/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/track=3430292757/transparent=true/" seamless><a href="https://circulandeas.bandcamp.com/album/seasons-spring-1">Seasons: Spring 1 by Circul &amp; Eas</a></iframe>
 
                 </div>
-                <div class="mt-8">
-                    <div class="dot-grid dot-strip mb-8" aria-hidden="true"></div>
+                <div class="mt-section">
+                    <div class="dot-grid dot-strip mb-section" aria-hidden="true"></div>
                     <div class="newsletter-form mb-[16px]">
     Subscribe for sporadic updates on new releases, my process, and things I'm working on.
     <script async src="https://eomail5.com/form/927acf7e-e662-11f0-9788-edbe0e8da0f5.js" data-form="927acf7e-e662-11f0-9788-edbe0e8da0f5"></script>
 </div>
-                    <a href="../../" class="opacity-50 hover:opacity-100 hover:translate-x-[-5px] transition flex items-center gap-2">
+                    <a href="../../" class="text-muted hover:text-white hover:translate-x-[-5px] transition flex items-center gap-2">
                         <i class="fa-solid fa-arrow-left"></i>
                         <span>more releases + about rooms</span>
                     </a>

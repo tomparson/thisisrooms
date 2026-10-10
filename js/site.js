@@ -70,7 +70,7 @@
         #rooms-player .rp-mute:hover { opacity: 1; background: rgba(255, 255, 255, .08); }
         #rooms-player .rp-middle { flex: 1; min-width: 0; }
         #rooms-player .rp-meta {
-            display: flex; align-items: flex-start; gap: 12px;
+            display: flex; align-items: center; gap: 12px;
             font-size: 13px; line-height: 1.2; margin-bottom: 6px;
         }
         #rooms-player .rp-meta-left {

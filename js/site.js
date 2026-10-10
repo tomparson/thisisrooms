@@ -138,8 +138,7 @@
         .dot-grid { position: relative; min-width: 0; }
         .dot-grid-dots {
             position: absolute; inset: 0; overflow: hidden;
-            display: flex; flex-wrap: wrap; justify-content: space-between; align-content: flex-start;
-            gap: 4px;
+            display: grid; justify-content: space-between; align-content: space-between;
         }
         .dot-grid-dots > i { width: 4px; height: 4px; border-radius: 9999px; background: #333333; }
         #rooms-lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
@@ -416,12 +415,32 @@
         }
     }
 
-    // Fills .dot-grid elements with more dots than they need; the dots sit in
-    // an absolutely positioned layer that clips the excess, so they never
-    // affect the grid's size.
+    // Fills each .dot-grid with as many 4px dots as fit at least 4px apart,
+    // spread evenly so the outer dots sit on all four edges. The dots live in
+    // an absolutely positioned layer so they never affect the grid's size, and
+    // are redrawn whenever the grid resizes (e.g. once the artwork loads).
+    const dotGridObserver = 'ResizeObserver' in window ? new ResizeObserver(function (entries) {
+        entries.forEach(function (entry) { layoutDotGrid(entry.target); });
+    }) : null;
+
+    function layoutDotGrid(grid) {
+        const fit = function (size) { return Math.floor((size + 4) / 8); };
+        const cols = fit(grid.clientWidth), rows = fit(grid.clientHeight);
+        const key = cols + 'x' + rows;
+        if (grid.dataset.dots === key) return;
+        grid.dataset.dots = key;
+        const layer = grid.firstElementChild;
+        layer.style.gridTemplateColumns = 'repeat(' + cols + ', 4px)';
+        layer.style.gridTemplateRows = 'repeat(' + rows + ', 4px)';
+        layer.innerHTML = '<i></i>'.repeat(cols * rows);
+    }
+
     function fillDotGrids() {
-        document.querySelectorAll('.dot-grid:empty').forEach(function (grid) {
-            grid.innerHTML = '<div class="dot-grid-dots">' + '<i></i>'.repeat(1500) + '</div>';
+        if (dotGridObserver) dotGridObserver.disconnect();
+        document.querySelectorAll('.dot-grid').forEach(function (grid) {
+            if (!grid.firstElementChild) grid.innerHTML = '<div class="dot-grid-dots"></div>';
+            layoutDotGrid(grid);
+            if (dotGridObserver) dotGridObserver.observe(grid);
         });
     }
 

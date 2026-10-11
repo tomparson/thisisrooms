@@ -1,15 +1,16 @@
 /*
  * Site-wide script, loaded once per visit.
  *
- * 1. Floating audio player. Pages opt in with
- *      <meta name="rooms:audio" content="path/to/track.mp3">
- *      <meta name="rooms:audio-title" content="track name">
- *    and can add a button with a data-rooms-play attribute that plays (or pauses)
- *    the page's track. Its icon (an <i>) and [data-rooms-play-label] text follow
- *    the play state. When a track ends, the next track down the homepage's
- *    release cards (a.release-card, newest first) plays, skipping posts with
- *    no audio and wrapping round to the top after the last one. In a track's
- *    last minute the player shows what's up next.
+ * 1. Floating audio player. Pages opt in with one tag per track, in order:
+ *      <meta name="rooms:track" content="path/to/track.mp3" data-title="track name">
+ *    plus, for multi-track releases, <meta name="rooms:release" content="name">.
+ *    A button with a data-rooms-play attribute plays (or pauses) the page's
+ *    release from the top; its icon (an <i>) and [data-rooms-play-label] text
+ *    follow the play state. A [data-tracklist] element is filled with a row per
+ *    track. When a track ends the release's next track plays, then the first
+ *    track of the next post down the homepage's release cards (a.release-card,
+ *    newest first), skipping posts with no audio and wrapping round after the
+ *    last. In a track's last minute the player shows what's up next.
  *
  * 2. Artwork lightbox. On desktop, clicking an <img data-lightbox> shows it
  *    filling the window; clicking anywhere (or Escape) closes it.
@@ -84,8 +85,21 @@
     const currentLabel = player.querySelector('.rp-current');
     const durationLabel = player.querySelector('.rp-duration');
 
-    let track = null; // { src, title, page, artwork }
+    // What the player has loaded: a release and which of its tracks is current.
+    // A release is { page, title, artwork, tracks: [{ src, title }] }, read from
+    // a post's <meta name="rooms:track"> tags; single tracks are releases of one.
+    let current = null; // { release, index }
     let seeking = false;
+
+    function currentTrack() {
+        return current && current.release.tracks[current.index];
+    }
+
+    // 'track' on its own, or 'track · release' for multi-track releases.
+    function trackLabel(release, index) {
+        const title = release.tracks[index].title;
+        return release.tracks.length > 1 ? title + ' · ' + release.title : title;
+    }
 
     function formatTime(seconds) {
         if (!isFinite(seconds)) return '--:--';
@@ -110,7 +124,7 @@
     }
 
     function inLastMinute() {
-        return track && isFinite(audio.duration) && audio.duration - audio.currentTime <= 60;
+        return current && isFinite(audio.duration) && audio.duration - audio.currentTime <= 60;
     }
 
     function renderUpNext() {
@@ -118,11 +132,11 @@
             showUpNext(false);
             return;
         }
-        const forPage = track.page;
-        getNextTrack(forPage).then(function (next) {
-            if (!next || !track || track.page !== forPage || !inLastMinute()) return;
-            upNextLink.textContent = next.title || '';
-            upNextLink.href = next.page;
+        const from = current;
+        getAdjacent(from, 1).then(function (next) {
+            if (!next || current !== from || !inLastMinute()) return;
+            upNextLink.textContent = next.release.tracks[next.index].title;
+            upNextLink.href = next.release.page;
             showUpNext(true);
         });
     }
@@ -134,25 +148,39 @@
         syncHeight();
     }
 
+    // Whether the loaded release is the one on the page being viewed.
+    function currentIsOnPage() {
+        const pageRelease = findPageRelease();
+        return !!(current && pageRelease && current.release.page === pageRelease.page);
+    }
+
     function renderPlayState() {
         const playing = !audio.paused;
         playIcon.className = playing ? 'fa-solid fa-pause' : 'fa-solid fa-play';
         playButton.setAttribute('aria-label', playing ? 'pause' : 'play');
 
-        // In-page play buttons only show 'pause' while it's their page's track playing.
-        const pageTrack = findPageTrack();
-        const pagePlaying = playing && pageTrack && track && track.src === pageTrack.src;
+        // In-page controls only show 'pause' while it's their page's release playing.
+        const onPage = currentIsOnPage();
+        const pagePlaying = playing && onPage;
         document.querySelectorAll('[data-rooms-play]').forEach(function (button) {
             const icon = button.querySelector('i');
             const label = button.querySelector('[data-rooms-play-label]');
             if (icon) {
                 icon.classList.toggle('fa-play', !pagePlaying);
-                icon.classList.toggle('fa-pause', !!pagePlaying);
+                icon.classList.toggle('fa-pause', pagePlaying);
             }
             if (label) {
                 if (!label.dataset.playText) label.dataset.playText = label.textContent;
                 label.textContent = pagePlaying ? 'Pause' : label.dataset.playText;
             }
+        });
+        document.querySelectorAll('[data-track-index]').forEach(function (row) {
+            // Highlighted once it has started, not merely queued up by Play.
+            const isCurrent = onPage && current.index === Number(row.dataset.trackIndex)
+                && (playing || audio.currentTime > 0);
+            row.classList.toggle('is-current', isCurrent);
+            row.querySelector('.tracklist-icon i').className = isCurrent && playing ? 'fa-solid fa-pause' : 'fa-solid fa-play';
+            row.setAttribute('aria-label', (isCurrent && playing ? 'pause ' : 'play ') + row.dataset.title);
         });
     }
 
@@ -179,25 +207,41 @@
         syncHeight();
     }
 
-    function load(next) {
-        track = next;
-        audio.src = next.src;
+    function load(release, index) {
+        current = { release: release, index: index };
+        const track = release.tracks[index];
+        audio.src = track.src;
         audio.load();
-        titleLink.textContent = next.title || '';
-        titleLink.href = next.page;
+        titleLink.textContent = trackLabel(release, index);
+        titleLink.href = release.page;
         if ('mediaSession' in navigator) {
             navigator.mediaSession.metadata = new MediaMetadata({
-                title: next.title || '',
+                title: track.title,
                 artist: 'rooms',
-                artwork: next.artwork ? [{ src: next.artwork }] : [],
+                album: release.tracks.length > 1 ? release.title : '',
+                artwork: release.artwork ? [{ src: release.artwork }] : [],
             });
         }
         renderTime();
         renderPlayState();
     }
 
+    function playFrom(release, index) {
+        load(release, index);
+        show(true);
+        audio.play().catch(function () {});
+    }
+
+    function togglePlayback() {
+        if (audio.paused) {
+            audio.play().catch(function () {});
+        } else {
+            audio.pause();
+        }
+    }
+
     function unload() {
-        track = null;
+        current = null;
         audio.pause();
         audio.removeAttribute('src');
         audio.load();
@@ -215,18 +259,23 @@
         return (doc.querySelector('meta[property="og:image"]') || {}).content;
     }
 
-    function trackFromDocument(doc, pageUrl) {
-        const meta = doc.querySelector('meta[name="rooms:audio"]');
-        return meta && {
-            src: new URL(meta.getAttribute('content'), pageUrl).href,
-            title: (doc.querySelector('meta[name="rooms:audio-title"]') || {}).content,
+    function releaseFromDocument(doc, pageUrl) {
+        const metas = doc.querySelectorAll('meta[name="rooms:track"]');
+        if (!metas.length) return null;
+        const tracks = Array.from(metas).map(function (meta) {
+            return { src: new URL(meta.getAttribute('content'), pageUrl).href, title: meta.dataset.title || '' };
+        });
+        const name = doc.querySelector('meta[name="rooms:release"]');
+        return {
             page: pageKey(pageUrl),
+            title: name ? name.getAttribute('content') : tracks[0].title,
             artwork: artworkFromDocument(doc, pageUrl),
+            tracks: tracks,
         };
     }
 
-    function findPageTrack() {
-        return trackFromDocument(document, location.href);
+    function findPageRelease() {
+        return releaseFromDocument(document, location.href);
     }
 
     async function fetchDocument(url) {
@@ -253,27 +302,27 @@
         return releaseOrder;
     }
 
-    // Each post's track (or null), fetched at most once per visit.
-    const pageTracks = new Map();
-    function getTrackForPage(page) {
-        if (!pageTracks.has(page)) {
-            pageTracks.set(page, fetchDocument(page).then(function (doc) {
-                return trackFromDocument(doc, page);
+    // Each post's release (or null), fetched at most once per visit.
+    const pageReleases = new Map();
+    function getReleaseForPage(page) {
+        if (!pageReleases.has(page)) {
+            pageReleases.set(page, fetchDocument(page).then(function (doc) {
+                return releaseFromDocument(doc, page);
             }).catch(function () {
-                pageTracks.delete(page);
+                pageReleases.delete(page);
                 return null;
             }));
         }
-        return pageTracks.get(page);
+        return pageReleases.get(page);
     }
 
     // The nearest post after (step 1) or before (step -1) `page` in homepage
-    // order that has a track, wrapping round; null when no other post has one.
-    const adjacentTracks = new Map();
-    function getAdjacentTrack(page, step) {
+    // order that has audio, wrapping round; null when no other post has any.
+    const adjacentReleases = new Map();
+    function getAdjacentRelease(page, step) {
         const key = step + ' ' + page;
-        if (!adjacentTracks.has(key)) {
-            adjacentTracks.set(key, (async function () {
+        if (!adjacentReleases.has(key)) {
+            adjacentReleases.set(key, (async function () {
                 const order = await getReleaseOrder();
                 const n = order.length;
                 const start = order.indexOf(page);
@@ -282,36 +331,77 @@
                         ? order[n - k]
                         : order[(((start + step * k) % n) + n) % n];
                     if (candidate === page) continue;
-                    const found = await getTrackForPage(candidate);
+                    const found = await getReleaseForPage(candidate);
                     if (found) return found;
                 }
                 return null;
             })().catch(function () {
-                adjacentTracks.delete(key);
+                adjacentReleases.delete(key);
                 return null;
             }));
         }
-        return adjacentTracks.get(key);
+        return adjacentReleases.get(key);
     }
 
-    function getNextTrack(page) {
-        return getAdjacentTrack(page, 1);
+    // The track after (step 1) or before (step -1) `pos`: within its release
+    // first, then the first (or last) track of the neighbouring release.
+    async function getAdjacent(pos, step) {
+        const tracks = pos.release.tracks;
+        const index = pos.index + step;
+        if (index >= 0 && index < tracks.length) return { release: pos.release, index: index };
+        const release = await getAdjacentRelease(pos.release.page, step);
+        if (release) return { release: release, index: step > 0 ? 0 : release.tracks.length - 1 };
+        // The only release with audio: wrap round within it.
+        return tracks.length > 1 ? { release: pos.release, index: (index + tracks.length) % tracks.length } : null;
     }
 
     let advancing = false;
     async function playAdjacent(step) {
-        if (!track || advancing) return;
+        if (!current || advancing) return;
         advancing = true;
         try {
-            const from = track.page;
-            const next = await getAdjacentTrack(from, step);
+            const from = current;
+            const next = await getAdjacent(from, step);
             // Give up if something else started playing meanwhile.
-            if (!next || !track || track.page !== from || !audio.paused) return;
-            load(next);
+            if (!next || current !== from || !audio.paused) return;
+            load(next.release, next.index);
             audio.play().catch(function () {});
         } finally {
             advancing = false;
         }
+    }
+
+    // Track lists: a [data-tracklist] element on a multi-track post is filled
+    // with a row per track (number, title, duration); rows play that track.
+    const durations = new Map();
+    function renderTracklist() {
+        const list = document.querySelector('[data-tracklist]');
+        const release = findPageRelease();
+        if (!list || !release) return;
+        list.innerHTML = '';
+        release.tracks.forEach(function (track, index) {
+            const row = document.createElement('button');
+            row.type = 'button';
+            row.className = 'tracklist-row';
+            row.dataset.trackIndex = index;
+            row.dataset.title = track.title;
+            row.innerHTML = '<span class="tracklist-num"></span><span class="tracklist-icon"><i class="fa-solid fa-play"></i></span>'
+                + '<span class="tracklist-title"></span><span class="tracklist-time"></span>';
+            row.querySelector('.tracklist-num').textContent = index + 1;
+            row.querySelector('.tracklist-title').textContent = track.title;
+            const time = row.querySelector('.tracklist-time');
+            time.textContent = formatTime(durations.get(track.src));
+            if (!durations.has(track.src)) {
+                const probe = new Audio();
+                probe.preload = 'metadata';
+                probe.addEventListener('loadedmetadata', function () {
+                    durations.set(track.src, probe.duration);
+                    time.textContent = formatTime(probe.duration);
+                });
+                probe.src = track.src;
+            }
+            list.appendChild(row);
+        });
     }
 
     // Fills each .dot-grid with as many 4px dots as fit at least 4px apart,
@@ -364,41 +454,41 @@
     function syncWithPage() {
         fillDotGrids();
         linkNextPost();
-        const pageTrack = findPageTrack();
-        const started = track && (!audio.paused || audio.currentTime > 0);
+        renderTracklist();
+        const pageRelease = findPageRelease();
+        const started = current && (!audio.paused || audio.currentTime > 0);
 
-        if (pageTrack) {
-            // Keep whatever is already playing; otherwise offer this page's track.
-            if (!track || (track.src !== pageTrack.src && audio.paused)) load(pageTrack);
+        if (pageRelease) {
+            // Keep whatever is already playing; otherwise offer this page's release.
+            if (!current || (current.release.page !== pageRelease.page && audio.paused)) load(pageRelease, 0);
             show(true);
         } else if (started) {
             show(true);
         } else {
-            if (track) unload();
+            if (current) unload();
             show(false);
         }
         renderPlayState();
     }
 
-    playButton.addEventListener('click', function () {
-        if (audio.paused) {
-            audio.play().catch(function () {});
-        } else {
-            audio.pause();
-        }
-    });
+    playButton.addEventListener('click', togglePlayback);
 
+    // The page's Play button plays its release from the top (or toggles it if
+    // it's already loaded); a track list row plays that track (or toggles it).
     document.addEventListener('click', function (event) {
-        if (!event.target.closest('[data-rooms-play]')) return;
-        const pageTrack = findPageTrack();
-        if (!pageTrack) return;
-        if (!track || track.src !== pageTrack.src) load(pageTrack);
-        show(true);
-        if (audio.paused) {
-            audio.play().catch(function () {});
-        } else {
-            audio.pause();
+        const row = event.target.closest('[data-track-index]');
+        if (!row && !event.target.closest('[data-rooms-play]')) return;
+        const pageRelease = findPageRelease();
+        if (!pageRelease) return;
+        const onPage = currentIsOnPage();
+        if (row) {
+            const index = Number(row.dataset.trackIndex);
+            if (!onPage || current.index !== index) return playFrom(pageRelease, index);
+        } else if (!onPage) {
+            return playFrom(pageRelease, 0);
         }
+        show(true);
+        togglePlayback();
     });
 
     muteButton.addEventListener('click', function () {

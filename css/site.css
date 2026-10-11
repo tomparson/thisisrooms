@@ -155,7 +155,7 @@ a[data-next-post][hidden] { display: none; }
 
 /* Collapsed to a 'track list' toggle; the panel opens by easing its row from 0fr to 1fr. */
 .tracklist-toggle {
-    display: flex; align-items: center; gap: 16px; width: 100%; height: 56px; padding: 0 16px;
+    display: flex; align-items: center; gap: 16px; width: 100%; height: 52px; padding: 0 16px;
     border: 1px solid rgba(255, 255, 255, .1); border-radius: 0.5rem; background: rgba(255, 255, 255, .05);
     color: #fff; font-size: 0.875rem; text-align: left; cursor: pointer; transition: background-color .15s;
 }
@@ -170,7 +170,7 @@ a[data-next-post][hidden] { display: none; }
 .tracklist-rows::before { content: ''; }
 @media (prefers-reduced-motion: reduce) { .tracklist-panel { transition: none; } }
 .tracklist-row {
-    display: flex; align-items: center; gap: 16px; width: 100%; height: 48px; padding: 0 16px;
+    display: flex; align-items: center; gap: 16px; width: 100%; height: 44px; padding: 0 16px;
     border: 1px solid rgba(255, 255, 255, .1); border-radius: 0.5rem; background: rgba(255, 255, 255, .05);
     color: #fff; font-size: 0.875rem; text-align: left; cursor: pointer; transition: background-color .15s;
 }

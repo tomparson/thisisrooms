@@ -207,15 +207,15 @@
         const track = release.tracks[index];
         audio.src = track.src;
         audio.load();
-        // Multi-track releases show "release / 1. track", the " / 1. track" in grey;
-        // the whole label links to the release's post.
-        titleLink.textContent = release.tracks.length > 1 ? release.title : track.title;
-        if (release.tracks.length > 1) {
-            const trackName = document.createElement('span');
-            trackName.className = 'rp-track';
-            trackName.textContent = ' / ' + (index + 1) + '. ' + track.title;
-            titleLink.appendChild(trackName);
-        }
+        // Multi-track releases show "release 1. track" with the "1. track" in
+        // grey; the whole label links to the release's post. The link itself is
+        // grey (so a cut-off "..." is too) with the leading name in white.
+        const multi = release.tracks.length > 1;
+        const name = document.createElement('span');
+        name.className = 'rp-name';
+        name.textContent = multi ? release.title : track.title;
+        titleLink.replaceChildren(name);
+        if (multi) titleLink.append(' ' + (index + 1) + '. ' + track.title);
         titleLink.href = release.page;
         if ('mediaSession' in navigator) {
             navigator.mediaSession.metadata = new MediaMetadata({

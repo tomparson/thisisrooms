@@ -251,7 +251,7 @@
     }
 
     // Decorative 'now playing' bars (animated in css/site.css; not driven by the audio).
-    const EQ_HTML = '<span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>';
+    const EQ_HTML = '<span class="eq" aria-hidden="true">' + '<i></i>'.repeat(5) + '</span>';
 
     function renderVolume() {
         const silent = audio.muted || audio.volume === 0;

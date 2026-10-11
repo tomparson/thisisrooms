@@ -188,23 +188,31 @@ a[data-next-post][hidden] { display: none; }
     .tracklist-row:hover .tracklist-icon { display: flex; }
 }
 
-/* ---- 'Now playing' EQ: three bouncing bars (decorative, not driven by the audio) ---- */
+/* ---- 'Now playing' EQ: five bouncing bars (decorative, not driven by the audio) ---- */
 
-.eq { display: none; align-items: flex-end; gap: 2px; height: 14px; margin-left: auto; flex: none; }
+.eq { display: none; align-items: stretch; gap: 2px; height: 14px; margin-left: auto; flex: none; }
 .is-playing > .eq { display: flex; }
-.eq i { width: 3px; height: 30%; border-radius: 1px; background: currentColor; animation: eq-bounce 1s ease-in-out infinite; }
+/* Bars are full height and squashed from the bottom with transform, which
+   animates reliably everywhere (animating percentage heights stalled in Safari). */
+.eq i { width: 3px; border-radius: 1px; background: currentColor; transform-origin: bottom; transform: scaleY(.3); animation: eq-bounce 1s ease-in-out infinite; }
 .eq i:nth-child(2) { animation-duration: .8s; animation-delay: -.4s; }
 .eq i:nth-child(3) { animation-duration: 1.15s; animation-delay: -.7s; }
+.eq i:nth-child(4) { animation-duration: .9s; animation-delay: -.2s; }
+.eq i:nth-child(5) { animation-duration: 1.05s; animation-delay: -.55s; }
 @keyframes eq-bounce {
-    0%, 100% { height: 30%; }
-    25% { height: 100%; }
-    50% { height: 55%; }
-    75% { height: 85%; }
+    0%, 100% { transform: scaleY(.3); }
+    25% { transform: scaleY(1); }
+    50% { transform: scaleY(.55); }
+    75% { transform: scaleY(.85); }
 }
-[data-rooms-play] .eq { height: 16px; }
+/* In the Play button the bars are centred in a column as wide as the
+   buy/play pills on the buttons below, so they all line up. */
+[data-rooms-play] .eq { height: 16px; width: 4.5rem; justify-content: center; }
 @media (prefers-reduced-motion: reduce) {
     .eq i { animation: none; }
-    .eq i:nth-child(1) { height: 60%; }
-    .eq i:nth-child(2) { height: 100%; }
-    .eq i:nth-child(3) { height: 40%; }
+    .eq i:nth-child(1) { transform: scaleY(.6); }
+    .eq i:nth-child(2) { transform: scaleY(1); }
+    .eq i:nth-child(3) { transform: scaleY(.4); }
+    .eq i:nth-child(4) { transform: scaleY(.8); }
+    .eq i:nth-child(5) { transform: scaleY(.5); }
 }

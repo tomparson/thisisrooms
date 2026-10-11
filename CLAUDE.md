@@ -61,6 +61,7 @@ Copy the closest existing post and edit it. The `<head>`, header row, newsletter
     - Deezer → "play"
     - SoundCloud → "play"
   - Keep the Play button 62px tall (`h-[62px]`) and every other button 56px (`h-14`).
+  - The buy/play pills are all the same width (`w-[4.5rem] … text-center`), so they line up with each other and with the Play button's EQ.
   - If there are more than 3 buttons (counting Play), add a desktop filler after the last button: `<div class="dot-grid hidden md:block md:col-start-2 md:row-start-4 md:row-span-<buttons − 3>" aria-hidden="true"></div>`.
   - The grid gets `mb-section`, or `mb-3` when a track list follows.
 - **Track list** (multi-track only): `<div data-tracklist class="tracklist not-prose mb-section"></div>` straight after the grid. `js/site.js` fills it.

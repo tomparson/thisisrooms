@@ -66,8 +66,8 @@
     </script>
     <style type="text/tailwindcss">
         html { scroll-behavior: smooth; }
-        /* Call to action button (last paragraph that is a single link) */
-        .prose > p:last-child > a:only-child {
+        /* Call to action button: a link with class="cta" */
+        .prose a.cta {
             @apply inline-block bg-[#212121] text-[#ffffff] font-bold no-underline px-5 py-2 rounded-lg;
         }
         .newsletter-form > div > div > div:last-child { display: none !important; }
@@ -238,7 +238,7 @@
 <p>Streaming on
 <a href="https://music.apple.com/gb/album/3xx/1865797908">Apple Music</a></p>
 <p>Live listening party on Bandcamp 09/01/2025 18:00 GMT / 13:00 EST <a href="https://d899755c77f311efa25d7de4d9011016.eo.page/8ggkh">Get notified</a></p>
-<p><a href="https://www.youtube.com/watch?v=bjRKSbfkOqs">Listen now</a></p>
+<p><a href="https://www.youtube.com/watch?v=bjRKSbfkOqs" class="cta">Listen now</a></p>
 
                 </div>
                 <div class="mt-section">

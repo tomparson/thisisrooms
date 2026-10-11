@@ -383,7 +383,7 @@
         toggle.type = 'button';
         toggle.className = 'tracklist-toggle';
         toggle.setAttribute('aria-expanded', 'false');
-        toggle.innerHTML = '<span class="tracklist-toggle-icon"><i class="fa-solid fa-plus"></i></span><span>track list</span>';
+        toggle.innerHTML = '<span class="tracklist-toggle-icon"><i class="fa-solid fa-plus"></i></span><span>Track list</span>';
         return toggle;
     }
 

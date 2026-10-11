@@ -375,7 +375,7 @@
     }
 
     // Track lists: a [data-tracklist] element on a multi-track post is filled
-    // with a collapsed 'track list' toggle and a row per track (number, title,
+    // with a collapsed 'Tracks' toggle and a row per track (number, title,
     // duration); rows play that track. Long lists get a second toggle at the
     // bottom so they can be closed without scrolling back up.
     const durations = new Map();
@@ -384,7 +384,7 @@
         toggle.type = 'button';
         toggle.className = 'tracklist-toggle';
         toggle.setAttribute('aria-expanded', 'false');
-        toggle.innerHTML = '<span class="tracklist-toggle-icon"><i class="fa-solid fa-plus"></i></span><span>Track list</span>';
+        toggle.innerHTML = '<span class="tracklist-toggle-icon"><i class="fa-solid fa-plus"></i></span><span>Tracks</span>';
         return toggle;
     }
 

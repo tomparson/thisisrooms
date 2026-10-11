@@ -155,11 +155,11 @@ a[data-next-post][hidden] { display: none; }
 
 /* Collapsed to a 'track list' toggle; the panel opens by easing its row from 0fr to 1fr. */
 .tracklist-toggle {
-    display: flex; align-items: center; gap: 16px; width: 100%; height: 52px; padding: 0 16px;
+    display: flex; align-items: center; gap: 16px; width: 100%; height: 44px; padding: 0 16px;
     border: 1px solid rgba(255, 255, 255, .1); border-radius: 0.5rem; background: rgba(255, 255, 255, .05);
     color: #fff; font-size: 0.875rem; text-align: left; cursor: pointer; transition: background-color .15s;
 }
-.tracklist-toggle-icon { width: 32px; flex: none; display: flex; justify-content: center; font-size: 1.25rem; }
+.tracklist-toggle-icon { width: 32px; flex: none; display: flex; justify-content: center; font-size: 0.875rem; }
 .tracklist-panel {
     display: grid; grid-template-rows: 0fr; opacity: 0;
     transition: grid-template-rows .3s ease, opacity .3s ease;

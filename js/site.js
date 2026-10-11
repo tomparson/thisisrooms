@@ -14,7 +14,8 @@
  *    the player treats that point as the end of the track.
  *    A button with a data-rooms-play attribute plays (or pauses) the page's
  *    release from the top; its icon (an <i>) and [data-rooms-play-label] text
- *    follow the play state. A [data-tracklist] element is filled with a row per
+ *    follow the play state, and a small animated EQ shows on its right while
+ *    it's playing (also on the playing track list row). A [data-tracklist] element is filled with a row per
  *    track. When a track ends the release's next track plays, then the first
  *    track of the next post down the homepage's release cards (a.release-card,
  *    newest first), skipping posts with no audio and wrapping round after the
@@ -225,6 +226,8 @@
         const onPage = currentIsOnPage();
         const pagePlaying = playing && onPage;
         document.querySelectorAll('[data-rooms-play]').forEach(function (button) {
+            if (!button.querySelector('.eq')) button.insertAdjacentHTML('beforeend', EQ_HTML);
+            button.classList.toggle('is-playing', pagePlaying);
             const icon = button.querySelector('i');
             const label = button.querySelector('[data-rooms-play-label]');
             if (icon) {
@@ -241,10 +244,14 @@
             const isCurrent = onPage && current.index === Number(row.dataset.trackIndex)
                 && (playing || audio.currentTime > 0);
             row.classList.toggle('is-current', isCurrent);
+            row.classList.toggle('is-playing', isCurrent && playing);
             row.querySelector('.tracklist-icon i').className = isCurrent && playing ? 'fa-solid fa-pause' : 'fa-solid fa-play';
             row.setAttribute('aria-label', (isCurrent && playing ? 'pause ' : 'play ') + row.dataset.title);
         });
     }
+
+    // Decorative 'now playing' bars (animated in css/site.css; not driven by the audio).
+    const EQ_HTML = '<span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>';
 
     function renderVolume() {
         const silent = audio.muted || audio.volume === 0;
@@ -509,7 +516,7 @@
             row.dataset.trackIndex = index;
             row.dataset.title = track.title;
             row.innerHTML = '<span class="tracklist-num"></span><span class="tracklist-icon"><i class="fa-solid fa-play"></i></span>'
-                + '<span class="tracklist-title"></span><span class="tracklist-time"></span>';
+                + '<span class="tracklist-title"></span>' + EQ_HTML + '<span class="tracklist-time"></span>';
             row.querySelector('.tracklist-num').textContent = index + 1;
             row.querySelector('.tracklist-title').textContent = track.title;
             const time = row.querySelector('.tracklist-time');

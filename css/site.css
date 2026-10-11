@@ -187,3 +187,24 @@ a[data-next-post][hidden] { display: none; }
     .tracklist-row:hover .tracklist-num { display: none; }
     .tracklist-row:hover .tracklist-icon { display: flex; }
 }
+
+/* ---- 'Now playing' EQ: three bouncing bars (decorative, not driven by the audio) ---- */
+
+.eq { display: none; align-items: flex-end; gap: 2px; height: 14px; margin-left: auto; flex: none; }
+.is-playing > .eq { display: flex; }
+.eq i { width: 3px; height: 30%; border-radius: 1px; background: currentColor; animation: eq-bounce 1s ease-in-out infinite; }
+.eq i:nth-child(2) { animation-duration: .8s; animation-delay: -.4s; }
+.eq i:nth-child(3) { animation-duration: 1.15s; animation-delay: -.7s; }
+@keyframes eq-bounce {
+    0%, 100% { height: 30%; }
+    25% { height: 100%; }
+    50% { height: 55%; }
+    75% { height: 85%; }
+}
+[data-rooms-play] .eq { height: 16px; }
+@media (prefers-reduced-motion: reduce) {
+    .eq i { animation: none; }
+    .eq i:nth-child(1) { height: 60%; }
+    .eq i:nth-child(2) { height: 100%; }
+    .eq i:nth-child(3) { height: 40%; }
+}

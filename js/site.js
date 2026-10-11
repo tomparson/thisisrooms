@@ -10,6 +10,8 @@
  *      <meta name="rooms:track" data-title="track name" data-start="163.29">
  *    The player then treats each stretch of the file as a track: titles, the
  *    track list, the time, the scrub bar and the lock screen all follow it.
+ *    Any track can also have data-end="seconds" to cut off trailing silence:
+ *    the player treats that point as the end of the track.
  *    A button with a data-rooms-play attribute plays (or pauses) the page's
  *    release from the top; its icon (an <i>) and [data-rooms-play-label] text
  *    follow the play state. A [data-tracklist] element is filled with a row per
@@ -109,6 +111,7 @@
     }
 
     function trackEnd() {
+        if (current && currentTrack().end) return currentTrack().end;
         const next = current && current.release.gapless && current.release.tracks[current.index + 1];
         return next ? next.start : audio.duration;
     }
@@ -150,6 +153,11 @@
                 renderTrackInfo();
                 renderPlayState();
             }
+        }
+        // Reaching a track's trimmed end counts as it ending.
+        if (current && currentTrack().end && audio.currentTime >= currentTrack().end && !audio.paused && !seeking) {
+            audio.pause();
+            playAdjacent(1);
         }
         const duration = trackDuration();
         durationLabel.textContent = formatTime(duration);
@@ -350,6 +358,7 @@
                 src: albumSrc || new URL(meta.getAttribute('content'), pageUrl).href,
                 title: meta.dataset.title || '',
                 start: albumSrc ? Number(meta.dataset.start) || 0 : 0,
+                end: Number(meta.dataset.end) || null,
             };
         });
         return {
@@ -505,11 +514,12 @@
             row.querySelector('.tracklist-title').textContent = track.title;
             const time = row.querySelector('.tracklist-time');
             const next = release.gapless && release.tracks[index + 1];
-            // A gapless track's length is the gap to the next start; the last
-            // one runs to the end of the file.
-            const span = function (fileDuration) { return (next ? next.start : fileDuration) - track.start; };
-            time.textContent = formatTime(next ? span() : span(durations.get(track.src)));
-            if (!next && !durations.has(track.src)) {
+            // A track runs to its trimmed end, else (gapless) the next start,
+            // else the end of its file.
+            const stop = track.end || (next && next.start);
+            const span = function (fileDuration) { return (stop || fileDuration) - track.start; };
+            time.textContent = formatTime(span(durations.get(track.src)));
+            if (!stop && !durations.has(track.src)) {
                 durations.set(track.src, NaN);
                 const probe = new Audio();
                 probe.preload = 'metadata';
@@ -676,22 +686,31 @@
         } catch (e) {}
     }
 
+    // Next/previous track. Within a gapless release that's just a seek, done
+    // without pausing (pausing first made iOS stutter and skip the new track's
+    // first second); otherwise stop and load the adjacent track.
+    function skipTrack(step) {
+        const index = current ? current.index + step : -1;
+        if (current && current.release.gapless && index >= 0 && index < current.release.tracks.length) {
+            load(current.release, index);
+            return;
+        }
+        audio.pause();
+        playAdjacent(step);
+    }
+
     function registerMediaActions() {
         if (!('mediaSession' in navigator)) return;
         setMediaAction('play', function () { audio.play().catch(function () {}); });
         setMediaAction('pause', function () { audio.pause(); });
-        setMediaAction('nexttrack', function () {
-            audio.pause();
-            playAdjacent(1);
-        });
+        setMediaAction('nexttrack', function () { skipTrack(1); });
         // Like most players: restart the track unless it has only just begun.
         setMediaAction('previoustrack', function () {
             if (trackTime() > 3) {
                 audio.currentTime = trackStart();
                 return;
             }
-            audio.pause();
-            playAdjacent(-1);
+            skipTrack(-1);
         });
         // iOS shows skip-10s buttons instead of previous/next while these are handled.
         setMediaAction('seekbackward', null);

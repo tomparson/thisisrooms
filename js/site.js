@@ -96,11 +96,6 @@
     }
 
     // 'track' on its own, or 'track · release' for multi-track releases.
-    function trackLabel(release, index) {
-        const title = release.tracks[index].title;
-        return release.tracks.length > 1 ? title + ' · ' + release.title : title;
-    }
-
     function formatTime(seconds) {
         if (!isFinite(seconds)) return '--:--';
         const s = Math.floor(seconds);
@@ -212,7 +207,14 @@
         const track = release.tracks[index];
         audio.src = track.src;
         audio.load();
-        titleLink.textContent = trackLabel(release, index);
+        // Multi-track releases show "track / release", the release name in grey.
+        titleLink.textContent = track.title;
+        if (release.tracks.length > 1) {
+            const album = document.createElement('span');
+            album.className = 'rp-album';
+            album.textContent = ' / ' + release.title;
+            titleLink.appendChild(album);
+        }
         titleLink.href = release.page;
         if ('mediaSession' in navigator) {
             navigator.mediaSession.metadata = new MediaMetadata({
@@ -372,13 +374,40 @@
     }
 
     // Track lists: a [data-tracklist] element on a multi-track post is filled
-    // with a row per track (number, title, duration); rows play that track.
+    // with a collapsed 'track list' toggle and a row per track (number, title,
+    // duration); rows play that track. Long lists get a second toggle at the
+    // bottom so they can be closed without scrolling back up.
     const durations = new Map();
+    function tracklistToggle() {
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'tracklist-toggle';
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.innerHTML = '<span class="tracklist-toggle-icon"><i class="fa-solid fa-plus"></i></span><span>track list</span>';
+        return toggle;
+    }
+
+    function setTracklistOpen(list, open) {
+        list.classList.toggle('is-open', open);
+        list.querySelector('.tracklist-panel').inert = !open;
+        list.querySelectorAll('.tracklist-toggle').forEach(function (toggle) {
+            toggle.setAttribute('aria-expanded', String(open));
+            toggle.querySelector('i').className = open ? 'fa-solid fa-minus' : 'fa-solid fa-plus';
+        });
+    }
+
     function renderTracklist() {
         const list = document.querySelector('[data-tracklist]');
         const release = findPageRelease();
         if (!list || !release) return;
         list.innerHTML = '';
+        list.appendChild(tracklistToggle());
+        const panel = document.createElement('div');
+        panel.className = 'tracklist-panel';
+        const rows = document.createElement('div');
+        rows.className = 'tracklist-rows';
+        panel.appendChild(rows);
+        list.appendChild(panel);
         release.tracks.forEach(function (track, index) {
             const row = document.createElement('button');
             row.type = 'button';
@@ -400,9 +429,21 @@
                 });
                 probe.src = track.src;
             }
-            list.appendChild(row);
+            rows.appendChild(row);
         });
+        if (release.tracks.length > 10) rows.appendChild(tracklistToggle());
+        setTracklistOpen(list, false);
     }
+
+    document.addEventListener('click', function (event) {
+        const toggle = event.target.closest('.tracklist-toggle');
+        if (!toggle) return;
+        const list = toggle.closest('[data-tracklist]');
+        const top = list.querySelector('.tracklist-toggle');
+        // Closing from the bottom: bring the top toggle back on screen first.
+        if (toggle !== top && top.getBoundingClientRect().top < 0) top.scrollIntoView({ block: 'center' });
+        setTracklistOpen(list, !list.classList.contains('is-open'));
+    });
 
     // Fills each .dot-grid with as many 4px dots as fit at least 4px apart,
     // spread evenly so the outer dots sit on all four edges. The dots live in

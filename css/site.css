@@ -62,6 +62,7 @@ body { padding-bottom: var(--player-h, 0px); }
     overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
     color: inherit; text-decoration: none;
 }
+#rooms-player .rp-album { color: var(--grey-muted); }
 #rooms-player .rp-next {
     min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
     color: var(--grey-muted);
@@ -152,7 +153,22 @@ a[data-next-post][hidden] { display: none; }
 
 /* ---- Track list on multi-track posts (rows built by js/site.js) ---- */
 
-.tracklist { display: flex; flex-direction: column; gap: 12px; }
+/* Collapsed to a 'track list' toggle; the panel opens by easing its row from 0fr to 1fr. */
+.tracklist-toggle {
+    display: flex; align-items: center; gap: 16px; width: 100%; height: 56px; padding: 0 16px;
+    border: 1px solid rgba(255, 255, 255, .1); border-radius: 0.5rem; background: rgba(255, 255, 255, .05);
+    color: #fff; text-align: left; cursor: pointer; transition: background-color .15s;
+}
+.tracklist-toggle-icon { width: 32px; flex: none; display: flex; justify-content: center; font-size: 1.25rem; }
+.tracklist-panel {
+    display: grid; grid-template-rows: 0fr; opacity: 0;
+    transition: grid-template-rows .3s ease, opacity .3s ease;
+}
+.tracklist.is-open .tracklist-panel { grid-template-rows: 1fr; opacity: 1; }
+.tracklist-rows { min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 12px; }
+/* An empty first item, so the gap above the first row collapses with the panel (padding wouldn't). */
+.tracklist-rows::before { content: ''; }
+@media (prefers-reduced-motion: reduce) { .tracklist-panel { transition: none; } }
 .tracklist-row {
     display: flex; align-items: center; gap: 16px; width: 100%; height: 48px; padding: 0 16px;
     border: 1px solid rgba(255, 255, 255, .1); border-radius: 0.5rem; background: rgba(255, 255, 255, .05);
@@ -167,7 +183,7 @@ a[data-next-post][hidden] { display: none; }
 .tracklist-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tracklist-time { color: var(--grey-muted); font-size: 0.875rem; font-variant-numeric: tabular-nums; }
 @media (hover: hover) and (pointer: fine) {
-    .tracklist-row:hover { background: rgba(255, 255, 255, .1); }
+    .tracklist-row:hover, .tracklist-toggle:hover { background: rgba(255, 255, 255, .1); }
     .tracklist-row:hover .tracklist-num { display: none; }
     .tracklist-row:hover .tracklist-icon { display: flex; }
 }

@@ -207,13 +207,13 @@
         const track = release.tracks[index];
         audio.src = track.src;
         audio.load();
-        // Multi-track releases show "release / track", the " / track" in grey;
+        // Multi-track releases show "release / 1. track", the " / 1. track" in grey;
         // the whole label links to the release's post.
         titleLink.textContent = release.tracks.length > 1 ? release.title : track.title;
         if (release.tracks.length > 1) {
             const trackName = document.createElement('span');
             trackName.className = 'rp-track';
-            trackName.textContent = ' / ' + track.title;
+            trackName.textContent = ' / ' + (index + 1) + '. ' + track.title;
             titleLink.appendChild(trackName);
         }
         titleLink.href = release.page;

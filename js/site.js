@@ -727,6 +727,10 @@
     });
     window.addEventListener('pageshow', registerMediaActions);
 
+    // Re-measure whenever the player's size changes for any reason (a late
+    // font or stylesheet, 'up next' wrapping, the window resizing), so things
+    // pinned above it never sit at a stale height.
+    if ('ResizeObserver' in window) new ResizeObserver(syncHeight).observe(player);
     window.addEventListener('resize', syncHeight);
     renderVolume();
 

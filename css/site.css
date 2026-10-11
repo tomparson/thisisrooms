@@ -62,7 +62,7 @@ body { padding-bottom: var(--player-h, 0px); }
     overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
     color: inherit; text-decoration: none;
 }
-#rooms-player .rp-album { color: var(--grey-muted); }
+#rooms-player .rp-track { color: var(--grey-muted); }
 #rooms-player .rp-next {
     min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
     color: var(--grey-muted);

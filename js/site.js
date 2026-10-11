@@ -4,6 +4,12 @@
  * 1. Floating audio player. Pages opt in with one tag per track, in order:
  *      <meta name="rooms:track" content="path/to/track.mp3" data-title="track name">
  *    plus, for multi-track releases, <meta name="rooms:release" content="name">.
+ *    A gapless release is one continuous file, named on the release tag, with
+ *    each track's start time (in seconds) instead of its own file:
+ *      <meta name="rooms:release" content="name" data-src="path/to/album.mp3">
+ *      <meta name="rooms:track" data-title="track name" data-start="163.29">
+ *    The player then treats each stretch of the file as a track: titles, the
+ *    track list, the time, the scrub bar and the lock screen all follow it.
  *    A button with a data-rooms-play attribute plays (or pauses) the page's
  *    release from the top; its icon (an <i>) and [data-rooms-play-label] text
  *    follow the play state. A [data-tracklist] element is filled with a row per
@@ -86,8 +92,10 @@
     const durationLabel = player.querySelector('.rp-duration');
 
     // What the player has loaded: a release and which of its tracks is current.
-    // A release is { page, title, artwork, tracks: [{ src, title }] }, read from
-    // a post's <meta name="rooms:track"> tags; single tracks are releases of one.
+    // A release is { page, title, artwork, gapless, tracks: [{ src, title, start }] },
+    // read from a post's <meta name="rooms:track"> tags; single tracks are
+    // releases of one. Tracks of a gapless release share one src and are told
+    // apart by their start times; other tracks start at 0 of their own file.
     let current = null; // { release, index }
     let seeking = false;
 
@@ -95,7 +103,33 @@
         return current && current.release.tracks[current.index];
     }
 
-    // 'track' on its own, or 'track · release' for multi-track releases.
+    // The current track's span within the loaded file, and the playhead within it.
+    function trackStart() {
+        return current ? currentTrack().start : 0;
+    }
+
+    function trackEnd() {
+        const next = current && current.release.gapless && current.release.tracks[current.index + 1];
+        return next ? next.start : audio.duration;
+    }
+
+    function trackDuration() {
+        return trackEnd() - trackStart();
+    }
+
+    function trackTime() {
+        return Math.max(0, audio.currentTime - trackStart());
+    }
+
+    // Which track of a gapless release the playhead is in. MP3 seeking can land
+    // a hair early, so a seek to a track's start still counts as that track.
+    function gaplessIndexAt(time) {
+        const tracks = current.release.tracks;
+        let index = 0;
+        while (index + 1 < tracks.length && time + 0.1 >= tracks[index + 1].start) index++;
+        return index;
+    }
+
     function formatTime(seconds) {
         if (!isFinite(seconds)) return '--:--';
         const s = Math.floor(seconds);
@@ -108,18 +142,43 @@
     }
 
     function renderTime() {
-        const duration = audio.duration;
+        // In a gapless release, follow the playhead into the next (or previous) track.
+        if (current && current.release.gapless && isFinite(audio.duration) && !audio.seeking) {
+            const index = gaplessIndexAt(audio.currentTime);
+            if (index !== current.index) {
+                current = { release: current.release, index: index };
+                renderTrackInfo();
+                renderPlayState();
+            }
+        }
+        const duration = trackDuration();
         durationLabel.textContent = formatTime(duration);
         seek.disabled = !isFinite(duration);
+        renderPosition();
         if (seeking) return;
-        currentLabel.textContent = formatTime(audio.currentTime);
-        seek.value = isFinite(duration) && duration > 0 ? (audio.currentTime / duration) * 1000 : 0;
+        currentLabel.textContent = formatTime(trackTime());
+        seek.value = isFinite(duration) && duration > 0 ? Math.min(1, trackTime() / duration) * 1000 : 0;
         setFill(seek);
         renderUpNext();
     }
 
+    // The lock screen's progress bar, per track.
+    function renderPosition() {
+        if (!('mediaSession' in navigator) || !navigator.mediaSession.setPositionState) return;
+        const duration = trackDuration();
+        if (!current || !isFinite(duration) || duration <= 0) return;
+        try {
+            navigator.mediaSession.setPositionState({
+                duration: duration,
+                position: Math.min(trackTime(), duration),
+                playbackRate: audio.playbackRate || 1,
+            });
+        } catch (e) {}
+    }
+
     function inLastMinute() {
-        return current && isFinite(audio.duration) && audio.duration - audio.currentTime <= 60;
+        const duration = trackDuration();
+        return current && isFinite(duration) && duration - trackTime() <= 60;
     }
 
     function renderUpNext() {
@@ -203,10 +262,31 @@
     }
 
     function load(release, index) {
-        current = { release: release, index: index };
         const track = release.tracks[index];
-        audio.src = track.src;
-        audio.load();
+        const sameFile = current && audio.currentSrc && current.release.tracks[current.index].src === track.src;
+        current = { release: release, index: index };
+        if (sameFile) {
+            // Another track of the gapless release already loaded: just move the playhead.
+            audio.currentTime = track.start;
+        } else {
+            audio.src = track.src;
+            audio.load();
+            if (track.start) audio.currentTime = track.start;
+        }
+        renderTrackInfo();
+        renderTime();
+        renderPlayState();
+    }
+
+    // Seeks made before a new file's metadata arrives may not stick everywhere;
+    // reapply the current track's start if the playhead is still before it.
+    audio.addEventListener('loadedmetadata', function () {
+        if (current && audio.currentTime < trackStart()) audio.currentTime = trackStart();
+    });
+
+    function renderTrackInfo() {
+        const release = current.release;
+        const track = currentTrack();
         // Multi-track releases show "release / track" with the " / track" in
         // grey; the whole label links to the release's post. The link itself is
         // grey (so a cut-off "..." is too) with the leading name in white.
@@ -225,8 +305,6 @@
                 artwork: release.artwork ? [{ src: release.artwork }] : [],
             });
         }
-        renderTime();
-        renderPlayState();
     }
 
     function playFrom(release, index) {
@@ -265,14 +343,20 @@
     function releaseFromDocument(doc, pageUrl) {
         const metas = doc.querySelectorAll('meta[name="rooms:track"]');
         if (!metas.length) return null;
-        const tracks = Array.from(metas).map(function (meta) {
-            return { src: new URL(meta.getAttribute('content'), pageUrl).href, title: meta.dataset.title || '' };
-        });
         const name = doc.querySelector('meta[name="rooms:release"]');
+        const albumSrc = name && name.dataset.src ? new URL(name.dataset.src, pageUrl).href : null;
+        const tracks = Array.from(metas).map(function (meta) {
+            return {
+                src: albumSrc || new URL(meta.getAttribute('content'), pageUrl).href,
+                title: meta.dataset.title || '',
+                start: albumSrc ? Number(meta.dataset.start) || 0 : 0,
+            };
+        });
         return {
             page: pageKey(pageUrl),
             title: name ? name.getAttribute('content') : tracks[0].title,
             artwork: artworkFromDocument(doc, pageUrl),
+            gapless: !!albumSrc,
             tracks: tracks,
         };
     }
@@ -420,13 +504,18 @@
             row.querySelector('.tracklist-num').textContent = index + 1;
             row.querySelector('.tracklist-title').textContent = track.title;
             const time = row.querySelector('.tracklist-time');
-            time.textContent = formatTime(durations.get(track.src));
-            if (!durations.has(track.src)) {
+            const next = release.gapless && release.tracks[index + 1];
+            // A gapless track's length is the gap to the next start; the last
+            // one runs to the end of the file.
+            const span = function (fileDuration) { return (next ? next.start : fileDuration) - track.start; };
+            time.textContent = formatTime(next ? span() : span(durations.get(track.src)));
+            if (!next && !durations.has(track.src)) {
+                durations.set(track.src, NaN);
                 const probe = new Audio();
                 probe.preload = 'metadata';
                 probe.addEventListener('loadedmetadata', function () {
                     durations.set(track.src, probe.duration);
-                    time.textContent = formatTime(probe.duration);
+                    time.textContent = formatTime(span(probe.duration));
                 });
                 probe.src = track.src;
             }
@@ -551,11 +640,13 @@
     seek.addEventListener('input', function () {
         seeking = true;
         setFill(seek);
-        currentLabel.textContent = formatTime((seek.value / 1000) * audio.duration);
+        currentLabel.textContent = formatTime((seek.value / 1000) * trackDuration());
     });
     seek.addEventListener('change', function () {
         seeking = false;
-        if (isFinite(audio.duration)) audio.currentTime = (seek.value / 1000) * audio.duration;
+        const duration = trackDuration();
+        // Stop just short of the end so a gapless track doesn't tip into the next.
+        if (isFinite(duration)) audio.currentTime = trackStart() + Math.min((seek.value / 1000) * duration, duration - 0.25);
         renderTime();
     });
 
@@ -565,8 +656,16 @@
     ['play', 'pause', 'ended'].forEach(function (type) {
         audio.addEventListener(type, renderPlayState);
     });
+    ['play', 'pause', 'seeked', 'ratechange'].forEach(function (type) {
+        audio.addEventListener(type, renderPosition);
+    });
     audio.addEventListener('volumechange', renderVolume);
-    audio.addEventListener('ended', function () { playAdjacent(1); });
+    audio.addEventListener('ended', function () {
+        // A gapless release's file ends on its last track, whatever the last
+        // timeupdate said.
+        if (current && current.release.gapless) current = { release: current.release, index: current.release.tracks.length - 1 };
+        playAdjacent(1);
+    });
 
     // Lock-screen / media-key controls. iOS drops handlers set before the page
     // becomes "now playing" (and again when its session restarts), falling back
@@ -587,8 +686,8 @@
         });
         // Like most players: restart the track unless it has only just begun.
         setMediaAction('previoustrack', function () {
-            if (audio.currentTime > 3) {
-                audio.currentTime = 0;
+            if (trackTime() > 3) {
+                audio.currentTime = trackStart();
                 return;
             }
             audio.pause();
@@ -597,7 +696,7 @@
         // iOS shows skip-10s buttons instead of previous/next while these are handled.
         setMediaAction('seekbackward', null);
         setMediaAction('seekforward', null);
-        setMediaAction('seekto', function (details) { audio.currentTime = details.seekTime; });
+        setMediaAction('seekto', function (details) { audio.currentTime = trackStart() + details.seekTime; });
     }
 
     registerMediaActions();

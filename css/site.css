@@ -199,18 +199,26 @@ a[data-next-post][hidden] { display: none; }
 .eq i:nth-child(3) { animation-duration: 1.15s; animation-delay: -.7s; }
 .eq i:nth-child(4) { animation-duration: .9s; animation-delay: -.2s; }
 .eq i:nth-child(5) { animation-duration: 1.05s; animation-delay: -.55s; }
+/* The outer bars stay at or below half height. */
+.eq i:first-child, .eq i:last-child { animation-name: eq-bounce-low; }
 @keyframes eq-bounce {
     0%, 100% { transform: scaleY(.3); }
     25% { transform: scaleY(1); }
     50% { transform: scaleY(.55); }
     75% { transform: scaleY(.85); }
 }
+@keyframes eq-bounce-low {
+    0%, 100% { transform: scaleY(.2); }
+    25% { transform: scaleY(.5); }
+    50% { transform: scaleY(.3); }
+    75% { transform: scaleY(.45); }
+}
 /* In the Play button the bars are centred in a column as wide as the
    buy/play pills on the buttons below, so they all line up. */
 [data-rooms-play] .eq { height: 16px; width: 4.5rem; justify-content: center; }
 @media (prefers-reduced-motion: reduce) {
     .eq i { animation: none; }
-    .eq i:nth-child(1) { transform: scaleY(.6); }
+    .eq i:nth-child(1) { transform: scaleY(.4); }
     .eq i:nth-child(2) { transform: scaleY(1); }
     .eq i:nth-child(3) { transform: scaleY(.4); }
     .eq i:nth-child(4) { transform: scaleY(.8); }

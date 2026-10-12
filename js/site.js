@@ -733,6 +733,15 @@
         if (document.visibilityState === 'visible') registerMediaActions();
     });
     window.addEventListener('pageshow', registerMediaActions);
+    // When a new file starts while the phone is locked, iOS can reset the
+    // controls after all of the above have fired, so register once more about a
+    // second into each new file.
+    let actionsSrc = null;
+    audio.addEventListener('timeupdate', function () {
+        if (audio.currentTime < 1 || actionsSrc === audio.currentSrc) return;
+        actionsSrc = audio.currentSrc;
+        registerMediaActions();
+    });
 
     // Re-measure whenever the player's size changes for any reason (a late
     // font or stylesheet, 'up next' wrapping, the window resizing), so things

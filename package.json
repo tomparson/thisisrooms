@@ -1,0 +1,11 @@
+{
+  "name": "thisisrooms",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:feed": "node scripts/build-feed.mjs"
+  },
+  "devDependencies": {
+    "node-html-parser": "^9.0.4"
+  }
+}

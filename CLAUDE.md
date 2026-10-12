@@ -14,6 +14,7 @@ Use absolute URLs based on this domain for any meta tags (og:image, canonical, e
 - `css/site.css` and `js/site.js` are shared by every page and loaded as `?v=N`. **Whenever either file changes, bump N on every page** (both tags, same N) so open tabs reload once.
 - `js/site.js` runs the floating audio player, track lists, the 'now playing' EQ, the artwork lightbox, dot grids, the posts' 'next' links and in-place navigation. Its header comment documents the markup it reads.
 - **The homepage card order is the release order.** It sets the 'next' links and the order the player continues in (newest first, wrapping round). Posts with no `rooms:track` tags are skipped by the player.
+- `feed.xml` is the RSS feed (Brevo will email new items to subscribers). `scripts/build-feed.mjs` builds it from the post pages (`npm ci` once, then `npm run build:feed`); its header comment says what each item contains. A post goes in the feed once it has an `article:published_time` tag. The 'Update feed' GitHub Action rebuilds and commits it on every push to `main` that touches the posts, so **pull before pushing to `main` again** in case it added a commit.
 
 ## Adding a new release
 
@@ -100,6 +101,8 @@ Copy the closest existing post and edit it. The `<head>`, header row, newsletter
   - The previous release plays into the new one, and the new one plays into the next.
   - No console errors.
 - Commit to the session's branch. Push to `main` when Tom asks; he often asks for content updates to go straight to main.
+- Run `npm run build:feed` and commit `feed.xml` with the post, then check the new item reads well (title, description, cover, links). The Action would otherwise rebuild it after the push.
+- The post's `description` goes in the feed and in Brevo's email, so it must describe the release, not the site.
 - Bump `?v=N` only if `css/site.css` or `js/site.js` changed.
 
 ## Testing locally

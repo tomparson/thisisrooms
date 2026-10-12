@@ -1,0 +1,47 @@
+# Rebuilds feed.xml whenever a push to main changes the posts, and commits it
+# if it changed. Pushes that already include an up-to-date feed.xml commit nothing.
+name: Update feed
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'posts/**'
+      - 'index.html'
+      - 'images/**'
+      - 'scripts/build-feed.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: feed
+  cancel-in-progress: false
+
+jobs:
+  feed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build:feed
+      - name: Commit feed.xml if it changed
+        run: |
+          if git diff --quiet -- feed.xml && git ls-files --error-unmatch feed.xml >/dev/null 2>&1; then
+            echo "feed.xml is up to date"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add feed.xml
+          git commit -m "Update feed.xml"
+          git push

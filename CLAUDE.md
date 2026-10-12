@@ -65,7 +65,7 @@ Copy the closest existing post and edit it. The `<head>`, header row, newsletter
   - If there are more than 3 buttons (counting Play), add a desktop filler after the last button: `<div class="dot-grid hidden md:block md:col-start-2 md:row-start-4 md:row-span-<buttons − 3>" aria-hidden="true"></div>`.
   - The grid gets `mb-section`, or `mb-3` when a track list follows.
 - **Track list** (multi-track only): `<div data-tracklist class="tracklist not-prose mb-section"></div>` straight after the grid. `js/site.js` fills it.
-- **Post copy:** plain `<p>` paragraphs. Credit lines are inline links ("X with <a>Name</a>"). A link only becomes a button if it has `class="cta"`.
+- **Post copy:** plain `<p>` paragraphs. Credit lines are inline links ("X with <a>Name</a>"). A link only becomes a button if it has `class="cta"`. Every link to another site (including button links) gets `target="_blank"` so it opens in a new tab; links within the site don't.
 - Don't add Bandcamp, SoundCloud or YouTube embed players for tracks that have a Play button. YouTube music-video embeds are fine when Tom wants them.
 - **Lyrics** (optional) go after the copy, inside the prose div:
   ```html

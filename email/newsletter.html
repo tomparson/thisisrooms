@@ -7,7 +7,9 @@
 
   Layout: 552px of content. On desktop the artwork sits on the right and the
   buttons on the left; the row is dir="rtl" so that on a phone, where the two
-  columns wrap, the artwork comes first, as on the site.
+  columns wrap, the artwork comes first, as on the site. The buttons' width
+  calc() is 0 or less at 552px and up (so min-width: 320px applies) and huge
+  below it (so max-width: 100% applies): full width once stacked on a phone.
 -->
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
@@ -28,7 +30,7 @@
           </table>
         </div>
         <!--[if mso]></td><td width="320" valign="top" dir="ltr"><![endif]-->
-        <div dir="ltr" style="display:inline-block;width:100%;max-width:320px;vertical-align:top;text-align:left;">
+        <div dir="ltr" style="display:inline-block;min-width:320px;max-width:100%;width:calc((552px - 100%) * 552);vertical-align:top;text-align:left;">
           {{ item.ROOMS_BUTTONS | safe }}
         </div>
         <!--[if mso]></td></tr></table><![endif]-->

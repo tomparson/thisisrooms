@@ -55,22 +55,22 @@ const EMAIL_STYLES = {
 // The post's Play button and link buttons as an email-safe stack of tables:
 // Play goes to the post with #play, the rest to each service with its pill.
 function emailButtons(url, links, hasAudio) {
-    const gap = '<div style="height:12px;line-height:12px;font-size:12px;">&nbsp;</div>';
+    const gap = '<div style="height:8px;line-height:8px;font-size:8px;">&nbsp;</div>';
     const buttons = [];
     if (hasAudio) {
         buttons.push(`<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;"><tr>`
-            + `<td height="60" style="height:60px;padding:0 20px;background-color:${INK};border:1px solid ${INK};border-radius:8px;">`
-            + `<a href="${url}#play" style="display:block;font-family:${FONT};font-size:16px;line-height:60px;font-weight:bold;color:#ffffff;text-decoration:none;">&#9654;&#xFE0E;&nbsp;&nbsp;&nbsp;Play</a>`
+            + `<td height="44" style="height:44px;padding:0 16px;background-color:${INK};border:1px solid ${INK};border-radius:8px;">`
+            + `<a href="${url}#play" style="display:block;font-family:${FONT};font-size:15px;line-height:44px;font-weight:bold;color:#ffffff;text-decoration:none;">&#9654;&#xFE0E;&nbsp;&nbsp;&nbsp;Play</a>`
             + '</td></tr></table>');
     }
     links.forEach((link) => {
         const href = escapeXml(link.href);
         buttons.push(`<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;"><tr>`
-            + `<td height="54" style="height:54px;padding:0 12px 0 20px;background-color:#f4f4f2;border:1px solid #e3e3e0;border-radius:8px;">`
+            + `<td height="40" style="height:40px;padding:0 8px 0 16px;background-color:#f4f4f2;border:1px solid #e3e3e0;border-radius:8px;">`
             + '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>'
-            + `<td style="font-family:${FONT};font-size:16px;line-height:54px;"><a href="${href}" style="display:block;color:${INK};text-decoration:none;">${escapeXml(link.name)}</a></td>`
+            + `<td style="font-family:${FONT};font-size:15px;line-height:40px;"><a href="${href}" style="display:block;color:${INK};text-decoration:none;">${escapeXml(link.name)}</a></td>`
             + (link.action
-                ? `<td width="72" align="center" style="width:72px;"><a href="${href}" style="display:block;font-family:${FONT};font-size:14px;line-height:26px;color:${INK};text-decoration:none;border:1px solid #c9c9c5;border-radius:999px;text-align:center;">${escapeXml(link.action)}</a></td>`
+                ? `<td width="64" align="center" style="width:64px;"><a href="${href}" style="display:block;font-family:${FONT};font-size:13px;line-height:22px;color:${INK};text-decoration:none;border:1px solid #c9c9c5;border-radius:999px;text-align:center;">${escapeXml(link.action)}</a></td>`
                 : '')
             + '</tr></table></td></tr></table>');
     });

@@ -13,6 +13,9 @@
  *   - enclosure and rooms:cover: the cover art
  *   - rooms:<service> (rooms:bandcamp, rooms:apple_music, ...): each link
  *     button's URL, for email templates that lay the links out themselves
+ *   - rooms:date, rooms:buttons, rooms:body: the date as the site shows it,
+ *     the Play and link buttons, and the post copy, as styled email HTML for
+ *     the Brevo newsletter (email/newsletter.html places them)
  *
  * The output only changes when a post does, so the GitHub Action that runs
  * this on every push to main commits nothing on unrelated pushes.
@@ -29,6 +32,50 @@ const NS = 'https://thisisrooms.com/ns/feed';
 
 const IMAGE_TYPES = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.gif': 'image/gif' };
 const KEEP_ATTRIBUTES = { a: ['href'], img: ['src', 'alt'], time: ['datetime'] };
+
+// Newsletter styling, inlined because most email apps ignore stylesheets. Colours
+// are the site's, flipped onto a light background; email/newsletter.html matches.
+const INK = '#0E100D';
+const MUTED = '#6b6c69';
+const FONT = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";
+const EMAIL_STYLES = {
+    p: `margin:0 0 16px;font-family:${FONT};font-size:16px;line-height:1.65;color:#2b2c2a;`,
+    h2: `margin:32px 0 12px;font-family:${FONT};font-size:22px;line-height:1.3;font-weight:bold;color:${INK};`,
+    h3: `margin:28px 0 10px;font-family:${FONT};font-size:19px;line-height:1.3;font-weight:bold;color:${INK};`,
+    ul: `margin:0 0 16px;padding-left:24px;`,
+    ol: `margin:0 0 16px;padding-left:24px;`,
+    li: `margin:0 0 6px;font-family:${FONT};font-size:16px;line-height:1.65;color:#2b2c2a;`,
+    a: `color:${INK};text-decoration:underline;`,
+    img: 'display:block;width:100%;max-width:100%;height:auto;border:0;border-radius:8px;',
+    cta: `display:inline-block;padding:10px 20px;border-radius:8px;background-color:${INK};color:#ffffff;font-weight:bold;text-decoration:none;`,
+    lyrics: 'margin:32px 0 0;padding:24px 0 8px;border-top:1px solid #e3e3e0;',
+    lyricsP: "margin:0 0 16px;font-family:'Courier New', Courier, monospace;font-size:14px;line-height:1.7;color:#2b2c2a;",
+};
+
+// The post's Play button and link buttons as an email-safe stack of tables:
+// Play goes to the post with #play, the rest to each service with its pill.
+function emailButtons(url, links, hasAudio) {
+    const gap = '<div style="height:12px;line-height:12px;font-size:12px;">&nbsp;</div>';
+    const buttons = [];
+    if (hasAudio) {
+        buttons.push(`<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;"><tr>`
+            + `<td height="60" style="height:60px;padding:0 20px;background-color:${INK};border:1px solid ${INK};border-radius:8px;">`
+            + `<a href="${url}#play" style="display:block;font-family:${FONT};font-size:16px;line-height:60px;font-weight:bold;color:#ffffff;text-decoration:none;">&#9654;&#xFE0E;&nbsp;&nbsp;&nbsp;Play</a>`
+            + '</td></tr></table>');
+    }
+    links.forEach((link) => {
+        const href = escapeXml(link.href);
+        buttons.push(`<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;"><tr>`
+            + `<td height="54" style="height:54px;padding:0 12px 0 20px;background-color:#f4f4f2;border:1px solid #e3e3e0;border-radius:8px;">`
+            + '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>'
+            + `<td style="font-family:${FONT};font-size:16px;line-height:54px;"><a href="${href}" style="display:block;color:${INK};text-decoration:none;">${escapeXml(link.name)}</a></td>`
+            + (link.action
+                ? `<td width="72" align="center" style="width:72px;"><a href="${href}" style="display:block;font-family:${FONT};font-size:14px;line-height:26px;color:${INK};text-decoration:none;border:1px solid #c9c9c5;border-radius:999px;text-align:center;">${escapeXml(link.action)}</a></td>`
+                : '')
+            + '</tr></table></td></tr></table>');
+    });
+    return buttons.join(gap);
+}
 
 function readPage(path) {
     return parse(readFileSync(join(ROOT, path), 'utf8'), { comment: false });
@@ -63,8 +110,9 @@ function firstParagraph(content) {
     return text.slice(0, text.lastIndexOf(' ', 200)) + '…';
 }
 
-// Turns the post's prose into plain HTML that reads well in an email or feed reader.
-function cleanContent(prose, pageUrl) {
+// Turns the post's prose into plain HTML that reads well in a feed reader or,
+// with email set, into the copy for the newsletter with its styles inlined.
+function cleanContent(prose, pageUrl, email = false) {
     const content = parse(prose.innerHTML, { comment: false });
 
     content.querySelector('h1')?.remove();
@@ -88,8 +136,20 @@ function cleanContent(prose, pageUrl) {
         }
     });
 
-    // Unwrap layout divs (e.g. the lyrics block), keeping what's inside.
-    content.querySelectorAll('div').reverse().forEach((div) => div.replaceWith(...div.childNodes));
+    // In email, call-to-action links become buttons and the lyrics keep their own block.
+    const styled = [];
+    if (email) {
+        content.querySelectorAll('a.cta').forEach((a) => styled.push([a, EMAIL_STYLES.cta]));
+        content.querySelectorAll('.lyrics').forEach((div) => {
+            styled.push([div, EMAIL_STYLES.lyrics]);
+            div.querySelectorAll('p').forEach((p) => styled.push([p, EMAIL_STYLES.lyricsP]));
+        });
+    }
+
+    // Unwrap layout divs, keeping what's inside.
+    content.querySelectorAll('div').reverse().forEach((div) => {
+        if (!(email && div.classList.contains('lyrics'))) div.replaceWith(...div.childNodes);
+    });
 
     content.querySelectorAll('*').forEach((el) => {
         const keep = KEEP_ATTRIBUTES[el.rawTagName?.toLowerCase()] || [];
@@ -101,6 +161,15 @@ function cleanContent(prose, pageUrl) {
             if (value) el.setAttribute(name, new URL(value, pageUrl).href);
         });
     });
+
+    if (email) {
+        content.querySelectorAll('*').forEach((el) => {
+            const style = EMAIL_STYLES[el.rawTagName?.toLowerCase()];
+            if (style) el.setAttribute('style', style);
+        });
+        styled.forEach(([el, style]) => el.setAttribute('style', style));
+        content.querySelectorAll('img').forEach((img) => img.setAttribute('width', '552'));
+    }
 
     return content;
 }
@@ -126,6 +195,7 @@ function readPost(slug, genericDescription) {
     const hasAudio = doc.querySelector('meta[name="rooms:track"]') !== null;
 
     const content = cleanContent(prose, url);
+    const emailContent = cleanContent(prose, url, true);
     const description = meta(doc, 'name', 'description');
 
     const header = [`<p><img src="${escapeXml(cover.url)}" alt="${escapeXml(cover.alt)}" /></p>`];
@@ -146,6 +216,8 @@ function readPost(slug, genericDescription) {
         html: `${header.join('\n')}\n${content.toString().trim()}`,
         cover,
         links,
+        emailBody: emailContent.toString().trim(),
+        emailButtons: emailButtons(url, links, hasAudio),
     };
 }
 
@@ -165,6 +237,9 @@ function itemXml(post) {
         if (file && type) lines.push(`      <enclosure url="${escapeXml(post.cover.url)}" length="${statSync(file).size}" type="${type}" />`);
         lines.push(`      <rooms:cover>${escapeXml(post.cover.url)}</rooms:cover>`);
     }
+    lines.push(`      <rooms:date>${post.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })}</rooms:date>`);
+    lines.push(`      <rooms:buttons>${cdata(post.emailButtons)}</rooms:buttons>`);
+    lines.push(`      <rooms:body>${cdata(post.emailBody)}</rooms:body>`);
     post.links.forEach((link) => {
         lines.push(`      <rooms:${serviceKey(link.name)}>${escapeXml(link.href)}</rooms:${serviceKey(link.name)}>`);
     });

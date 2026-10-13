@@ -3,9 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:feed": "node scripts/build-feed.mjs"
+    "build:feed": "node scripts/build-feed.mjs",
+    "build:email": "node scripts/build-email-template.mjs"
   },
   "devDependencies": {
-    "node-html-parser": "^9.0.4"
+    "node-html-parser": "^9.0.4",
+    "yaml": "^2.9.1"
   }
 }

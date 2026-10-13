@@ -15,6 +15,7 @@ Use absolute URLs based on this domain for any meta tags (og:image, canonical, e
 - `js/site.js` runs the floating audio player, track lists, the 'now playing' EQ, the artwork lightbox, dot grids, the posts' 'next' links and in-place navigation. Its header comment documents the markup it reads.
 - **The homepage card order is the release order.** It sets the 'next' links and the order the player continues in (newest first, wrapping round). Posts with no `rooms:track` tags are skipped by the player.
 - `feed.xml` is the RSS feed (Brevo will email new items to subscribers). `scripts/build-feed.mjs` builds it from the post pages (`npm ci` once, then `npm run build:feed`); its header comment says what each item contains. A post goes in the feed once it has an `article:published_time` tag. The 'Update feed' GitHub Action rebuilds and commits it on every push to `main` that touches the posts, so **pull before pushing to `main` again** in case it added a commit.
+- The newsletter is a Brevo RSS campaign on that feed. Its template is `email/newsletter.html` (the post block, filled from each feed item), wrapped into `email/brevo-template.yaml` by `npm run build:email`; Tom pastes the YAML into the template's YAML view in Brevo. Change the email's look there and in `EMAIL_STYLES`/`emailButtons()` in `scripts/build-feed.mjs`, then rebuild both.
 
 ## Adding a new release
 

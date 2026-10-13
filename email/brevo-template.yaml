@@ -1,0 +1,271 @@
+author: ""
+campaignType: template
+fields: []
+fieldsHistory: []
+firstLoadSocialIcons: false
+fonts: []
+id: a7f0783d-4be0-4086-a14a-80bea1c37ac7
+name: ""
+subject: "{ item.TITLE }"
+ui:
+  showDeleteOption: false
+user-hash: 92ab8d994816bf769b9d0b05ec11e071
+version: 3.0.1
+body:
+  id: f010a750-ce5f-43cb-b669-f6d23c88c3ed
+  type: body
+  layout:
+    320px:
+      width: 320px
+    default:
+      wrapper-background-color: "#ffffff"
+      wrapper-width: 600px
+  content:
+    - content-type: wrapper
+      id: 6e6015c0-7c4b-4d48-9df7-7e3a514f717b
+      title: Wrapper
+      type: rows
+      layout:
+        320px:
+          width: 320px
+        default:
+          align: center
+          valign: top
+      content:
+        - align: top
+          customBlockId: 5f5a244c5b80624620552602
+          dist: "12"
+          eventPath: Custom data source
+          gutter: 20px
+          id: ec4cea23-f828-465c-9a1f-80414941b803
+          isCustomBlock: true
+          loop: item in params.items | slice:":1"
+          moduleName: dynamicList
+          name: Dynamic content
+          templateName: dynamicList
+          thumbnail: https://img.mailinblue.com/2670624/images/modules/module_thumb_a78ed9dc4dd9dbca8164335198094c78_1599743054.png
+          title: Content
+          type: grid-row
+          layout:
+            320px:
+              display: rows
+              padding-left: 0px
+              padding-right: 0px
+              width: 100%
+            default:
+              align: center
+              full-width: true
+              padding-bottom: 32px
+              padding-top: 20px
+              valign: top
+              width: 100%
+          content:
+            - id: baf5fd68-e449-4fc8-a156-6c25952e9a32
+              isEmpty: false
+              label: Drop content here
+              title: column 1
+              type: grid-column
+              layout:
+                320px: []
+                default:
+                  padding-left: 0px
+                  padding-right: 0px
+                  valign: top
+              content:
+                - id: cfd76783-760f-42c1-99fd-79066137b3bd
+                  title: HTML
+                  type: raw-html
+                  layout:
+                    320px: {}
+                    default:
+                      padding-bottom: 0px
+                      padding-top: 0px
+                      width: 100%
+                  content: "<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td style=\"padding:16px 14px 0 14px;\"><h1 style=\"margin:0;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;font-size:28px;line-height:1.2;font-weight:bold;color:#0E100D;\">{{ item.TITLE }}</h1><p style=\"margin:10px 0 24px;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;font-size:14px;line-height:1.4;color:#6b6c69;\">{{ item.ROOMS_DATE }}</p><div dir=\"rtl\" style=\"font-size:0;line-height:0;text-align:center;\"><!--[if mso]><table role=\"presentation\" width=\"552\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" dir=\"rtl\"><tr><td width=\"232\" valign=\"top\" dir=\"ltr\"><![endif]--><div dir=\"ltr\" style=\"display:inline-block;width:100%;max-width:232px;vertical-align:top;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td style=\"padding:0 0 16px 16px;\"><img src=\"{{ item.ENCLOSURE }}\" width=\"216\" alt=\"{{ item.TITLE }} artwork\" style=\"display:block;width:100%;max-width:216px;height:auto;border:0;border-radius:8px;\" /></td></tr></table></div><!--[if mso]></td><td width=\"320\" valign=\"top\" dir=\"ltr\"><![endif]--><div dir=\"ltr\" style=\"display:inline-block;width:100%;max-width:320px;vertical-align:top;text-align:left;\">{{ item.ROOMS_BUTTONS | safe }}</div><!--[if mso]></td></tr></table><![endif]--></div><div style=\"padding-top:24px;\">{{ item.ROOMS_BODY | safe }}</div><p style=\"margin:32px 0 0;padding-top:20px;border-top:1px solid #e3e3e0;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;font-size:14px;line-height:1.4;\"><a href=\"{{ item.LINK }}\" style=\"color:#6b6c69;text-decoration:none;\">view on thisisrooms.com &rarr;</a></p></td></tr></table>"
+        - align: top
+          dist: "12"
+          gutter: 30px
+          id: 03782141-6773-4dbe-8a27-63f9435bb91d
+          moduleName: footer
+          thumbnail: /assets/img/editor/element-footer.svg
+          title: Footer
+          type: grid-row
+          layout:
+            320px:
+              display: rows
+              padding-left: 15px
+              padding-right: 15px
+              width: 100%
+            default:
+              align: center
+              background-color: "#f4f4f2"
+              padding-bottom: 20px
+              padding-left: 0px
+              padding-right: 0px
+              padding-top: 20px
+              valign: top
+              width: 100%
+          content:
+            - id: 25a27abb-b69c-483d-ac83-f0be90ceb407
+              isEmpty: false
+              label: Drop content here
+              title: grid-column
+              type: grid-column
+              layout:
+                320px: []
+                default:
+                  padding-left: 0px
+                  padding-right: 0px
+                  valign: top
+              content:
+                - id: e9c58456-1eca-480c-abe2-64e1bd1a44cc
+                  thumbnail: /assets/img/editor/element_text.svg
+                  title: Legal text
+                  type: text
+                  layout:
+                    320px:
+                      width: 100%
+                    default:
+                      align: left
+                      color: "#6b6c69"
+                      font-size: 14px
+                      line-height: "1.5"
+                      padding-bottom: 0px
+                      padding-top: 15px
+                      text-align: center
+                      text-valign: top
+                      valign: top
+                      width: 100%
+                  content: <span style="font-size:13px;">This email was sent to {{contact.EMAIL}}</span>
+                - id: 704252ce-b556-494f-9149-0caaff47c42d
+                  thumbnail: /assets/img/editor/element_text.svg
+                  title: Legal text
+                  type: text
+                  layout:
+                    320px:
+                      width: 100%
+                    default:
+                      align: left
+                      color: "#6b6c69"
+                      font-size: 14px
+                      line-height: "1.5"
+                      padding-bottom: 0px
+                      padding-top: 0px
+                      text-align: center
+                      text-valign: top
+                      valign: top
+                      width: 100%
+                  content: <span style="font-size:13px;">You&#39;re receiving it because you subscribed to updates from rooms.</span>
+                - id: 619b6ce4-d454-4805-b435-c512dfb1143a
+                  thumbnail: /assets/img/editor/element_text.svg
+                  title: Legal text
+                  type: text
+                  layout:
+                    320px:
+                      width: 100%
+                    default:
+                      align: left
+                      color: "#6b6c69"
+                      font-size: 14px
+                      line-height: "1.5"
+                      padding-bottom: 15px
+                      padding-top: 15px
+                      text-align: center
+                      text-valign: top
+                      valign: top
+                      width: 100%
+                  content: <span style="font-size:13px;"><a href="{{ mirror }}" style="color:#6b6c69;">View in browser</a> | <a href="{{ unsubscribe }}" style="color:#6b6c69;">Unsubscribe</a></span>
+                - id: c7470894-e481-4bb0-8216-33e2b055299c
+                  isFooter: true
+                  title: footer
+                  type: rows
+                  layout:
+                    320px:
+                      display: block
+                      width: 100%
+                    default:
+                      align: center
+                      footerImageDisplay: block
+                      padding-bottom: 15px
+                      padding-left: 0px
+                      padding-right: 0px
+                      padding-top: 0px
+                      width: 100%
+                  content:
+                    - id: f6a371a1-d140-4a83-b7b4-4ff494873c8d
+                      isFooterImage: true
+                      label: Replace
+                      thumbnail: /assets/img/editor/element_image.svg
+                      title: Image
+                      type: image
+                      layout:
+                        320px:
+                          height: 48px
+                          max-width: 129px
+                          width: 129px
+                        default:
+                          align: center
+                          canvas-height: 48px
+                          display: block
+                          dynamic: false
+                          embed: false
+                          height: 48px
+                          margin-top: 11px
+                          padding-top: 0px
+                          valign: top
+                          width: 129px
+                      content:
+                        src: https://creative-assets.mailinblue.com/rnb-assets/en.png
+media:
+  320px:
+    max-width: 600
+    min-width: 0
+styles:
+  default:
+    properties:
+      color: "#2b2c2a"
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif
+      font-size: 16px
+      line-height: "1.65"
+    title: Paragraph
+  default-button:
+    properties:
+      background-color: "#0E100D"
+      border-color: "#0E100D"
+      border-radius: 8px
+      border-width: 1px
+      color: "#ffffff"
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif
+      font-size: 16px
+      font-weight: bold
+      width: 150px
+    title: css.default.buttonColor
+  default-heading1:
+    properties:
+      color: "#0E100D"
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif
+      font-size: 28px
+    title: Heading 1
+  default-heading2:
+    properties:
+      color: "#0E100D"
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif
+      font-size: 22px
+    title: Heading 2
+  default-heading3:
+    properties:
+      color: "#0E100D"
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif
+      font-size: 19px
+    title: Heading 3
+  default-heading4:
+    properties:
+      color: "#0E100D"
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif
+      font-size: 16px
+    title: Heading 4
+  default-link:
+    properties:
+      color: "#0E100D"
+      text-decoration: underline
+    title: Link

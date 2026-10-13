@@ -17,6 +17,9 @@
  *     the Play and link buttons, and the post copy, as styled email HTML for
  *     the Brevo newsletter (email/newsletter.html places them)
  *
+ * The channel also has rooms:subject, the newest post's title, for the subject
+ * line of Brevo's RSS campaign (item fields only work inside the email body).
+ *
  * The output only changes when a post does, so the GitHub Action that runs
  * this on every push to main commits nothing on unrelated pushes.
  */
@@ -52,22 +55,39 @@ const EMAIL_STYLES = {
     lyricsP: "margin:0 0 16px;font-family:'Courier New', Courier, monospace;font-size:14px;line-height:1.7;color:#2b2c2a;",
 };
 
+// Icons for the link buttons, rendered into images/email/ by
+// scripts/build-email-images.mjs (add a service there too). Buttons for any
+// other service just have no icon.
+const SERVICE_ICONS = {
+    Bandcamp: 'bandcamp',
+    'Apple Music': 'apple-music',
+    YouTube: 'youtube',
+    'Subvert.fm': 'subvert-fm',
+    Deezer: 'deezer',
+    SoundCloud: 'soundcloud',
+};
+const EMAIL_IMAGES = new URL('images/email/', SITE).href;
+
 // The post's Play button and link buttons as an email-safe stack of tables:
-// Play goes to the post with #play, the rest to each service with its pill.
+// Play (an image, as email apps restyle text symbols) goes to the post with
+// #play, the rest to each service with its icon and pill.
 function emailButtons(url, links, hasAudio) {
     const gap = '<div style="height:8px;line-height:8px;font-size:8px;">&nbsp;</div>';
     const buttons = [];
     if (hasAudio) {
-        buttons.push(`<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;"><tr>`
-            + `<td height="44" style="height:44px;padding:0 16px;background-color:${INK};border:1px solid ${INK};border-radius:8px;">`
-            + `<a href="${url}#play" style="display:block;font-family:${FONT};font-size:15px;line-height:44px;font-weight:bold;color:#ffffff;text-decoration:none;">&#9654;&#xFE0E;&nbsp;&nbsp;&nbsp;Play</a>`
-            + '</td></tr></table>');
+        buttons.push(`<a href="${url}#play" style="display:block;text-decoration:none;">`
+            + `<img src="${EMAIL_IMAGES}play.png" width="320" height="44" alt="Play" style="display:block;width:100%;max-width:320px;height:auto;border:0;border-radius:8px;background-color:${INK};color:#ffffff;font-family:${FONT};font-size:15px;font-weight:bold;" />`
+            + '</a>');
     }
     links.forEach((link) => {
         const href = escapeXml(link.href);
+        const icon = SERVICE_ICONS[link.name];
         buttons.push(`<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;"><tr>`
             + `<td height="40" style="height:40px;padding:0 8px 0 16px;background-color:#f4f4f2;border:1px solid #e3e3e0;border-radius:8px;">`
             + '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>'
+            + (icon
+                ? `<td width="32" style="width:32px;line-height:0;font-size:0;"><a href="${href}"><img src="${EMAIL_IMAGES}${icon}.png" width="20" height="20" alt="" style="display:block;width:20px;height:20px;border:0;" /></a></td>`
+                : '')
             + `<td style="font-family:${FONT};font-size:15px;line-height:40px;"><a href="${href}" style="display:block;color:${INK};text-decoration:none;">${escapeXml(link.name)}</a></td>`
             + (link.action
                 ? `<td width="64" align="center" style="width:64px;"><a href="${href}" style="display:block;font-family:${FONT};font-size:13px;line-height:22px;color:${INK};text-decoration:none;border:1px solid #c9c9c5;border-radius:999px;text-align:center;">${escapeXml(link.action)}</a></td>`
@@ -265,6 +285,7 @@ const xml = `<?xml version="1.0" encoding="UTF-8"?>
     <description>${escapeXml(siteDescription)}</description>
     <language>en-gb</language>
     <lastBuildDate>${posts[0].date.toUTCString()}</lastBuildDate>
+    <rooms:subject>${escapeXml(posts[0].title)}</rooms:subject>
     <image>
       <url>${SITE}images/avatar.jpg</url>
       <title>rooms</title>

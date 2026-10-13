@@ -8,7 +8,8 @@
  * structure below is Brevo's own (from its RSS default template): a looped
  * 'Dynamic content' row holding one HTML block, then the footer, which must stay
  * outside the loop. The loop takes only the newest feed item, so each email is
- * one post.
+ * one post. On phones (Brevo's '320px' layout) the email is full width rather
+ * than Brevo's default fixed 320px, which left wide empty margins.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -58,7 +59,7 @@ const template = {
         id: 'f010a750-ce5f-43cb-b669-f6d23c88c3ed',
         type: 'body',
         layout: {
-            '320px': { width: '320px' },
+            '320px': { width: '100%' },
             default: { 'wrapper-background-color': '#ffffff', 'wrapper-width': '600px' },
         },
         content: [{
@@ -66,7 +67,7 @@ const template = {
             id: '6e6015c0-7c4b-4d48-9df7-7e3a514f717b',
             title: 'Wrapper',
             type: 'rows',
-            layout: { '320px': { width: '320px' }, default: { align: 'center', valign: 'top' } },
+            layout: { '320px': { width: '100%' }, default: { align: 'center', valign: 'top' } },
             content: [
                 {
                     align: 'top',

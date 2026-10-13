@@ -16,7 +16,7 @@ body:
   type: body
   layout:
     320px:
-      width: 320px
+      width: 100%
     default:
       wrapper-background-color: "#ffffff"
       wrapper-width: 600px
@@ -27,7 +27,7 @@ body:
       type: rows
       layout:
         320px:
-          width: 320px
+          width: 100%
         default:
           align: center
           valign: top

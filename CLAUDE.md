@@ -16,8 +16,8 @@ Use absolute URLs based on this domain for any meta tags (og:image, canonical, e
 - **The homepage card order is the release order.** It sets the 'next' links and the order the player continues in (newest first, wrapping round). Posts with no `rooms:track` tags are skipped by the player.
 - `feed.xml` is the RSS feed (Brevo will email new items to subscribers). `scripts/build-feed.mjs` builds it from the post pages (`npm ci` once, then `npm run build:feed`); its header comment says what each item contains. A post goes in the feed once it has an `article:published_time` tag. The 'Update feed' GitHub Action rebuilds and commits it on every push to `main` that touches the posts, so **pull before pushing to `main` again** in case it added a commit.
 - The newsletter is a Brevo RSS campaign on that feed. Its template is `email/newsletter.html` (the post block, filled from each feed item), wrapped into `email/brevo-template.yaml` by `npm run build:email`; Tom pastes the YAML into the template's YAML view in Brevo. Change the email's look there and in `EMAIL_STYLES`/`emailButtons()` in `scripts/build-feed.mjs`, then rebuild both.
-- **The email's subject line is the newest post's `<title>` (without ' · rooms').** The feed puts it in the channel `<description>`, which the campaign's subject uses as `{params.feed.DESCRIPTION}` (subjects can't read item fields, and Brevo ignores non-standard channel tags). So every post's title must read well as an email subject, e.g. 'incantations out now'.
-- The email buttons' icons (Play and each service) are PNGs in `images/email/`, made by `npm run build:email-images` (Font Awesome from `node_modules`, rendered in Chromium at 2x). A post linking to a new service needs its icon added to `scripts/build-email-images.mjs` and `SERVICE_ICONS` in `scripts/build-feed.mjs`; until then its button just has no icon.
+- **The email's subject line is the newest post's `<title>` (without ' · rooms').** The campaign's subject is `{item.TITLE}` (single braces), which Brevo fills from the newest item; feed-level placeholders like `{params.feed.TITLE}` come out empty. So every post's title must read well as an email subject, e.g. 'incantations out now'.
+- The email buttons' icons (Play and each service) are PNGs in `images/email/`, made by `npm run build:email-images` (Font Awesome from `node_modules`, rendered in Chromium at 2x). A post linking to a new service needs its icon added to `scripts/build-email-images.mjs` and `SERVICE_ICONS` in `scripts/build-feed.mjs`; until then its button just has no icon. Give a changed image a new file name, since email apps and Brevo cache images by URL.
 
 ## Adding a new release
 
@@ -106,7 +106,7 @@ Copy the closest existing post and edit it. The `<head>`, header row, newsletter
 - Commit to the session's branch. Push to `main` when Tom asks; he often asks for content updates to go straight to main.
 - Run `npm run build:feed` and commit `feed.xml` with the post, then check the new item reads well (title, description, cover, links). The Action would otherwise rebuild it after the push.
 - The post's `description` goes in the feed and in Brevo's email, so it must describe the release, not the site.
-- Brevo only picks up a post that was live at least an hour before its scheduled run, so publish in good time.
+- Brevo only picks up a post that was live at least an hour before its scheduled run, so publish in good time. It sends each item (by `<guid>`) once, so a re-test needs a fresh guid.
 - Bump `?v=N` only if `css/site.css` or `js/site.js` changed.
 
 ## Testing locally

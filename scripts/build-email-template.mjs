@@ -51,7 +51,7 @@ const template = {
     fonts: [],
     id: 'a7f0783d-4be0-4086-a14a-80bea1c37ac7',
     name: '',
-    subject: '{params.feed.DESCRIPTION}',
+    subject: '{item.TITLE}',
     ui: { showDeleteOption: false },
     'user-hash': '92ab8d994816bf769b9d0b05ec11e071',
     version: '3.0.1',

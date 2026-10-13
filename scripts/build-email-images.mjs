@@ -1,14 +1,16 @@
 /*
  * Renders the newsletter's images into images/email/ at twice their display
  * size, since email apps can't use the site's icon font:
- *   - play.png: the Play button's icon, white (20x20 in the email)
+ *   - play-icon.png: the Play button's icon, white (20x20 in the email)
  *   - <service>.png: each link button's icon (20x20), named as in SERVICE_ICONS
  *     in scripts/build-feed.mjs, which places them
  *
  *   npm run build:email-images
  *
  * Icons come from the same Font Awesome version as the site, from node_modules.
- * Needs Chromium (set CHROMIUM_PATH if Playwright can't find it). Add a service here and in SERVICE_ICONS together.
+ * Needs Chromium (set CHROMIUM_PATH if Playwright can't find it). Add a service
+ * here and in SERVICE_ICONS together. Give a changed image a new file name:
+ * email apps and Brevo cache images by URL.
  */
 import { readFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -48,6 +50,6 @@ async function render(html, selector, file) {
     console.log(`images/email/${file}`);
 }
 
-await render(icon(['solid', 'play'], '#ffffff', 14), '.icon', 'play.png');
+await render(icon(['solid', 'play'], '#ffffff', 14), '.icon', 'play-icon.png');
 for (const [name, source] of Object.entries(ICONS)) await render(icon(source), '.icon', `${name}.png`);
 await browser.close();

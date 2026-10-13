@@ -87,7 +87,7 @@ const template = {
                     layout: {
                         '320px': { display: 'rows', 'padding-left': '0px', 'padding-right': '0px', width: '100%' },
                         default: {
-                            align: 'center', 'full-width': true, 'padding-bottom': '32px', 'padding-top': '20px',
+                            align: 'center', 'full-width': true, 'padding-bottom': '32px', 'padding-top': '0px',
                             valign: 'top', width: '100%',
                         },
                     },

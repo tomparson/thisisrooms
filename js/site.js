@@ -616,6 +616,14 @@
             if (current) unload();
             show(false);
         }
+
+        // The newsletter's Play links end in #play: start the page's release straight
+        // away. Browsers often block sound until the visitor has tapped something; then
+        // the release just waits in the player for the Play button, as usual.
+        if (pageRelease && location.hash === '#play') {
+            history.replaceState(history.state, '', location.pathname + location.search);
+            if (!currentIsOnPage() || audio.paused) playFrom(pageRelease, 0);
+        }
         renderPlayState();
     }
 

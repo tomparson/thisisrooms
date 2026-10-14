@@ -16,6 +16,8 @@
  *   - rooms:date, rooms:buttons, rooms:body: the date as the site shows it,
  *     the Play and link buttons, and the post copy, as styled email HTML for
  *     the Brevo newsletter (email/newsletter.html places them)
+ *   - rooms:socials: the homepage's social links (scripts/socials.mjs), the
+ *     same in every item, for the newsletter's 'follow rooms' list
  *
  * The output only changes when a post does, so the GitHub Action that runs
  * this on every push to main commits nothing on unrelated pushes.
@@ -24,6 +26,7 @@ import { readFileSync, writeFileSync, readdirSync, existsSync, statSync } from '
 import { join, dirname, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'node-html-parser';
+import { readSocials } from './socials.mjs';
 
 const SITE = 'https://thisisrooms.com/';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -95,6 +98,24 @@ function emailButtons(url, links, hasAudio) {
             + '</tr></table></td></tr></table>');
     });
     return buttons.join(gap);
+}
+
+// The homepage's social links as an email-safe list, one row per links-grid
+// entry: its icons (each linking to its own profile) and description. Icons
+// not yet rendered by scripts/build-email-images.mjs are left out.
+function emailSocials() {
+    const rows = readSocials(ROOT).map((social) => {
+        const icons = social.icons
+            .filter((i) => existsSync(join(ROOT, 'images/email/social', `${i.id}.png`)))
+            .map((i) => `<a href="${escapeXml(i.href)}" style="display:inline-block;margin-right:6px;"><img src="${EMAIL_IMAGES}social/${i.id}.png" width="20" height="20" alt="${escapeXml(i.id)}" style="display:block;width:20px;height:20px;border:0;" /></a>`)
+            .join('');
+        return '<tr>'
+            + `<td width="62" valign="middle" style="width:62px;padding:6px 0;line-height:0;font-size:0;white-space:nowrap;">${icons}</td>`
+            + `<td valign="middle" style="padding:6px 0;font-family:${FONT};font-size:14px;line-height:1.4;"><a href="${escapeXml(social.href)}" style="color:#2b2c2a;text-decoration:none;">${escapeXml(social.text)}</a></td>`
+            + '</tr>';
+    });
+    return `<p style="margin:0 0 6px;font-family:${FONT};font-size:13px;line-height:1.4;color:${MUTED};">follow rooms</p>`
+        + `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${rows.join('')}</table>`;
 }
 
 function readPage(path) {
@@ -260,6 +281,7 @@ function itemXml(post) {
     lines.push(`      <rooms:date>${post.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })}</rooms:date>`);
     lines.push(`      <rooms:buttons>${cdata(post.emailButtons)}</rooms:buttons>`);
     lines.push(`      <rooms:body>${cdata(post.emailBody)}</rooms:body>`);
+    lines.push(`      <rooms:socials>${cdata(SOCIALS)}</rooms:socials>`);
     post.links.forEach((link) => {
         lines.push(`      <rooms:${serviceKey(link.name)}>${escapeXml(link.href)}</rooms:${serviceKey(link.name)}>`);
     });
@@ -268,6 +290,7 @@ function itemXml(post) {
 }
 
 const home = readPage('index.html');
+const SOCIALS = emailSocials();
 const siteDescription = meta(home, 'name', 'description');
 
 const posts = readdirSync(join(ROOT, 'posts'), { withFileTypes: true })

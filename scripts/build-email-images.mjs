@@ -1,6 +1,8 @@
 /*
  * Renders the newsletter's images into images/email/ at twice their display
  * size, since email apps can't use the site's icon font:
+ *   - avatar-circle.png: the homepage's photo of rooms cut to a circle (22x22
+ *     in the email header)
  *   - play-icon.png: the Play button's icon, white (20x20 in the email)
  *   - <service>.png: each link button's icon (20x20), named as in SERVICE_ICONS
  *     in scripts/build-feed.mjs, which places them
@@ -63,6 +65,9 @@ async function render(html, selector, file) {
     console.log(`images/email/${file}`);
 }
 
+const avatar = readFileSync(join(ROOT, 'images/avatar.jpg')).toString('base64');
+await render(`<style>body { margin: 0; background: transparent; }</style>
+<img class="avatar" src="data:image/jpeg;base64,${avatar}" style="display:block;width:22px;height:22px;border-radius:50%;">`, '.avatar', 'avatar-circle.png');
 await render(icon(['solid', 'play'], '#ffffff', 14), '.icon', 'play-icon.png');
 for (const [name, source] of Object.entries(ICONS)) await render(icon(source), '.icon', `${name}.png`);
 for (const social of readSocials(ROOT)) {

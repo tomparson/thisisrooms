@@ -808,7 +808,7 @@
         button.disabled = true;
         fetch(form.action, { method: 'POST', body: data, mode: 'no-cors' }).then(function () {
             form.querySelector('div.flex').hidden = true;
-            message.textContent = 'Thanks for subscribing! Check your inbox for a confirmation.';
+            message.textContent = 'Thanks for subscribing!';
         }, function () {
             button.disabled = false;
             message.textContent = 'That didn\'t go through. Please check your connection and try again.';

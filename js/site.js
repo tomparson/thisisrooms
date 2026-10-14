@@ -37,6 +37,12 @@
  *    for window 'load'). Pages load this file and css/site.css with the same
  *    ?v=N; bump N on every page when either changes, so open tabs do a full load
  *    (once) when they reach a page referencing a newer N.
+ *
+ * 5. Newsletter sign-up. A <form data-newsletter> (the Brevo subscription form's
+ *    action and fields) is sent in the background instead of leaving the page,
+ *    then replaced by its [data-newsletter-message]. Brevo's form endpoint
+ *    doesn't let other sites read its reply, so the request is sent no-cors and
+ *    the thanks shown once it has gone; the browser checks the address first.
  */
 (function () {
     if (window.roomsSite) return;
@@ -786,6 +792,30 @@
         if (event.key === 'Escape' && !lightbox.hidden) closeLightbox();
     });
     document.addEventListener('rooms:navigate', closeLightbox);
+
+    // ---------------------------------------------------------------------
+    // Newsletter sign-up
+    // ---------------------------------------------------------------------
+
+    document.addEventListener('submit', function (event) {
+        const form = event.target.closest('form[data-newsletter]');
+        if (!form) return;
+        event.preventDefault();
+        const button = form.querySelector('button[type="submit"]');
+        const message = form.querySelector('[data-newsletter-message]');
+        const data = new FormData(form);
+        data.append('isAjax', '1');
+        button.disabled = true;
+        fetch(form.action, { method: 'POST', body: data, mode: 'no-cors' }).then(function () {
+            form.querySelector('div.flex').hidden = true;
+            message.textContent = 'Thanks for subscribing! Check your inbox for a confirmation.';
+        }, function () {
+            button.disabled = false;
+            message.textContent = 'That didn\'t go through. Please check your connection and try again.';
+        }).then(function () {
+            message.hidden = false;
+        });
+    });
 
     // ---------------------------------------------------------------------
     // In-place navigation

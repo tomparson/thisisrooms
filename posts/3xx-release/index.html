@@ -73,13 +73,9 @@
         .prose a.cta {
             @apply inline-block bg-[#212121] text-[#ffffff] font-bold no-underline px-5 py-2 rounded-lg;
         }
-        .newsletter-form > div > div > div:last-child { display: none !important; }
-        .newsletter-form .form-container { margin-left: 0 !important; }
-        .newsletter-form .emailoctopus-success-message { text-align: left !important; }
-        .newsletter-form .emailoctopus-form-row { margin-top: 0.5rem !important; }
     </style>
-    <link href="../../css/site.css?v=36" rel="stylesheet">
-    <script src="../../js/site.js?v=36" defer></script>
+    <link href="../../css/site.css?v=37" rel="stylesheet">
+    <script src="../../js/site.js?v=37" defer></script>
 </head>
 <body>
     <main class="min-h-dvh w-full">
@@ -246,10 +242,16 @@
                 </div>
                 <div class="mt-section">
                     <div class="dot-grid dot-strip mb-section" aria-hidden="true"></div>
-                    <div class="newsletter-form mb-[16px]">
-    Subscribe for sporadic updates on new releases, my process, and things I'm working on.
-    <script async src="https://eomail5.com/form/927acf7e-e662-11f0-9788-edbe0e8da0f5.js" data-form="927acf7e-e662-11f0-9788-edbe0e8da0f5"></script>
-</div>
+                    <form class="newsletter-form mb-[16px]" data-newsletter method="POST" action="https://e7595fe7.sibforms.com/serve/MUIFALpml7OgTLwNNf7vPp8v1zy4y6IK9gBJh_bqLh6m4SNAPo3Aoz9Ns_49UR_hMGwjG57yYzCUtIAPn2mPafamkF_bN43sfMZ0Ta2uOT1N6bHBCcoppbwr4r6Z0i5L6hRJpyU0mf2tviuqnQGMdtfF5EsPnkPBt20Hlb8T6VPXtgIUmahxr95i29rqT2GCY-0daGraF1a_QV5H">
+                        <p class="mb-3">Subscribe for sporadic updates on new releases, my process, and things I'm working on.</p>
+                        <div class="flex gap-2">
+                            <input type="email" name="EMAIL" required autocomplete="email" placeholder="your email" aria-label="Email address" class="flex-1 w-full min-w-0 h-12 rounded-lg border border-white/10 bg-white/5 px-4 text-white placeholder:text-muted focus:outline-none focus:border-white/40">
+                            <button type="submit" class="flex-none h-12 rounded-lg bg-white px-5 font-bold text-[#0E100D] hover:opacity-90 transition disabled:opacity-60">subscribe</button>
+                        </div>
+                        <input type="text" name="email_address_check" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden">
+                        <input type="hidden" name="locale" value="en">
+                        <p data-newsletter-message class="mt-3 text-sm text-muted" hidden></p>
+                    </form>
                     <div class="flex items-center justify-between gap-4">
                         <a href="../../" class="text-muted hover:text-white hover:translate-x-[-5px] transition flex items-center gap-2">
                             <i class="fa-solid fa-arrow-left"></i>

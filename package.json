@@ -5,7 +5,8 @@
   "scripts": {
     "build:feed": "node scripts/build-feed.mjs",
     "build:email": "node scripts/build-email-template.mjs",
-    "build:email-images": "node scripts/build-email-images.mjs"
+    "build:email-images": "node scripts/build-email-images.mjs",
+    "build:confirmation-email": "node scripts/build-confirmation-email.mjs"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "6.4.2",

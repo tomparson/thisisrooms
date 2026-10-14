@@ -53,9 +53,9 @@ const EMAIL_STYLES = {
     cta: `display:inline-block;padding:10px 20px;border-radius:8px;background-color:${INK};color:#ffffff;font-weight:bold;text-decoration:none;`,
     // Equal space between the lyrics and each line (the last verse's 16px margin
     // + 6px matches the 24px top padding once line spacing is counted).
-    lyrics: 'margin:32px 0 0;padding:24px 0 6px;border-top:1px solid #e3e3e0;border-bottom:1px solid #e3e3e0;',
+    lyrics: 'margin:24px 0 0;padding:24px 0 6px;border-top:1px solid #e3e3e0;border-bottom:1px solid #e3e3e0;',
     // Closes copy that doesn't end with lyrics, above the 'view on' link.
-    endRule: 'margin:32px 0 0;height:0;line-height:0;font-size:0;border-top:1px solid #e3e3e0;',
+    endRule: 'margin:24px 0 0;height:0;line-height:0;font-size:0;border-top:1px solid #e3e3e0;',
     lyricsP: "margin:0 0 16px;font-family:'Courier New', Courier, monospace;font-size:14px;line-height:1.7;color:#2b2c2a;",
 };
 

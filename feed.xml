@@ -6,7 +6,7 @@
     <atom:link href="https://thisisrooms.com/feed.xml" rel="self" type="application/rss+xml" />
     <description>Official website for rooms, an artist releasing music and working on commissions. Buy or stream releases, hear unreleased demos and follow social profiles.</description>
     <language>en-gb</language>
-    <lastBuildDate>Fri, 18 Sep 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 14 Oct 2026 09:24:00 GMT</lastBuildDate>
     <image>
       <url>https://thisisrooms.com/images/avatar.jpg</url>
       <title>rooms</title>
@@ -15,8 +15,8 @@
     <item>
       <title>incantations out now</title>
       <link>https://thisisrooms.com/posts/incantations-release/</link>
-      <guid isPermaLink="true">https://thisisrooms.com/posts/incantations-release/</guid>
-      <pubDate>Fri, 18 Sep 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="false">https://thisisrooms.com/posts/incantations-release/#test-7</guid>
+      <pubDate>Wed, 14 Oct 2026 09:24:00 GMT</pubDate>
       <description>Listen to 'incantations', single 4 in rooms' challenge to release 10 singles by January 2027. Available on Bandcamp, Subvert.fm, Apple Music and most streaming platforms.</description>
       <content:encoded><![CDATA[<p><img src="https://thisisrooms.com/images/releases/incantations-cover.jpg" alt="incantations cover art" /></p>
 <p><a href="https://thisisrooms.com/posts/incantations-release/">Play on thisisrooms.com</a><br />

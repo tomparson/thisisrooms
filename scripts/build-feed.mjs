@@ -51,7 +51,11 @@ const EMAIL_STYLES = {
     a: `color:${INK};text-decoration:underline;`,
     img: 'display:block;width:100%;max-width:100%;height:auto;border:0;border-radius:8px;',
     cta: `display:inline-block;padding:10px 20px;border-radius:8px;background-color:${INK};color:#ffffff;font-weight:bold;text-decoration:none;`,
-    lyrics: 'margin:32px 0 0;padding:24px 0 8px;border-top:1px solid #e3e3e0;',
+    // Equal space between the lyrics and each line (the last verse's 16px margin
+    // + 6px matches the 24px top padding once line spacing is counted).
+    lyrics: 'margin:32px 0 0;padding:24px 0 6px;border-top:1px solid #e3e3e0;border-bottom:1px solid #e3e3e0;',
+    // Closes copy that doesn't end with lyrics, above the 'view on' link.
+    endRule: 'margin:32px 0 0;height:0;line-height:0;font-size:0;border-top:1px solid #e3e3e0;',
     lyricsP: "margin:0 0 16px;font-family:'Courier New', Courier, monospace;font-size:14px;line-height:1.7;color:#2b2c2a;",
 };
 
@@ -209,6 +213,12 @@ function cleanContent(prose, pageUrl, email = false) {
         });
         styled.forEach(([el, style]) => el.setAttribute('style', style));
         content.querySelectorAll('img').forEach((img) => img.setAttribute('width', '552'));
+        // The copy ends with a rule above the 'view on' link: the lyrics block's own
+        // bottom border when it comes last, so its spacing matches the top.
+        const last = content.childNodes.filter((n) => n.nodeType === 1).pop();
+        if (!last || last.getAttribute('style') !== EMAIL_STYLES.lyrics) {
+            content.insertAdjacentHTML('beforeend', `<div style="${EMAIL_STYLES.endRule}">&nbsp;</div>`);
+        }
     }
 
     return content;

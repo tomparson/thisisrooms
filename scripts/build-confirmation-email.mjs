@@ -1,9 +1,8 @@
 /*
  * Builds email/confirmation.html, the email Brevo sends when someone subscribes
  * through the site's form (a Brevo template, created from this file). It matches
- * the newsletter: rooms' photo and eyebrow, a title, a few lines of copy and the
- * same social links, which it takes from feed.xml (so run npm run build:feed
- * first).
+ * the newsletter: a title, a few lines of copy and the same social links, which
+ * it takes from feed.xml (so run npm run build:feed first).
  *
  *   npm run build:confirmation-email
  */
@@ -35,12 +34,6 @@ const html = `<!DOCTYPE html>
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;">
         <tr>
           <td style="padding:14px 14px 32px 14px;">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 5px;">
-              <tr>
-                <td width="22" valign="middle" style="width:22px;line-height:0;font-size:0;"><a href="https://thisisrooms.com/"><img src="https://thisisrooms.com/images/email/avatar-circle.png" width="22" height="22" alt="rooms" style="display:block;width:22px;height:22px;border:0;border-radius:50%;" /></a></td>
-                <td valign="middle" style="padding-left:7px;font-family:${FONT};font-size:13px;line-height:1.4;color:${MUTED};">an update from <a href="https://thisisrooms.com/" style="color:${MUTED};text-decoration:underline;">rooms</a></td>
-              </tr>
-            </table>
             <h1 style="margin:0 0 24px;font-family:${FONT};font-size:28px;line-height:1.2;font-weight:bold;color:${INK};">you're subscribed</h1>
             ${p("Thanks for signing up! I'll email you when I release new music, along with the occasional update on my process and things I'm working on.")}
             ${p(`In the meantime, you can listen to my releases on <a href="https://thisisrooms.com/" style="color:${INK};text-decoration:underline;">thisisrooms.com</a>.`)}

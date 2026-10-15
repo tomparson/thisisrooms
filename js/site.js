@@ -58,9 +58,10 @@
  *
  * 7. Newsletter prompt. Once a visitor has started 3 different tracks in a
  *    visit, a card above the player offers the newsletter (a copy of the page's
- *    form[data-newsletter]), and again with another message at 10. It never
- *    blocks playback, can be closed, and stops once they've signed up. Counted
- *    in memory only, so a reload starts again.
+ *    form[data-newsletter], with a random message from PROMPT_MESSAGES), and
+ *    again at 10. It never blocks playback and can be closed. Plays are counted
+ *    in memory only, so a reload starts again. Signing up with any of the
+ *    site's forms stops the prompts for good in that browser (localStorage).
  */
 (function () {
     if (window.roomsSite) return;
@@ -836,7 +837,7 @@
             message.textContent = 'Thanks for subscribing!';
             const fromPrompt = Boolean(form.closest('#rooms-prompt'));
             track('signup', fromPrompt ? 'prompt' : '');
-            signedUp = true;
+            rememberSignUp();
             if (fromPrompt) setTimeout(closePrompt, 3000);
         }, function () {
             button.disabled = false;
@@ -1062,37 +1063,76 @@
     // Newsletter prompt
     // ---------------------------------------------------------------------
 
-    const PROMPTS = [
-        { plays: 3, heading: 'Enjoying the music?' },
-        { plays: 10, heading: 'Still listening? Thanks for sticking around.' },
+    // Shown after this many different tracks in a visit.
+    const PROMPT_PLAYS = [3, 10];
+    // One is picked at random each time.
+    const PROMPT_MESSAGES = [
+        { heading: 'Thanks for listening', smiley: ':)', text: 'Subscribe to be the first to know about new releases.' },
+        { heading: 'Thanks so much!', smiley: ':D', text: 'You\'ll love what I\'m working on next... subscribe to hear it first!' },
+        { heading: 'Thank yoooooooou', smiley: '<3', text: 'You listening to my music makes me happy. Subscribe, if you like.' },
+        { heading: 'tysm', smiley: '^-^', text: 'Thank You So Much for listening! If you like, subscribe for updates.' },
+        { heading: 'You are amazing!', text: 'It\'s so cool you\'re listening to my music. If you like, subscribe to hear more!' },
+        { heading: 'I love this!', text: 'You, on my website, listening to my tracks. Love it. Subscribe if you do too!' },
     ];
     const promptCard = document.createElement('div');
     promptCard.id = 'rooms-prompt';
     promptCard.hidden = true;
     promptCard.setAttribute('role', 'dialog');
     promptCard.setAttribute('aria-label', 'newsletter');
-    let signedUp = false;
     const promptTracks = new Set();
+    let lastMessage = null;
+
+    // Someone who has signed up with any of the site's forms isn't asked again:
+    // remembered for this visit, and in this browser (localStorage, set only
+    // once they've subscribed).
+    let signedUp = false;
+    function rememberSignUp() {
+        signedUp = true;
+        try { localStorage.setItem('rooms-subscribed', '1'); } catch (e) {}
+    }
+    function hasSignedUp() {
+        if (signedUp) return true;
+        try { return localStorage.getItem('rooms-subscribed') === '1'; } catch (e) { return false; }
+    }
 
     function closePrompt() {
         promptCard.hidden = true;
         promptCard.replaceChildren();
     }
 
-    function openPrompt(heading, plays) {
+    // The heading's last word and smiley are kept together so the smiley never
+    // wraps onto a line of its own (as on the homepage).
+    function promptHeading(message) {
+        const title = document.createElement('p');
+        title.className = 'rooms-prompt-heading';
+        if (!message.smiley) {
+            title.textContent = message.heading;
+            return title;
+        }
+        const words = message.heading.split(' ');
+        const last = words.pop();
+        const nowrap = document.createElement('span');
+        nowrap.className = 'whitespace-nowrap';
+        nowrap.textContent = last + '\u00a0' + message.smiley;
+        title.append(words.length ? words.join(' ') + ' ' : '', nowrap);
+        return title;
+    }
+
+    function openPrompt(plays) {
         const source = document.querySelector('form[data-newsletter]');
         if (!source) return;
+        const choices = PROMPT_MESSAGES.filter(function (message) { return message !== lastMessage; });
+        const message = choices[Math.floor(Math.random() * choices.length)];
+        lastMessage = message;
         const close = document.createElement('button');
         close.type = 'button';
         close.className = 'rooms-prompt-close';
         close.setAttribute('aria-label', 'close');
         close.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-        const title = document.createElement('p');
-        title.className = 'rooms-prompt-heading';
-        title.textContent = heading;
         const form = source.cloneNode(true);
         form.classList.remove('mb-[16px]');
-        promptCard.replaceChildren(close, title, form);
+        form.querySelector('p').textContent = message.text;
+        promptCard.replaceChildren(close, promptHeading(message), form);
         promptCard.hidden = false;
         track('action', 'prompt ' + plays);
     }
@@ -1113,8 +1153,7 @@
         const key = trackLabel().key;
         if (promptTracks.has(key)) return;
         promptTracks.add(key);
-        const due = PROMPTS.find(function (entry) { return entry.plays === promptTracks.size; });
-        if (due && !signedUp) openPrompt(due.heading, due.plays);
+        if (PROMPT_PLAYS.indexOf(promptTracks.size) !== -1 && !hasSignedUp()) openPrompt(promptTracks.size);
     });
 
     // ---------------------------------------------------------------------

@@ -55,6 +55,12 @@
  *    50% and 100% of each track), read (a post's end or its lyrics came into
  *    view), click, signup and action (track list opened, artwork opened, next
  *    post, skip next/previous, email box focused).
+ *
+ * 7. Newsletter prompt. Once a visitor has started 3 different tracks in a
+ *    visit, a card above the player offers the newsletter (a copy of the page's
+ *    form[data-newsletter]), and again with another message at 10. It never
+ *    blocks playback, can be closed, and stops once they've signed up. Counted
+ *    in memory only, so a reload starts again.
  */
 (function () {
     if (window.roomsSite) return;
@@ -828,7 +834,10 @@
         fetch(form.action, { method: 'POST', body: data, mode: 'no-cors' }).then(function () {
             form.querySelector('div.flex').hidden = true;
             message.textContent = 'Thanks for subscribing!';
-            track('signup');
+            const fromPrompt = Boolean(form.closest('#rooms-prompt'));
+            track('signup', fromPrompt ? 'prompt' : '');
+            signedUp = true;
+            if (fromPrompt) setTimeout(closePrompt, 3000);
         }, function () {
             button.disabled = false;
             message.textContent = 'That didn\'t go through. Please check your connection and try again.';
@@ -1050,6 +1059,65 @@
     document.addEventListener('auxclick', trackLinkClick, true);
 
     // ---------------------------------------------------------------------
+    // Newsletter prompt
+    // ---------------------------------------------------------------------
+
+    const PROMPTS = [
+        { plays: 3, heading: 'Enjoying the music?' },
+        { plays: 10, heading: 'Still listening? Thanks for sticking around.' },
+    ];
+    const promptCard = document.createElement('div');
+    promptCard.id = 'rooms-prompt';
+    promptCard.hidden = true;
+    promptCard.setAttribute('role', 'dialog');
+    promptCard.setAttribute('aria-label', 'newsletter');
+    let signedUp = false;
+    const promptTracks = new Set();
+
+    function closePrompt() {
+        promptCard.hidden = true;
+        promptCard.replaceChildren();
+    }
+
+    function openPrompt(heading, plays) {
+        const source = document.querySelector('form[data-newsletter]');
+        if (!source) return;
+        const close = document.createElement('button');
+        close.type = 'button';
+        close.className = 'rooms-prompt-close';
+        close.setAttribute('aria-label', 'close');
+        close.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+        const title = document.createElement('p');
+        title.className = 'rooms-prompt-heading';
+        title.textContent = heading;
+        const form = source.cloneNode(true);
+        form.classList.remove('mb-[16px]');
+        promptCard.replaceChildren(close, title, form);
+        promptCard.hidden = false;
+        track('action', 'prompt ' + plays);
+    }
+
+    promptCard.addEventListener('click', function (event) {
+        if (!event.target.closest('.rooms-prompt-close')) return;
+        closePrompt();
+        track('action', 'prompt closed');
+    });
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !promptCard.hidden) closePrompt();
+    });
+
+    // Counted as each track actually plays (timeupdate), so tracks a gapless
+    // release flows into count too.
+    audio.addEventListener('timeupdate', function () {
+        if (!currentTrack() || audio.paused) return;
+        const key = trackLabel().key;
+        if (promptTracks.has(key)) return;
+        promptTracks.add(key);
+        const due = PROMPTS.find(function (entry) { return entry.plays === promptTracks.size; });
+        if (due && !signedUp) openPrompt(due.heading, due.plays);
+    });
+
+    // ---------------------------------------------------------------------
     // In-place navigation
     // ---------------------------------------------------------------------
 
@@ -1092,7 +1160,7 @@
     function swapBody(next) {
         document.dispatchEvent(new CustomEvent('rooms:navigate'));
         Array.from(document.body.childNodes).forEach(function (node) {
-            if (node !== player && node !== lightbox) node.remove();
+            if (node !== player && node !== lightbox && node !== promptCard) node.remove();
         });
         for (const attr of Array.from(document.body.attributes)) document.body.removeAttribute(attr.name);
         for (const attr of next.body.attributes) document.body.setAttribute(attr.name, attr.value);
@@ -1183,6 +1251,7 @@
     function init() {
         document.body.appendChild(player);
         document.body.appendChild(lightbox);
+        document.body.appendChild(promptCard);
         syncWithPage();
         track('view', document.title, '', visitSource());
         watchReading();

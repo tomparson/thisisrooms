@@ -224,3 +224,35 @@ a[data-next-post][hidden] { display: none; }
     .eq i:nth-child(4) { transform: scaleY(.8); }
     .eq i:nth-child(5) { transform: scaleY(.5); }
 }
+
+/* ---- Newsletter form: js/site.js hides the email row after a sign-up, and
+   Tailwind's .flex would otherwise override the hidden attribute ---- */
+.newsletter-form [hidden] { display: none; }
+
+/* ---- Newsletter prompt (js/site.js): a card just above the player ---- */
+
+#rooms-prompt {
+    position: fixed; z-index: 61;
+    left: var(--gutter); right: var(--gutter);
+    bottom: calc(var(--player-h, 0px) + 12px);
+    padding: 20px;
+    background: #171717;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
+#rooms-prompt[hidden] { display: none; }
+#rooms-prompt .rooms-prompt-heading { font-weight: 700; font-size: 1.125rem; margin: 0 32px 6px 0; }
+#rooms-prompt .rooms-prompt-close {
+    position: absolute; top: 10px; right: 10px;
+    width: 36px; height: 36px; border-radius: 9999px;
+    display: flex; align-items: center; justify-content: center;
+    border: 0; background: transparent; color: var(--grey-muted); cursor: pointer;
+}
+@media (min-width: 768px) {
+    #rooms-prompt { left: auto; right: 24px; width: 420px; }
+}
+@media (hover: hover) and (pointer: fine) {
+    #rooms-prompt .rooms-prompt-close:hover { color: #fff; background: rgba(255, 255, 255, .08); }
+}

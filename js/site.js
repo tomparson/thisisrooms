@@ -833,7 +833,7 @@
     // Analytics
     // ---------------------------------------------------------------------
 
-    const ANALYTICS_URL = '';
+    const ANALYTICS_URL = 'https://script.google.com/macros/s/AKfycbx1fBPclcrrBbemfSBmTDhkN5GO6Nqo5bFYI6uqrQoPG0iODJ50gn4M6Cs1O_o_Hnhr/exec';
     const analyticsOn = Boolean(ANALYTICS_URL) && navigator.sendBeacon
         && (/(^|\.)thisisrooms\.com$/.test(location.hostname) || new URLSearchParams(location.search).has('analytics-test'));
     const visitId = Math.random().toString(36).slice(2, 10);

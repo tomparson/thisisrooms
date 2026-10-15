@@ -916,9 +916,7 @@
 
     document.addEventListener('rooms:navigate', function () {
         flushTime();
-        if (readObserver) readObserver.disconnect();
-        readObserver = null;
-        lyricsLines = null;
+        readTargets = [];
     });
 
     document.addEventListener('rooms:pageshow', function () {
@@ -978,43 +976,36 @@
         });
     });
 
-    // Reading: a post's end (its newsletter form, straight after the copy)
-    // coming into view, and its lyrics being reached, once per page view. The
-    // lyrics count once their first lines (below the 'LYRICS' heading) are at
-    // least 50px onto the screen, and only after the reader has scrolled
-    // themselves, so a page that loads with the lyrics already in view (or a
-    // restored scroll position) doesn't count.
-    let readObserver = null;
-    let lyricsLines = null;
+    // Reading: a post's end (its newsletter form, straight after the copy) and
+    // its lyrics (their first lines, below the 'LYRICS' heading), each counted
+    // once per page view when it's at least 50px onto the screen after the
+    // reader has scrolled themselves. A page that loads with either already in
+    // view (or a restored scroll position) doesn't count.
+    let readTargets = [];
     let userScrolled = false;
     function watchReading() {
-        if (readObserver) readObserver.disconnect();
-        readObserver = null;
-        lyricsLines = null;
+        readTargets = [];
         userScrolled = false;
         if (!analyticsOn || !/^\/posts\//.test(location.pathname)) return;
-        lyricsLines = document.querySelector('.lyrics p:nth-of-type(2)');
-        const end = document.querySelector('form[data-newsletter]');
-        if (!end || !('IntersectionObserver' in window)) return;
-        readObserver = new IntersectionObserver(function (entries, observer) {
-            if (!entries.some(function (entry) { return entry.isIntersecting; })) return;
-            observer.disconnect();
-            track('read', 'end');
+        [['lyrics', '.lyrics p:nth-of-type(2)'], ['end', 'form[data-newsletter]']].forEach(function (target) {
+            const element = document.querySelector(target[1]);
+            if (element) readTargets.push({ name: target[0], element: element });
         });
-        readObserver.observe(end);
     }
 
-    function checkLyrics() {
-        if (!lyricsLines || !userScrolled) return;
-        if (lyricsLines.getBoundingClientRect().top > window.innerHeight - 50) return;
-        lyricsLines = null;
-        track('read', 'lyrics');
+    function checkReading() {
+        if (!userScrolled || !readTargets.length) return;
+        readTargets = readTargets.filter(function (target) {
+            if (target.element.getBoundingClientRect().top > window.innerHeight - 50) return true;
+            track('read', target.name);
+            return false;
+        });
     }
 
     ['wheel', 'touchmove', 'keydown', 'pointerdown'].forEach(function (type) {
         window.addEventListener(type, function () { userScrolled = true; }, { passive: true });
     });
-    window.addEventListener('scroll', checkLyrics, { passive: true });
+    window.addEventListener('scroll', checkReading, { passive: true });
 
     // The newsletter's email box being focused, once per page view (sign-up
     // drop-off is these minus the 'signup' rows).

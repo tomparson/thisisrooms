@@ -12,7 +12,7 @@
  */
 
 const COLUMNS = ['time', 'visit', 'event', 'page', 'detail', 'value', 'source'];
-const EVENTS = ['view', 'time', 'play', 'click', 'signup'];
+const EVENTS = ['view', 'time', 'play', 'listen', 'read', 'click', 'signup', 'action'];
 
 function doPost(e) {
   let data;

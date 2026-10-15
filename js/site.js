@@ -50,7 +50,10 @@
  *    Sheet. The URL can only add rows. Nothing is stored in the browser: the
  *    visit ID lives in memory, so it lasts as long as in-place navigation does.
  *    Only sent from thisisrooms.com, or from any page loaded with
- *    ?analytics-test.
+ *    ?analytics-test. Events: view, time (seconds visible), play, listen (30s,
+ *    50% and 100% of each track), read (a post's end or its lyrics came into
+ *    view), click, signup and action (track list opened, artwork opened, next
+ *    post, skip next/previous, email box focused).
  */
 (function () {
     if (window.roomsSite) return;
@@ -566,7 +569,9 @@
         const top = list.querySelector('.tracklist-toggle');
         // Closing from the bottom: bring the top toggle back on screen first.
         if (toggle !== top && top.getBoundingClientRect().top < 0) top.scrollIntoView({ block: 'center' });
-        setTracklistOpen(list, !list.classList.contains('is-open'));
+        const open = !list.classList.contains('is-open');
+        setTracklistOpen(list, open);
+        if (open) track('action', 'tracklist');
     });
 
     // Fills each .dot-grid with as many 4px dots as fit at least 4px apart,
@@ -722,6 +727,7 @@
     // without pausing (pausing first made iOS stutter and skip the new track's
     // first second); otherwise stop and load the adjacent track.
     function skipTrack(step) {
+        track('action', step > 0 ? 'skip next' : 'skip previous');
         const index = current ? current.index + step : -1;
         if (current && current.release.gapless && index >= 0 && index < current.release.tracks.length) {
             load(current.release, index);
@@ -797,6 +803,7 @@
         lightboxImage.src = image.currentSrc || image.src;
         lightboxImage.alt = image.alt;
         lightbox.hidden = false;
+        track('action', 'artwork');
     });
     lightbox.addEventListener('click', closeLightbox);
     document.addEventListener('keydown', function (event) {
@@ -888,13 +895,17 @@
 
     document.addEventListener('rooms:navigate', function () {
         flushTime();
+        if (readObserver) readObserver.disconnect();
+        readObserver = null;
     });
 
     document.addEventListener('rooms:pageshow', function () {
         analyticsPage = location.pathname;
         analyticsTitle = document.title;
         if (document.visibilityState === 'visible') visibleSince = Date.now();
+        emailBoxFocused = false;
         track('view', document.title);
+        watchReading();
     });
 
     // A play is counted once per track per visit, against the release's post
@@ -902,17 +913,76 @@
     // it by itself after the previous track ended. Tracks of a gapless release
     // after the first one played aren't counted, as playback flows straight on.
     const playedTracks = new Set();
+
+    // The current track's name ('release / track' for multi-track releases),
+    // its release's page and a key that tells it apart from the others.
+    function trackLabel() {
+        const track_ = currentTrack();
+        const release = current.release;
+        return {
+            name: release.tracks.length > 1 ? release.title + ' / ' + track_.title : track_.title,
+            page: new URL(release.page, location.href).pathname,
+            key: track_.src + '#' + track_.start,
+        };
+    }
+
     audio.addEventListener('play', function () {
         const by = playStartedBy;
         playStartedBy = '';
-        const track_ = currentTrack();
-        if (!track_) return;
-        const key = track_.src + '#' + track_.start;
-        if (playedTracks.has(key)) return;
-        playedTracks.add(key);
-        const release = current.release;
-        const name = release.tracks.length > 1 ? release.title + ' / ' + track_.title : track_.title;
-        track('play', name, by, '', new URL(release.page, location.href).pathname);
+        if (!currentTrack()) return;
+        const label = trackLabel();
+        if (playedTracks.has(label.key)) return;
+        playedTracks.add(label.key);
+        track('play', label.name, by, '', label.page);
+    });
+
+    // How far into each track people get: 30s, halfway and the end (98%, since
+    // the last timeupdate can land just short), each once per track per visit.
+    // Paused audio only counts at the end, as a track with a data-end pauses
+    // itself there before this runs.
+    const listenMarks = new Set();
+    audio.addEventListener('timeupdate', function () {
+        if (!currentTrack()) return;
+        const duration = trackDuration();
+        if (!isFinite(duration) || duration <= 0) return;
+        const time = trackTime();
+        if (audio.paused && time < duration * 0.98) return;
+        const label = trackLabel();
+        [['30s', time >= 30], ['50%', time >= duration / 2], ['100%', time >= duration * 0.98]].forEach(function (mark) {
+            const key = label.key + '#' + mark[0];
+            if (!mark[1] || listenMarks.has(key)) return;
+            listenMarks.add(key);
+            track('listen', label.name, mark[0], '', label.page);
+        });
+    });
+
+    // Reading: a post's end (its newsletter form, straight after the copy) or
+    // its lyrics coming into view, once per page view.
+    let readObserver = null;
+    function watchReading() {
+        if (readObserver) readObserver.disconnect();
+        readObserver = null;
+        if (!analyticsOn || !('IntersectionObserver' in window) || !/^\/posts\//.test(location.pathname)) return;
+        const targets = [['lyrics', document.querySelector('.lyrics')], ['end', document.querySelector('form[data-newsletter]')]];
+        readObserver = new IntersectionObserver(function (entries, observer) {
+            entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                observer.unobserve(entry.target);
+                track('read', entry.target.matches('.lyrics') ? 'lyrics' : 'end');
+            });
+        });
+        targets.forEach(function (target) {
+            if (target[1]) readObserver.observe(target[1]);
+        });
+    }
+
+    // The newsletter's email box being focused, once per page view (sign-up
+    // drop-off is these minus the 'signup' rows).
+    let emailBoxFocused = false;
+    document.addEventListener('focusin', function (event) {
+        if (emailBoxFocused || !event.target.closest('form[data-newsletter] input[type="email"]')) return;
+        emailBoxFocused = true;
+        track('action', 'email box');
     });
 
     // Links to other sites, named by service.
@@ -936,6 +1006,7 @@
         const link = event.target.closest && event.target.closest('a[href]');
         if (!link) return;
         const url = new URL(link.href, location.href);
+        if (link.matches('[data-next-post]')) return track('action', 'next post', url.pathname);
         if (!/^https?:$/.test(url.protocol) || url.origin === location.origin) return;
         const host = url.hostname.replace(/^www\./, '');
         const service = SERVICES.find(function (entry) {
@@ -1083,6 +1154,7 @@
         document.body.appendChild(lightbox);
         syncWithPage();
         track('view', document.title, '', visitSource());
+        watchReading();
     }
 
     if (document.readyState === 'loading') {

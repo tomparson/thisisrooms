@@ -50,7 +50,8 @@
  *    Sheet. The URL can only add rows. Nothing is stored in the browser: the
  *    visit ID lives in memory, so it lasts as long as in-place navigation does.
  *    Only sent from thisisrooms.com, or from any page loaded with
- *    ?analytics-test. Events: view, time (seconds visible), play, listen (30s,
+ *    ?analytics-test, and never from a browser muted with ?a=off (stored in
+ *    localStorage; ?a=on undoes it). Events: view, time (seconds visible), play, listen (30s,
  *    50% and 100% of each track), read (a post's end or its lyrics came into
  *    view), click, signup and action (track list opened, artwork opened, next
  *    post, skip next/previous, email box focused).
@@ -841,8 +842,28 @@
     // ---------------------------------------------------------------------
 
     const ANALYTICS_URL = 'https://script.google.com/macros/s/AKfycbx1fBPclcrrBbemfSBmTDhkN5GO6Nqo5bFYI6uqrQoPG0iODJ50gn4M6Cs1O_o_Hnhr/exec';
-    const analyticsOn = Boolean(ANALYTICS_URL) && navigator.sendBeacon
+    const analyticsOn = Boolean(ANALYTICS_URL) && navigator.sendBeacon && !analyticsMuted()
         && (/(^|\.)thisisrooms\.com$/.test(location.hostname) || new URLSearchParams(location.search).has('analytics-test'));
+
+    // Tom's own browsers: visiting any page with ?a=off stores a flag that
+    // stops this browser sending anything; ?a=on removes it. The
+    // parameter is then taken out of the address so it isn't shared by mistake.
+    function analyticsMuted() {
+        const url = new URL(location.href);
+        const setting = url.searchParams.get('a');
+        try {
+            if (setting === 'off') localStorage.setItem('rooms-analytics', 'off');
+            if (setting === 'on') localStorage.removeItem('rooms-analytics');
+            if (setting === 'off' || setting === 'on') {
+                url.searchParams.delete('a');
+                history.replaceState(history.state, '', url.href);
+                alert(setting === 'off' ? 'Analytics are off in this browser.' : 'Analytics are on in this browser.');
+            }
+            return localStorage.getItem('rooms-analytics') === 'off';
+        } catch (e) {
+            return setting === 'off';
+        }
+    }
     const visitId = Math.random().toString(36).slice(2, 10);
     // The page being timed. Its title is kept since the next page's head is
     // swapped in before 'rooms:navigate' fires.

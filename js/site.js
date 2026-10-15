@@ -43,6 +43,14 @@
  *    then replaced by its [data-newsletter-message]. Brevo's form endpoint
  *    doesn't let other sites read its reply, so the request is sent no-cors and
  *    the thanks shown once it has gone; the browser checks the address first.
+ *
+ * 6. Analytics. Page views, time on page, plays, clicks on links to other sites
+ *    and newsletter sign-ups are sent to ANALYTICS_URL, a Google Apps Script
+ *    (analytics/apps-script.gs) that adds a row per event to a private Google
+ *    Sheet. The URL can only add rows. Nothing is stored in the browser: the
+ *    visit ID lives in memory, so it lasts as long as in-place navigation does.
+ *    Only sent from thisisrooms.com, or from any page loaded with
+ *    ?analytics-test.
  */
 (function () {
     if (window.roomsSite) return;
@@ -164,7 +172,7 @@
         // Reaching a track's trimmed end counts as it ending.
         if (current && currentTrack().end && audio.currentTime >= currentTrack().end && !audio.paused && !seeking) {
             audio.pause();
-            playAdjacent(1);
+            playAdjacent(1, true);
         }
         const duration = trackDuration();
         durationLabel.textContent = formatTime(duration);
@@ -465,7 +473,9 @@
     }
 
     let advancing = false;
-    async function playAdjacent(step) {
+    let playStartedBy = '';
+    // auto: the player is moving on by itself as a track ends (for analytics).
+    async function playAdjacent(step, auto) {
         if (!current || advancing) return;
         advancing = true;
         try {
@@ -474,6 +484,7 @@
             // Give up if something else started playing meanwhile.
             if (!next || current !== from || !audio.paused) return;
             load(next.release, next.index);
+            playStartedBy = auto ? 'continued' : '';
             audio.play().catch(function () {});
         } finally {
             advancing = false;
@@ -695,7 +706,7 @@
         // A gapless release's file ends on its last track, whatever the last
         // timeupdate said.
         if (current && current.release.gapless) current = { release: current.release, index: current.release.tracks.length - 1 };
-        playAdjacent(1);
+        playAdjacent(1, true);
     });
 
     // Lock-screen / media-key controls. iOS drops handlers set before the page
@@ -809,6 +820,7 @@
         fetch(form.action, { method: 'POST', body: data, mode: 'no-cors' }).then(function () {
             form.querySelector('div.flex').hidden = true;
             message.textContent = 'Thanks for subscribing!';
+            track('signup');
         }, function () {
             button.disabled = false;
             message.textContent = 'That didn\'t go through. Please check your connection and try again.';
@@ -816,6 +828,124 @@
             message.hidden = false;
         });
     });
+
+    // ---------------------------------------------------------------------
+    // Analytics
+    // ---------------------------------------------------------------------
+
+    const ANALYTICS_URL = '';
+    const analyticsOn = Boolean(ANALYTICS_URL) && navigator.sendBeacon
+        && (/(^|\.)thisisrooms\.com$/.test(location.hostname) || new URLSearchParams(location.search).has('analytics-test'));
+    const visitId = Math.random().toString(36).slice(2, 10);
+    // The page being timed. Its title is kept since the next page's head is
+    // swapped in before 'rooms:navigate' fires.
+    let analyticsPage = location.pathname;
+    let analyticsTitle = document.title;
+
+    // Rows: visit, event, page, detail, value, source (the Sheet adds the time).
+    function track(event, detail, value, source, page) {
+        if (!analyticsOn) return;
+        navigator.sendBeacon(ANALYTICS_URL, JSON.stringify({
+            visit: visitId,
+            event: event,
+            page: page || analyticsPage,
+            detail: detail || '',
+            value: value == null ? '' : String(value),
+            source: source || '',
+        }));
+    }
+
+    // Where the visit came from: a utm_source, the referring site, or the
+    // newsletter (its Play links end in #play and email apps send no referrer).
+    function visitSource() {
+        const utm = new URLSearchParams(location.search).get('utm_source');
+        if (utm) return utm;
+        if (document.referrer) {
+            const host = new URL(document.referrer).hostname.replace(/^www\./, '');
+            if (!/(^|\.)thisisrooms\.com$/.test(host)) return host;
+        }
+        return location.hash === '#play' ? 'email' : '';
+    }
+
+    // Time on page counts only while the tab is visible. It's sent whenever the
+    // page is hidden or left, so a page can have several 'time' rows to add up.
+    let visibleSince = document.visibilityState === 'visible' ? Date.now() : null;
+
+    function flushTime() {
+        if (visibleSince === null) return;
+        const seconds = Math.round((Date.now() - visibleSince) / 1000);
+        visibleSince = null;
+        if (seconds > 0) track('time', analyticsTitle, seconds);
+    }
+
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') {
+            visibleSince = Date.now();
+        } else {
+            flushTime();
+        }
+    });
+
+    document.addEventListener('rooms:navigate', function () {
+        flushTime();
+    });
+
+    document.addEventListener('rooms:pageshow', function () {
+        analyticsPage = location.pathname;
+        analyticsTitle = document.title;
+        if (document.visibilityState === 'visible') visibleSince = Date.now();
+        track('view', document.title);
+    });
+
+    // A play is counted once per track per visit, against the release's post
+    // (whichever page is open). value is 'continued' when the player moved on to
+    // it by itself after the previous track ended. Tracks of a gapless release
+    // after the first one played aren't counted, as playback flows straight on.
+    const playedTracks = new Set();
+    audio.addEventListener('play', function () {
+        const by = playStartedBy;
+        playStartedBy = '';
+        const track_ = currentTrack();
+        if (!track_) return;
+        const key = track_.src + '#' + track_.start;
+        if (playedTracks.has(key)) return;
+        playedTracks.add(key);
+        const release = current.release;
+        const name = release.tracks.length > 1 ? release.title + ' / ' + track_.title : track_.title;
+        track('play', name, by, '', new URL(release.page, location.href).pathname);
+    });
+
+    // Links to other sites, named by service.
+    const SERVICES = [
+        ['bandcamp.com', 'bandcamp'],
+        ['music.apple.com', 'apple music'],
+        ['youtube.com', 'youtube'],
+        ['youtu.be', 'youtube'],
+        ['subvert.fm', 'subvert'],
+        ['deezer.com', 'deezer'],
+        ['soundcloud.com', 'soundcloud'],
+        ['spotify.com', 'spotify'],
+        ['instagram.com', 'instagram'],
+        ['twitch.tv', 'twitch'],
+        ['gumroad.com', 'gumroad'],
+        ['substack.com', 'substack'],
+    ];
+
+    function trackLinkClick(event) {
+        if (event.type === 'auxclick' && event.button !== 1) return;
+        const link = event.target.closest && event.target.closest('a[href]');
+        if (!link) return;
+        const url = new URL(link.href, location.href);
+        if (!/^https?:$/.test(url.protocol) || url.origin === location.origin) return;
+        const host = url.hostname.replace(/^www\./, '');
+        const service = SERVICES.find(function (entry) {
+            return host === entry[0] || host.endsWith('.' + entry[0]);
+        });
+        track('click', service ? service[1] : host, url.href);
+    }
+
+    document.addEventListener('click', trackLinkClick, true);
+    document.addEventListener('auxclick', trackLinkClick, true);
 
     // ---------------------------------------------------------------------
     // In-place navigation
@@ -952,6 +1082,7 @@
         document.body.appendChild(player);
         document.body.appendChild(lightbox);
         syncWithPage();
+        track('view', document.title, '', visitSource());
     }
 
     if (document.readyState === 'loading') {

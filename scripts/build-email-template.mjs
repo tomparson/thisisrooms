@@ -30,6 +30,12 @@ const block = readFileSync(join(ROOT, 'email/newsletter.html'), 'utf8')
     .replace('<!-- SOCIALS -->', socials)
     .replace(/\n\s*/g, '')
     .trim();
+// A comment left in (e.g. one ended early by a stray closing marker) would show
+// as text in the email. Outlook's conditional comments (<![endif]-->) are meant
+// to be there.
+if (!block.startsWith('<') || block.replace(/<!\[endif\]-->/g, '').includes('-->')) {
+    throw new Error('email/newsletter.html: leftover comment text in the block; check its comments');
+}
 
 const footerText = (id, content, paddingTop, paddingBottom) => ({
     id,

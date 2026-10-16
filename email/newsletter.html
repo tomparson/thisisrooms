@@ -3,8 +3,10 @@
   (scripts/build-email-template.mjs wraps it into email/brevo-template.yaml).
   {{ item.X }} placeholders are filled from the feed item: ROOMS_DATE,
   ROOMS_BUTTONS and ROOMS_BODY come from the rooms:date, rooms:buttons and
-  rooms:body tags that scripts/build-feed.mjs writes. <!-- SOCIALS --> is
-  replaced with email/socials.html's table when the template is built.
+  rooms:body tags that scripts/build-feed.mjs writes. The SOCIALS marker
+  comment near the end is replaced with email/socials.html's table when the
+  template is built. (Never write a comment's closing characters inside this
+  one: they would end it early and the rest would show in the email.)
 
   Layout: 552px of content. On desktop the artwork sits on the right and the
   buttons on the left; the row is dir="rtl" so that on a phone, where the two

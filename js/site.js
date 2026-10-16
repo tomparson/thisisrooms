@@ -907,6 +907,7 @@
         [/^(t\.co|x\.com|twitter\.com)$/, 'x'],
         [/(^|\.)youtube\.com$/, 'youtube'],
         [/^discord$|(^|\.)discord(app)?\.(com|gg|net)$/, 'discord'],
+        [/^tiktok$|(^|\.)tiktok\.com$/, 'tiktok'],
     ];
     function groupSource(name) {
         const lower = name.toLowerCase();

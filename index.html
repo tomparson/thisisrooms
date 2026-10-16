@@ -199,7 +199,7 @@
             <!-- The avatar, then the intro and link as one run of text: two lines on
                  mobile, one from sm up. -->
             <button id="scroll-button" class="left-0 z-50 bg-neutral-800 min-h-[40px] w-full flex items-center justify-center cursor-pointer gap-3 sm:gap-2 px-4 py-2 sm:py-0 text-[13px] sm:text-base leading-snug">
-                <img src="images/avatar.jpg" alt="" class="flex-none rounded-full w-[22px] h-[22px]" />
+                <img id="scroll-button-avatar" src="images/avatar.jpg" alt="" class="flex-none rounded-full w-[22px] h-[22px]" />
                 <span class="text-left">
                     <span id="scroll-button-intro">I'm an artist releasing music and working on commissions</span>
                     <span id="scroll-button-dot" class="text-muted mx-1" aria-hidden="true">/</span>
@@ -310,6 +310,7 @@
             const label = document.getElementById('scroll-button-text');
             const intro = document.getElementById('scroll-button-intro');
             const dot = document.getElementById('scroll-button-dot');
+            const avatar = document.getElementById('scroll-button-avatar');
             const icon = document.getElementById('scroll-button-icon');
             const about = document.getElementById('about-and-links');
 
@@ -378,11 +379,13 @@
                     icon.className = 'fa-solid fa-arrow-up';
                     intro.style.display = 'none';
                     dot.style.display = 'none';
+                    avatar.style.display = 'none';
                 } else {
                     label.textContent = 'about + links';
                     icon.className = 'fa-solid fa-arrow-down';
                     intro.style.display = '';
                     dot.style.display = '';
+                    avatar.style.display = '';
                 }
             }
 

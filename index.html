@@ -41,8 +41,8 @@
             @apply inline-block bg-[#212121] text-[#ffffff] font-bold no-underline px-5 py-2 rounded-lg;
         }
     </style>
-    <link href="css/site.css?v=47" rel="stylesheet">
-    <script src="js/site.js?v=47" defer></script>
+    <link href="css/site.css?v=48" rel="stylesheet">
+    <script src="js/site.js?v=48" defer></script>
 </head>
 <body>
     <div>
@@ -196,12 +196,14 @@
              so the button never causes layout shift as it switches between fixed-bottom,
              static and fixed-top. -->
         <div id="button-slot" class="relative h-[var(--bar-h,40px)]">
-            <button id="scroll-button" class="left-0 z-50 bg-neutral-800 min-h-[40px] w-full flex flex-col sm:flex-row items-center justify-center text-center cursor-pointer gap-x-2 px-4 py-2 sm:py-0 text-sm sm:text-base leading-snug">
-                <span id="scroll-button-intro">I'm an artist releasing music <br class="sm:hidden">and working on commissions</span>
-                <span id="scroll-button-dot" class="hidden sm:inline text-muted" aria-hidden="true">/</span>
-                <span class="flex items-center gap-2">
-                    <span id="scroll-button-text">about + links</span>
-                    <i id="scroll-button-icon" class="fa-solid fa-arrow-down"></i>
+            <!-- The avatar, then the intro and link as one run of text: two lines on
+                 mobile, one from sm up. -->
+            <button id="scroll-button" class="left-0 z-50 bg-neutral-800 min-h-[40px] w-full flex items-center justify-center cursor-pointer gap-3 sm:gap-2 px-4 py-2 sm:py-0 text-[13px] sm:text-base leading-snug">
+                <img src="images/avatar.jpg" alt="" class="flex-none rounded-full w-[22px] h-[22px]" />
+                <span class="text-left">
+                    <span id="scroll-button-intro">I'm an artist releasing music and working on commissions</span>
+                    <span id="scroll-button-dot" class="text-muted mx-1" aria-hidden="true">/</span>
+                    <span class="inline-flex items-center gap-2 whitespace-nowrap align-bottom"><span id="scroll-button-text">about + links</span><i id="scroll-button-icon" class="fa-solid fa-arrow-down"></i></span>
                 </span>
             </button>
         </div>

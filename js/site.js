@@ -901,7 +901,7 @@
     // utm_source, like Instagram's 'ig' on bio links), grouped under one name.
     // Tom's own tags, such as 'instagram-story', are kept as they are.
     const SOURCE_GROUPS = [
-        [/^(ig|instagram)$|(^|\.)instagram\.com$/, 'instagram'],
+        [/^(ig|instagram)$|(^|\.)instagram\.com$/, 'ig'],
         [/^(fb|facebook)$|(^|\.)facebook\.com$/, 'facebook'],
         [/(^|\.)google\.[a-z.]+$/, 'google'],
         [/^(t\.co|x\.com|twitter\.com)$/, 'x'],

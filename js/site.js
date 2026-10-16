@@ -897,14 +897,30 @@
     // utm_source=newsletter), the referring site, or 'newsletter' for links in
     // emails sent before that, whose Play links end in #play (email apps send
     // no referrer).
+    // Sites that send visitors from several addresses (or add their own short
+    // utm_source, like Instagram's 'ig' on bio links), grouped under one name.
+    // Tom's own tags, such as 'instagram-story', are kept as they are.
+    const SOURCE_GROUPS = [
+        [/^(ig|instagram)$|(^|\.)instagram\.com$/, 'instagram'],
+        [/^(fb|facebook)$|(^|\.)facebook\.com$/, 'facebook'],
+        [/(^|\.)google\.[a-z.]+$/, 'google'],
+        [/^(t\.co|x\.com|twitter\.com)$/, 'x'],
+        [/(^|\.)youtube\.com$/, 'youtube'],
+    ];
+    function groupSource(name) {
+        const lower = name.toLowerCase();
+        const group = SOURCE_GROUPS.find(function (entry) { return entry[0].test(lower); });
+        return group ? group[1] : lower;
+    }
+
     // Read before the player takes #play out of the address.
     const landingUrl = new URL(location.href);
     function visitSource() {
         const utm = landingUrl.searchParams.get('utm_source');
-        if (utm) return utm;
+        if (utm) return groupSource(utm);
         if (document.referrer) {
             const host = new URL(document.referrer).hostname.replace(/^www\./, '');
-            if (!/(^|\.)thisisrooms\.com$/.test(host)) return host;
+            if (!/(^|\.)thisisrooms\.com$/.test(host)) return groupSource(host);
         }
         return landingUrl.hash === '#play' ? 'newsletter' : '';
     }

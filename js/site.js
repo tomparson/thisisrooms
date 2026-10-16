@@ -893,16 +893,20 @@
         }));
     }
 
-    // Where the visit came from: a utm_source, the referring site, or the
-    // newsletter (its Play links end in #play and email apps send no referrer).
+    // Where the visit came from: a utm_source (the newsletter's links carry
+    // utm_source=newsletter), the referring site, or 'newsletter' for links in
+    // emails sent before that, whose Play links end in #play (email apps send
+    // no referrer).
+    // Read before the player takes #play out of the address.
+    const landingUrl = new URL(location.href);
     function visitSource() {
-        const utm = new URLSearchParams(location.search).get('utm_source');
+        const utm = landingUrl.searchParams.get('utm_source');
         if (utm) return utm;
         if (document.referrer) {
             const host = new URL(document.referrer).hostname.replace(/^www\./, '');
             if (!/(^|\.)thisisrooms\.com$/.test(host)) return host;
         }
-        return location.hash === '#play' ? 'email' : '';
+        return landingUrl.hash === '#play' ? 'newsletter' : '';
     }
 
     // Time on page counts only while the tab is visible. It's sent whenever the

@@ -74,7 +74,8 @@ const EMAIL_IMAGES = new URL('images/email/', SITE).href;
 
 // The post's Play button and link buttons as an email-safe stack of tables,
 // each with its icon as an image (email apps restyle text symbols like ▶):
-// Play goes to the post with #play, the rest to each service with its pill.
+// Play goes to the post with #play (tagged utm_source=newsletter for the
+// site's analytics), the rest to each service with its pill.
 function emailButtons(url, links, hasAudio) {
     const gap = '<div style="height:8px;line-height:8px;font-size:8px;">&nbsp;</div>';
     const buttons = [];
@@ -82,8 +83,8 @@ function emailButtons(url, links, hasAudio) {
         buttons.push(`<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;"><tr>`
             + `<td height="44" style="height:44px;padding:0 8px 0 16px;background-color:${INK};border:1px solid ${INK};border-radius:8px;">`
             + '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>'
-            + `<td width="32" style="width:32px;line-height:0;font-size:0;"><a href="${url}#play"><img src="${EMAIL_IMAGES}play-icon.png" width="20" height="20" alt="" style="display:block;width:20px;height:20px;border:0;" /></a></td>`
-            + `<td style="font-family:${FONT};font-size:15px;line-height:44px;font-weight:bold;"><a href="${url}#play" style="display:block;color:#ffffff;text-decoration:none;">Play</a></td>`
+            + `<td width="32" style="width:32px;line-height:0;font-size:0;"><a href="${url}?utm_source=newsletter#play"><img src="${EMAIL_IMAGES}play-icon.png" width="20" height="20" alt="" style="display:block;width:20px;height:20px;border:0;" /></a></td>`
+            + `<td style="font-family:${FONT};font-size:15px;line-height:44px;font-weight:bold;"><a href="${url}?utm_source=newsletter#play" style="display:block;color:#ffffff;text-decoration:none;">Play</a></td>`
             + '</tr></table></td></tr></table>');
     }
     links.forEach((link) => {

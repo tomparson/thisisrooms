@@ -155,7 +155,7 @@ body:
                       text-valign: top
                       valign: top
                       width: 100%
-                  content: <span style="font-size:13px;">You&#39;re receiving it because you subscribed to updates from rooms.</span>
+                  content: <span style="font-size:13px;">You&#39;re receiving it because you subscribed on my website, or bought something from me on bandcamp or gumroad.</span>
                 - id: 619b6ce4-d454-4805-b435-c512dfb1143a
                   thumbnail: /assets/img/editor/element_text.svg
                   title: Legal text

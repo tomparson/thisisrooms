@@ -143,7 +143,7 @@ const template = {
                         layout: { '320px': [], default: { 'padding-left': '0px', 'padding-right': '0px', valign: 'top' } },
                         content: [
                             footerText('e9c58456-1eca-480c-abe2-64e1bd1a44cc', 'This email was sent to {{contact.EMAIL}}', '15px', '0px'),
-                            footerText('704252ce-b556-494f-9149-0caaff47c42d', 'You&#39;re receiving it because you subscribed to updates from rooms.', '0px', '0px'),
+                            footerText('704252ce-b556-494f-9149-0caaff47c42d', 'You&#39;re receiving it because you subscribed on my website, or bought something from me on bandcamp or gumroad.', '0px', '0px'),
                             footerText('619b6ce4-d454-4805-b435-c512dfb1143a',
                                 `<a href="{{ mirror }}" style="color:${MUTED};">View in browser</a> | <a href="{{ unsubscribe }}" style="color:${MUTED};">Unsubscribe</a>`,
                                 '15px', '15px'),

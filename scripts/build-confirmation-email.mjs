@@ -1,8 +1,8 @@
 /*
  * Builds email/confirmation.html, the email Brevo sends when someone subscribes
  * through the site's form (a Brevo template, created from this file). It matches
- * the newsletter: a title, a few lines of copy and the same social links, which
- * it takes from feed.xml (so run npm run build:feed first).
+ * the newsletter: a title, a few lines of copy and the same social links, from
+ * email/socials.html.
  *
  *   npm run build:confirmation-email
  */
@@ -15,8 +15,10 @@ const FONT = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, s
 const INK = '#0E100D';
 const MUTED = '#6b6c69';
 
-const feed = readFileSync(join(ROOT, 'feed.xml'), 'utf8');
-const socials = feed.match(/<rooms:socials><!\[CDATA\[([\s\S]*?)\]\]><\/rooms:socials>/)[1];
+const socials = readFileSync(join(ROOT, 'email/socials.html'), 'utf8')
+    .replace(/^<!--[\s\S]*?-->\s*/, '')
+    .replace(/\n\s*/g, '')
+    .trim();
 
 const p = (text) => `<p style="margin:0 0 16px;font-family:${FONT};font-size:16px;line-height:1.65;color:#2b2c2a;">${text}</p>`;
 

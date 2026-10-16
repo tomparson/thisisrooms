@@ -2,9 +2,9 @@
   The newsletter's post block: the HTML inside the loop of the Brevo template
   (scripts/build-email-template.mjs wraps it into email/brevo-template.yaml).
   {{ item.X }} placeholders are filled from the feed item: ROOMS_DATE,
-  ROOMS_BUTTONS, ROOMS_BODY and ROOMS_SOCIALS come from the rooms:date,
-  rooms:buttons, rooms:body and rooms:socials tags that scripts/build-feed.mjs
-  writes.
+  ROOMS_BUTTONS and ROOMS_BODY come from the rooms:date, rooms:buttons and
+  rooms:body tags that scripts/build-feed.mjs writes. <!-- SOCIALS --> is
+  replaced with email/socials.html's table when the template is built.
 
   Layout: 552px of content. On desktop the artwork sits on the right and the
   buttons on the left; the row is dir="rtl" so that on a phone, where the two
@@ -51,7 +51,7 @@
       </p>
 
       <div style="margin:14px 0 0;">
-        {{ item.ROOMS_SOCIALS | safe }}
+        <!-- SOCIALS -->
       </div>
     </td>
   </tr>

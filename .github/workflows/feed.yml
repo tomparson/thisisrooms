@@ -10,7 +10,6 @@ on:
       - 'index.html'
       - 'images/**'
       - 'scripts/build-feed.mjs'
-      - 'scripts/socials.mjs'
       - 'package.json'
       - 'package-lock.json'
   workflow_dispatch:

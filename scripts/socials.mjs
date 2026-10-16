@@ -1,7 +1,7 @@
 /*
  * Reads the social links from the homepage's links grid (#about-and-links), for
- * the newsletter: scripts/build-feed.mjs lays them out and
- * scripts/build-email-images.mjs renders their icons.
+ * scripts/build-email-images.mjs to render their icons. The emails' links
+ * themselves are hard-coded in email/socials.html.
  *
  * Each grid entry becomes { text, href, icons: [{ id, href, fa | svg }] }:
  * its description, where that links, and each icon with its own link. An icon

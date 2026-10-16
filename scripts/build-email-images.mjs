@@ -7,7 +7,7 @@
  *   - <service>.png: each link button's icon (20x20), named as in SERVICE_ICONS
  *     in scripts/build-feed.mjs, which places them
  *   - social/<id>.png: each icon in the homepage's links grid (20x20), as read
- *     by scripts/socials.mjs, for the newsletter's social links
+ *     by scripts/socials.mjs, for the social links in email/socials.html
  *
  *   npm run build:email-images
  *
@@ -45,7 +45,7 @@ const icon = ([set, name], color = INK, size = 20) => `
 </style>
 <div class="icon">${svg(set, name)}</div>`;
 
-// The homepage's own inline SVGs (Gumroad, Substack), recoloured to match.
+// The homepage's own inline SVGs (e.g. Gumroad), recoloured to match.
 const inlineIcon = (markup) => `
 <style>
   body { margin: 0; background: transparent; }

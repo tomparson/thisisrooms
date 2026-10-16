@@ -1,6 +1,7 @@
 /*
  * Builds email/brevo-template.yaml, the newsletter template for Brevo's RSS
- * campaign, from email/newsletter.html.
+ * campaign, from email/newsletter.html, with email/socials.html's social links
+ * in place of its <!-- SOCIALS --> marker.
  *
  *   npm run build:email
  *
@@ -21,8 +22,12 @@ const FONT = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, s
 const INK = '#0E100D';
 const MUTED = '#6b6c69';
 
+const socials = readFileSync(join(ROOT, 'email/socials.html'), 'utf8')
+    .replace(/^<!--[\s\S]*?-->\s*/, '')
+    .trim();
 const block = readFileSync(join(ROOT, 'email/newsletter.html'), 'utf8')
     .replace(/^<!--[\s\S]*?-->\s*/, '')
+    .replace('<!-- SOCIALS -->', socials)
     .replace(/\n\s*/g, '')
     .trim();
 

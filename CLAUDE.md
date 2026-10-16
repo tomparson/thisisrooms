@@ -50,7 +50,7 @@ Copy the closest existing post and edit it. The `<head>`, header row, newsletter
   - `<title>` and `og:title`: `<title> out now · rooms` (collabs just `<title> · rooms`).
   - `description` and `og:description`: a sentence on the release.
   - `og:image`: absolute URL of the cover.
-  - `article:published_time`: YYYY-MM-DD.
+  - `article:published_time`: the time the post goes live, in UTC, e.g. `2026-10-16T05:32:00Z` (a bare `YYYY-MM-DD` means midnight UTC). It's the feed item's date, and Brevo only emails items dated after the last one it saw, so a post dated earlier than a recent test send (or midnight on the day of one) is skipped.
   - Same `?v=N` as other pages.
 - **Audio tags**, after `article:published_time`:
   - Single:
@@ -110,7 +110,7 @@ Copy the closest existing post and edit it. The `<head>`, header row, newsletter
 - Commit to the session's branch. Push to `main` when Tom asks; he often asks for content updates to go straight to main.
 - Run `npm run build:feed` and commit `feed.xml` with the post, then check the new item reads well (title, description, cover, links). The Action would otherwise rebuild it after the push.
 - The post's `description` goes in the feed and in Brevo's email, so it must describe the release, not the site.
-- Brevo only picks up a post that was live at least an hour before its scheduled run, so publish in good time. It sends each item (by `<guid>`) once, so a re-test needs a fresh guid.
+- Brevo only picks up a post that was live at least an hour before its scheduled run, so publish in good time. It sends each item (by `<guid>`) once, so a re-test needs a fresh guid. The RSS campaign creates its campaign daily at 16:00 (UK time); check its schedule in Brevo before relying on that.
 - Bump `?v=N` only if `css/site.css` or `js/site.js` changed.
 
 ## Testing locally

@@ -245,7 +245,8 @@ function readPost(slug, genericDescription) {
         slug,
         title,
         url,
-        date: new Date(`${published}T00:00:00Z`),
+        // A date alone means midnight UTC; a full time (2026-10-16T05:32:00Z) is used as is.
+        date: new Date(published.includes('T') ? published : `${published}T00:00:00Z`),
         description: description && description !== genericDescription ? description : firstParagraph(content),
         html: `${header.join('\n')}\n${content.toString().trim()}`,
         cover,

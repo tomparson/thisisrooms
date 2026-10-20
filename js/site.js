@@ -368,8 +368,11 @@
         audio.load();
     }
 
+    // A page's address without its query or hash, so a landing with
+    // ?utm_source=… (or ?fbclid=…, #play) still matches the homepage's links.
     function pageKey(url) {
-        return new URL(url).href.split('#')[0].replace(/index\.html$/, '');
+        const u = new URL(url);
+        return (u.origin + u.pathname).replace(/index\.html$/, '');
     }
 
     // The post's cover art (square, unlike some link-preview images), for the

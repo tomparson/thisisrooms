@@ -1,6 +1,8 @@
 /*
  * thisisrooms analytics: receives the events js/site.js sends (section 6) and
- * adds one row per event to the first sheet of the spreadsheet it's bound to.
+ * adds one row per event to the Activity Feed tab of the spreadsheet it's bound
+ * to. The tab is found by its ID (the gid in its URL), so it can be renamed or
+ * moved.
  *
  * Setup: in the Google Sheet, Extensions → Apps Script, replace the code with
  * this file, then Deploy → New deployment → Web app, 'Execute as: Me',
@@ -12,6 +14,7 @@
  */
 
 const COLUMNS = ['time', 'visit', 'event', 'page', 'detail', 'value', 'source'];
+const SHEET_ID = 1023315692;
 const EVENTS = ['view', 'time', 'play', 'listen', 'read', 'click', 'signup', 'action'];
 
 function doPost(e) {
@@ -39,7 +42,9 @@ function doPost(e) {
   const lock = LockService.getScriptLock();
   lock.waitLock(10000);
   try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets().filter(function (s) {
+      return s.getSheetId() === SHEET_ID;
+    })[0];
     if (sheet.getLastRow() === 0) sheet.appendRow(COLUMNS);
     sheet.appendRow(row);
   } finally {

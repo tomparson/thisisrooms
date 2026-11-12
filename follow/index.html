@@ -149,7 +149,16 @@
             link.addEventListener('click', function (event) {
                 event.preventDefault();
                 input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                input.focus({ preventScroll: true });
+                // Focus once the scroll has finished, so the keyboard opening doesn't interrupt it.
+                let done = false;
+                function focusInput() {
+                    if (done) return;
+                    done = true;
+                    window.removeEventListener('scrollend', focusInput);
+                    input.focus({ preventScroll: true });
+                }
+                window.addEventListener('scrollend', focusInput);
+                setTimeout(focusInput, 700);
             });
         })();
     </script>

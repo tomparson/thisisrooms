@@ -148,17 +148,10 @@
             if (!link || !input) return;
             link.addEventListener('click', function (event) {
                 event.preventDefault();
-                input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                // Focus once the scroll has finished, so the keyboard opening doesn't interrupt it.
-                let done = false;
-                function focusInput() {
-                    if (done) return;
-                    done = true;
-                    window.removeEventListener('scrollend', focusInput);
-                    input.focus({ preventScroll: true });
-                }
-                window.addEventListener('scrollend', focusInput);
-                setTimeout(focusInput, 700);
+                // An instant scroll, so focus can happen straight from the tap (iOS only opens the
+                // keyboard then) without the keyboard interrupting a smooth scroll.
+                input.scrollIntoView({ behavior: 'instant', block: 'center' });
+                input.focus({ preventScroll: true });
             });
         })();
     </script>

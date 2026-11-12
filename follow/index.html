@@ -91,7 +91,36 @@
                         </div>
                     </a>
                 </div>
-                <div class="mt-section">
+                <h2 class="mt-section mb-8 font-bold">support me</h2>
+                <div class="flex flex-col gap-4 items-start">
+                    <a href="https://this-is-rooms.bandcamp.com" target="_blank" class="opacity-80 hover:opacity-100 transition">
+                        <div class="flex gap-3 mb-2 items-center justify-start">
+                            <span class="w-[50px] flex justify-center items-center opacity-80 hover:opacity-100 transition flex items-center justify-center">
+                                <i class="fa-brands fa-bandcamp text-white text-3xl"></i>
+                            </span>
+                            <div>buy my music</div>
+                        </div>
+                    </a>
+                    <a href="https://thisisrooms.gumroad.com" target="_blank" class="opacity-80 hover:opacity-100 transition">
+                        <div class="flex gap-3 mb-2 items-center justify-start">
+                            <span class="w-[50px] flex justify-center items-center opacity-80 hover:opacity-100 transition flex items-center justify-center">
+                                <svg width="30" height="30" viewBox="0 0 38 37" class="fill-white" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M37.2227 18.8093C37.2227 28.7828 28.8573 36.8093 18.6113 36.8093C8.36552 36.8093 0 28.7828 0 18.8093C0 8.83586 8.36552 0.809265 18.6113 0.809265C28.8573 0.809265 37.2227 8.83586 37.2227 18.8093ZM8.93886 18.4469C8.93886 23.6819 12.0028 27.8904 17.2115 27.8904C22.42 27.8904 23.7476 23.6819 24.0541 21.5262V27.4798H28.2848V18.0363H18.6412V19.884H23.2371C22.7264 22.1421 21.5009 24.4003 18.6412 24.4003C15.4753 24.4003 13.4326 21.629 13.4326 18.2416C13.4326 14.8542 15.4753 12.0827 18.6412 12.0827C21.6029 12.0827 22.8286 14.2383 22.9306 15.6753H27.7307C27.6286 13.1092 25.3818 8.59268 18.7432 8.59268C12.3091 8.59268 8.93886 13.0065 8.93886 18.4469Z"/>
+                                </svg>
+                            </span>
+                            <div>buy my ableton live devices</div>
+                        </div>
+                    </a>
+                    <a href="#newsletter" data-focus-newsletter class="opacity-80 hover:opacity-100 transition">
+                        <div class="flex gap-3 mb-2 items-center justify-start">
+                            <span class="w-[50px] flex justify-center items-center opacity-80 hover:opacity-100 transition flex items-center justify-center">
+                                <i class="fa-solid fa-envelope text-white text-3xl"></i>
+                            </span>
+                            <div>subscribe to my newsletter</div>
+                        </div>
+                    </a>
+                </div>
+                <div id="newsletter" class="mt-section">
                     <div class="dot-grid dot-strip mb-section" aria-hidden="true"></div>
                     <form class="newsletter-form mb-[16px]" data-newsletter method="POST" action="https://e7595fe7.sibforms.com/serve/MUIFALpml7OgTLwNNf7vPp8v1zy4y6IK9gBJh_bqLh6m4SNAPo3Aoz9Ns_49UR_hMGwjG57yYzCUtIAPn2mPafamkF_bN43sfMZ0Ta2uOT1N6bHBCcoppbwr4r6Z0i5L6hRJpyU0mf2tviuqnQGMdtfF5EsPnkPBt20Hlb8T6VPXtgIUmahxr95i29rqT2GCY-0daGraF1a_QV5H">
                         <p class="mb-3">Sporadic email updates on new releases, my process, and things I'm working on.</p>
@@ -111,5 +140,18 @@
             </div>
         </div>
     </main>
+    <script>
+        // 'subscribe to my newsletter' scrolls down to the form and puts the cursor in its email box.
+        (function () {
+            const link = document.querySelector('[data-focus-newsletter]');
+            const input = document.querySelector('#newsletter form[data-newsletter] input[type="email"]');
+            if (!link || !input) return;
+            link.addEventListener('click', function (event) {
+                event.preventDefault();
+                input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                input.focus({ preventScroll: true });
+            });
+        })();
+    </script>
 </body>
 </html>

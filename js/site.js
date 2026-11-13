@@ -58,7 +58,7 @@
  *
  * 7. Newsletter prompt. Once a visitor has started 3 different tracks in a
  *    visit, a card above the player offers the newsletter (a copy of the page's
- *    form[data-newsletter], with a random message from PROMPT_MESSAGES), and
+ *    form[data-newsletter], with PROMPT_MESSAGE), and
  *    again at 10. It never blocks playback and can be closed. Plays are counted
  *    in memory only, so a reload starts again. Signing up with any of the
  *    site's forms stops the prompts for good in that browser (localStorage).
@@ -1091,21 +1091,13 @@
     // Shown after this many different tracks in a visit.
     const PROMPT_PLAYS = [3, 10];
     // One is picked at random each time.
-    const PROMPT_MESSAGES = [
-        { heading: 'Thanks for listening', smiley: ':)', text: 'Subscribe to be the first to know about new releases.' },
-        { heading: 'Thanks so much!', smiley: ':D', text: 'You\'ll love what I\'m working on next... subscribe to hear it first!' },
-        { heading: 'Thank yoooooooou', smiley: '<3', text: 'You listening to my music makes me happy. Subscribe, if you like.' },
-        { heading: 'tysm', smiley: '^-^', text: 'Thank You So Much for listening! If you like, subscribe for updates.' },
-        { heading: 'You are amazing!', text: 'It\'s so cool you\'re listening to my music. If you like, subscribe to hear more!' },
-        { heading: 'I love this!', text: 'You, on my website, listening to my tracks. Love it. Subscribe if you do too!' },
-    ];
+    const PROMPT_MESSAGE = { heading: 'Thanks for listening', smiley: ':)', text: 'Subscribe to be the first to know about new releases.' };
     const promptCard = document.createElement('div');
     promptCard.id = 'rooms-prompt';
     promptCard.hidden = true;
     promptCard.setAttribute('role', 'dialog');
     promptCard.setAttribute('aria-label', 'newsletter');
     const promptTracks = new Set();
-    let lastMessage = null;
 
     // Someone who has signed up with any of the site's forms isn't asked again:
     // remembered for this visit, and in this browser (localStorage, set only
@@ -1149,9 +1141,7 @@
     function openPrompt(plays) {
         const source = document.querySelector('form[data-newsletter]');
         if (!source) return;
-        const choices = PROMPT_MESSAGES.filter(function (message) { return message !== lastMessage; });
-        const message = choices[Math.floor(Math.random() * choices.length)];
-        lastMessage = message;
+        const message = PROMPT_MESSAGE;
         const close = document.createElement('button');
         close.type = 'button';
         close.className = 'rooms-prompt-close';

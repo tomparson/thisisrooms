@@ -1138,7 +1138,10 @@
         const last = words.pop();
         const nowrap = document.createElement('span');
         nowrap.className = 'whitespace-nowrap';
-        nowrap.textContent = last + '\u00a0' + message.smiley;
+        const smiley = document.createElement('span');
+        smiley.className = 'typewriter';
+        smiley.textContent = message.smiley;
+        nowrap.append(last + '\u00a0', smiley);
         title.append(words.length ? words.join(' ') + ' ' : '', nowrap);
         return title;
     }

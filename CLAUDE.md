@@ -96,7 +96,7 @@ Copy the closest existing post and edit it. The `<head>`, header row, newsletter
 
 - Add the new card at the **top** of the cards list, since it's the newest. Copy an existing card and its following `dot-grid dot-strip-short` divider.
 - Card text:
-  - Label: "latest single", "single", "EP", "debut EP", "debut album", "recent commission"; collabs have no label.
+  - Label: "latest single", "single", "EP", "debut EP", "debut album", "recent commission", "collab".
   - Title: "<title> out now"; collabs just "<title>".
   - Pill: "view release", "view collab" or "read story".
 - When a new single goes in, change the previous "latest single" card to "single".

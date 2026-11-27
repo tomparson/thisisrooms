@@ -71,6 +71,7 @@ Copy the closest existing post and edit it. The `<head>`, header row, newsletter
   - Keep the Play button 62px tall (`h-[62px]`) and every other button 56px (`h-14`).
   - The buy/play pills are all the same width (`w-[4.5rem] … text-center`), so they line up with each other and with the Play button's EQ.
   - If there are more than 3 buttons (counting Play), add a desktop filler after the last button: `<div class="dot-grid hidden md:block md:col-start-2 md:row-start-4 md:row-span-<buttons − 3>" aria-hidden="true"></div>`.
+  - If there are only 2 buttons (counting Play), fill the space below them on desktop instead: add `md:grid-rows-[auto_auto_1fr]` to the grid's classes and `<div class="dot-grid hidden md:block md:col-start-1 md:row-start-3" aria-hidden="true"></div>` after the last button.
   - The grid gets `mb-section`, or `mb-3` when a track list follows.
 - **Track list** (multi-track only): `<div data-tracklist class="tracklist not-prose mb-section"></div>` straight after the grid. `js/site.js` fills it.
 - **Post copy:** plain `<p>` paragraphs. Credit lines are inline links ("X with <a>Name</a>"). A link only becomes a button if it has `class="cta"`. Every link to another site (including button links) gets `target="_blank"` so it opens in a new tab; links within the site don't.
